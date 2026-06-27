@@ -1,0 +1,78 @@
+import { prisma } from "@/lib/db";
+
+const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
+
+export default async function AdminDashboard() {
+  const [postCount, guideCount, faqCount] = await Promise.all([
+    prisma.post.count({ where: { country: COUNTRY } }),
+    prisma.guide.count({ where: { country: COUNTRY } }),
+    prisma.faq.count({ where: { country: COUNTRY } }),
+  ]);
+
+  const recentPosts = await prisma.post.findMany({
+    where: { country: COUNTRY },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+    select: { id: true, title: true, status: true, createdAt: true },
+  });
+
+  return (
+    <div>
+      <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
+      <div className="grid grid-cols-3 gap-6 mb-10">
+        {[
+          { label: "Blog Yazıları", count: postCount, href: "/admin/blog" },
+          { label: "Rehberler", count: guideCount, href: "/admin/guides" },
+          { label: "SSS", count: faqCount, href: "/admin/faq" },
+        ].map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
+            className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition"
+          >
+            <div className="text-4xl font-bold text-brand-600">{item.count}</div>
+            <div className="text-gray-600 mt-1">{item.label}</div>
+          </a>
+        ))}
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm p-6">
+        <h2 className="text-xl font-semibold mb-4">Son Yazılar</h2>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="text-left text-gray-500 border-b">
+              <th className="pb-2">Başlık</th>
+              <th className="pb-2">Durum</th>
+              <th className="pb-2">Tarih</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentPosts.map((post) => (
+              <tr key={post.id} className="border-b last:border-0">
+                <td className="py-3">
+                  <a href={`/admin/blog/${post.id}`} className="hover:text-brand-600">
+                    {post.title}
+                  </a>
+                </td>
+                <td className="py-3">
+                  <span
+                    className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      post.status === "PUBLISHED"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
+                    {post.status === "PUBLISHED" ? "Yayında" : "Taslak"}
+                  </span>
+                </td>
+                <td className="py-3 text-gray-500">
+                  {new Date(post.createdAt).toLocaleDateString("tr-TR")}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}

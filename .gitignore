@@ -1,0 +1,14 @@
+node_modules
+.next
+.turbo
+dist
+.env
+.env.local
+*.env.local
+
+# Prisma
+packages/db/prisma/migrations/*.lock
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Blog Yazıları ───────────────────────────────────────
+
+model Post {
+  id              String       @id @default(cuid())
+  country         String
+  title           String
+  slug            String
+  excerpt         String
+  body            String
+  coverImage      String?
+  coverAlt        String?
+  category        PostCategory
+  tags            String[]
+  featured        Boolean      @default(false)
+  status          PostStatus   @default(DRAFT)
+  metaTitle       String?
+  metaDescription String?
+  canonicalUrl    String?
+  noIndex         Boolean      @default(false)
+  publishedAt     DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@unique([country, slug])
+  @@index([country, status])
+}
+
+enum PostCategory {
+  GUIDE
+  NEWS
+  TIP
+  COMPARISON
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+// ─── Rehber Sayfaları ────────────────────────────────────
+
+model Guide {
+  id              String           @id @default(cuid())
+  country         String
+  title           String
+  slug            String
+  body            String
+  order           Int
+  difficulty      GuideDifficulty?
+  estimatedTime   String?
+  metaTitle       String?
+  metaDescription String?
+  status          PostStatus       @default(DRAFT)
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@unique([country, slug])
+  @@index([country, status])
+}
+
+enum GuideDifficulty {
+  EASY
+  MEDIUM
+  ADVANCED
+}
+
+// ─── SSS ─────────────────────────────────────────────────
+
+model Faq {
+  id        String      @id @default(cuid())
+  country   String
+  question  String
+  answer    String
+  category  FaqCategory
+  order     Int
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([country, category])
+}
+
+enum FaqCategory {
+  OPERATORS
+  SETUP
+  PACKAGES
+  GENERAL
+}
+
+// ─── Ana Sayfa İçerikleri ────────────────────────────────
+
+model Homepage {
+  id              String   @id @default(cuid())
+  country         String   @unique
+  heroHeadline    String
+  heroSubheadline String
+  heroCtaText     String
+  heroImage       String?
+  whyEsimTitle    String
+  whyEsimItems    Json
+  howItWorksTitle String
+  howItWorksSteps Json
+  stats           Json
+  updatedAt       DateTime @updatedAt
+}
+
+// ─── Banner / Slider ─────────────────────────────────────
+
+model Banner {
+  id        String   @id @default(cuid())
+  country   String
+  title     String?
+  subtitle  String?
+  image     String
+  ctaText   String?
+  ctaHref   String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([country, active])
+}
+
+// ─── Medya Galerisi (Foto + Video) ───────────────────────
+
+model Media {
+  id          String    @id @default(cuid())
+  country     String
+  type        MediaType
+  title       String?
+  url         String
+  thumbnail   String?
+  description String?
+  order       Int       @default(0)
+  createdAt   DateTime  @default(now())
+
+  @@index([country, type])
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+// ─── Menü Öğeleri ────────────────────────────────────────
+
+model MenuItem {
+  id        String   @id @default(cuid())
+  country   String
+  label     String
+  href      String
+  order     Int      @default(0)
+  target    String   @default("_self")
+  parentId  String?
+  parent    MenuItem?  @relation("MenuTree", fields: [parentId], references: [id])
+  children  MenuItem[] @relation("MenuTree")
+  createdAt DateTime @default(now())
+
+  @@index([country])
+}
+
+// ─── Dinamik Sayfalar ────────────────────────────────────
+
+model Page {
+  id              String     @id @default(cuid())
+  country         String
+  title           String
+  slug            String
+  body            String
+  metaTitle       String?
+  metaDescription String?
+  noIndex         Boolean    @default(false)
+  status          PostStatus @default(DRAFT)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@unique([country, slug])
+  @@index([country, status])
+}
+
+// ─── Admin Kullanıcıları ─────────────────────────────────
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime @default(now())
+}
+
+// ─── Paket Cache ─────────────────────────────────────────
+
+model PackageCache {
+  id        String   @id
+  country   String
+  data      Json
+  fetchedAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([country, expiresAt])
+}
