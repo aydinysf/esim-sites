@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -66,9 +67,9 @@ export default function ContentTable({ rows, basePath, deleteEndpoint }: Props) 
               </td>
               <td className="px-6 py-4">
                 <div className="flex gap-3">
-                  <a href={`${basePath}/${row.id}`} className="text-brand-600 hover:underline">
+                  <Link href={`${basePath}/${row.id}`} className="text-[#C4A234] hover:underline">
                     Düzenle
-                  </a>
+                  </Link>
                   <button
                     onClick={() => handleDelete(row.id)}
                     disabled={deleting === row.id}

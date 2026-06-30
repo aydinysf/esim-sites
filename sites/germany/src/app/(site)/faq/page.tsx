@@ -1,19 +1,35 @@
 import { prisma } from "@/lib/db";
 import FaqAccordion from "@/components/site/FaqAccordion";
+import PageHeader from "@/components/site/PageHeader";
 import type { Metadata } from "next";
 
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
 
-export const metadata: Metadata = {
-  title: "Germany eSIM FAQ | Frequently Asked Questions",
-  description: "Answers to the most common questions about Germany eSIM plans and activation.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const hp = await prisma.homepage.findUnique({
+    where: { country: COUNTRY },
+    select: { faqPageTitle: true, faqPageSubtitle: true, metaSiteTitle: true },
+  });
+  return {
+    title: hp?.faqPageTitle ? `${hp.faqPageTitle} | ${hp.metaSiteTitle || "eSIM"}` : "FAQ | Germany eSIM",
+    description: hp?.faqPageSubtitle || "Frequently asked questions about Germany eSIM.",
+  };
+}
 
 export default async function FaqPage() {
-  const faqs = await prisma.faq.findMany({
-    where: { country: COUNTRY },
-    orderBy: [{ category: "asc" }, { order: "asc" }],
-  });
+  const [faqs, hp] = await Promise.all([
+    prisma.faq.findMany({
+      where: { country: COUNTRY },
+      orderBy: [{ category: "asc" }, { order: "asc" }],
+    }),
+    prisma.homepage.findUnique({
+      where: { country: COUNTRY },
+      select: { faqPageTitle: true, faqPageSubtitle: true },
+    }),
+  ]);
+
+  const title    = hp?.faqPageTitle    || "FAQ";
+  const subtitle = hp?.faqPageSubtitle || "";
 
   const faqSchema = {
     "@context": "https://schema.org",
@@ -21,22 +37,17 @@ export default async function FaqPage() {
     mainEntity: faqs.map((faq) => ({
       "@type": "Question",
       name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer.replace(/<[^>]*>/g, ""),
-      },
+      acceptedAnswer: { "@type": "Answer", text: faq.answer.replace(/<[^>]*>/g, "") },
     })),
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <h1 className="text-4xl font-bold mb-3">Frequently Asked Questions</h1>
-      <p className="text-gray-600 mb-10">Everything you need to know about Germany eSIM.</p>
-      <FaqAccordion faqs={faqs} />
-    </div>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <PageHeader title={title} subtitle={subtitle} eyebrow="Hilfe" breadcrumb={[{ label: "FAQ" }]} />
+      <div className="max-w-3xl mx-auto px-6 py-12">
+        <FaqAccordion faqs={faqs} />
+      </div>
+    </>
   );
 }

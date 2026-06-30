@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import ContentTable from "@/components/admin/ContentTable";
 
@@ -22,12 +23,12 @@ export default async function AdminGuidesPage() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Rehberler</h1>
-        <a
+        <Link
           href="/admin/guides/new"
-          className="bg-brand-600 text-white px-4 py-2 rounded-lg hover:bg-brand-700 transition text-sm font-medium"
+          className="bg-[#C4A234] text-white px-4 py-2 rounded-lg hover:bg-[#a8882a] transition text-sm font-medium"
         >
           + Yeni Rehber
-        </a>
+        </Link>
       </div>
       <ContentTable rows={rows} basePath="/admin/guides" deleteEndpoint="/api/guides" />
     </div>

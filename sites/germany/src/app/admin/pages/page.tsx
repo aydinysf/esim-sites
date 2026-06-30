@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import ContentTable from "@/components/admin/ContentTable";
 
@@ -25,10 +26,10 @@ export default async function AdminPagesPage() {
           <h1 className="text-3xl font-bold">Dinamik Sayfalar</h1>
           <p className="text-gray-500 text-sm mt-1">Özel URL'li sayfalar oluştur (hakkımızda, iletişim, vb.)</p>
         </div>
-        <a href="/admin/pages/new"
+        <Link href="/admin/pages/new"
           className="bg-[#C4A234] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#a8882a] transition">
           + Yeni Sayfa
-        </a>
+        </Link>
       </div>
       <ContentTable rows={rows} basePath="/admin/pages" deleteEndpoint="/api/pages" />
     </div>

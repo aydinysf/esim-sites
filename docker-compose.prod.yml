@@ -1,0 +1,23 @@
+# Production modu — admin panel ve site belirgin şekilde hızlanır.
+#
+# Çalıştırma:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Kod değişikliğinden sonra yeniden derlemek için:
+#   docker restart esim_germany     (komut yeniden çalışır: build + start)
+#
+# Dev moduna geri dönmek için (hot reload):
+#   docker compose up -d
+#
+# Not: İlk açılışta "next build" ~1-2 dk sürer; sonrasında "next start" ile
+# sayfalar önceden derlenmiş olarak anında açılır.
+
+services:
+  germany:
+    environment:
+      NODE_ENV: production
+    command: >
+      sh -c "npx prisma migrate deploy &&
+             (npx tsx ../../packages/db/prisma/seed.ts 2>/dev/null || true) &&
+             npm run build &&
+             npm run start"

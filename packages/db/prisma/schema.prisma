@@ -100,15 +100,57 @@ enum FaqCategory {
 model Homepage {
   id              String   @id @default(cuid())
   country         String   @unique
+
+  // Hero
   heroHeadline    String
   heroSubheadline String
   heroCtaText     String
   heroImage       String?
+
+  // İstatistikler
+  stats           Json
+
+  // Neden eSIM bölümü
   whyEsimTitle    String
   whyEsimItems    Json
+
+  // Nasıl çalışır bölümü
   howItWorksTitle String
   howItWorksSteps Json
-  stats           Json
+
+  // Alt CTA bandı
+  ctaBandTitle    String?
+  ctaBandSubtitle String?
+  ctaBandCtaText  String?
+  ctaBandCtaHref  String?
+
+  // Header
+  headerCtaText   String?
+  headerCtaHref   String?
+
+  // Footer
+  footerTagline   String?
+
+  // Blog sayfası
+  blogPageTitle    String?
+  blogPageSubtitle String?
+
+  // Rehberler sayfası
+  guidesPageTitle    String?
+  guidesPageSubtitle String?
+
+  // SSS sayfası
+  faqPageTitle    String?
+  faqPageSubtitle String?
+
+  // Paketler sayfası
+  packagesPageTitle    String?
+  packagesPageSubtitle String?
+
+  // Site meta
+  metaSiteTitle       String?
+  metaSiteDescription String?
+
   updatedAt       DateTime @updatedAt
 }
 

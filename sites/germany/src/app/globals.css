@@ -3,32 +3,36 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
-    @apply text-ink bg-ivory;
+    @apply text-ink bg-[#F1F5F9] font-sans;
     font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
+  /* headings inherit display font by default */
   h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
     text-wrap: balance;
   }
 
-  /* Prose customisation for rich text content */
-  .prose h2 { @apply font-display text-2xl font-bold mt-8 mb-3; }
-  .prose h3 { @apply font-display text-xl font-semibold mt-6 mb-2; }
-  .prose p  { @apply leading-relaxed text-stone mb-4; }
-  .prose ul { @apply list-disc pl-5 space-y-1 text-stone mb-4; }
-  .prose ol { @apply list-decimal pl-5 space-y-1 text-stone mb-4; }
+  /* rich-text prose */
+  .prose h2 { @apply text-2xl font-bold mt-8 mb-3 text-ink; }
+  .prose h3 { @apply text-xl font-semibold mt-6 mb-2 text-ink; }
+  .prose p  { @apply leading-relaxed text-muted mb-4; }
+  .prose ul { @apply list-disc pl-5 space-y-1 text-muted mb-4; }
+  .prose ol { @apply list-decimal pl-5 space-y-1 text-muted mb-4; }
   .prose a  { @apply text-gold underline underline-offset-2 hover:text-gold-dark; }
-  .prose blockquote { @apply border-l-4 border-sand pl-4 italic text-stone; }
-  .prose code { @apply bg-sand px-1.5 py-0.5 rounded text-sm font-mono; }
+  .prose blockquote { @apply border-l-4 border-border pl-4 italic text-muted my-4; }
+  .prose code { @apply bg-[#F1F5F9] px-1.5 py-0.5 rounded text-sm font-mono; }
+  .prose strong { @apply text-ink font-semibold; }
+  .prose img { @apply rounded-card my-6 w-full; }
 }
 
 @layer utilities {
-  .font-display { font-family: var(--font-playfair), Georgia, serif; }
-  .font-sans    { font-family: var(--font-inter), system-ui, sans-serif; }
+  .font-display { font-family: var(--font-syne), system-ui, sans-serif; }
+  .font-sans    { font-family: var(--font-dm-sans), system-ui, sans-serif; }
   .tabular      { font-variant-numeric: tabular-nums; }
 }

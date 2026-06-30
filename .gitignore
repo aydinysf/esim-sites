@@ -9,6 +9,9 @@ dist
 # Prisma
 packages/db/prisma/migrations/*.lock
 
+# Yüklenen medya dosyaları (DB'de URL olarak saklanır)
+sites/*/public/uploads/
+
 # OS
 .DS_Store
 Thumbs.db

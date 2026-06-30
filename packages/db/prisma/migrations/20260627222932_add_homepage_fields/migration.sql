@@ -1,0 +1,18 @@
+-- AlterTable
+ALTER TABLE "Homepage" ADD COLUMN     "blogPageSubtitle" TEXT,
+ADD COLUMN     "blogPageTitle" TEXT,
+ADD COLUMN     "ctaBandCtaHref" TEXT,
+ADD COLUMN     "ctaBandCtaText" TEXT,
+ADD COLUMN     "ctaBandSubtitle" TEXT,
+ADD COLUMN     "ctaBandTitle" TEXT,
+ADD COLUMN     "faqPageSubtitle" TEXT,
+ADD COLUMN     "faqPageTitle" TEXT,
+ADD COLUMN     "footerTagline" TEXT,
+ADD COLUMN     "guidesPageSubtitle" TEXT,
+ADD COLUMN     "guidesPageTitle" TEXT,
+ADD COLUMN     "headerCtaHref" TEXT,
+ADD COLUMN     "headerCtaText" TEXT,
+ADD COLUMN     "metaSiteDescription" TEXT,
+ADD COLUMN     "metaSiteTitle" TEXT,
+ADD COLUMN     "packagesPageSubtitle" TEXT,
+ADD COLUMN     "packagesPageTitle" TEXT;

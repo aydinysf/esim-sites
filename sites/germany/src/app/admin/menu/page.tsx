@@ -16,19 +16,39 @@ const empty = (): Omit<MenuItem, "id" | "children"> => ({
   label: "", href: "", order: 0, target: "_self", parentId: null,
 });
 
+interface PageRow { id: string; title: string; slug: string; status: string; }
+
+// Sitedeki sabit (kod tabanlı) sayfalar
+const STATIC_PAGES = [
+  { label: "Ana Sayfa", href: "/" },
+  { label: "Paketler",  href: "/packages" },
+  { label: "Rehberler", href: "/guides" },
+  { label: "Blog",      href: "/blog" },
+  { label: "SSS",       href: "/faq" },
+  { label: "Galeri",    href: "/gallery" },
+];
+
 export default function AdminMenuPage() {
   const [items, setItems] = useState<MenuItem[]>([]);
+  const [pages, setPages] = useState<PageRow[]>([]);
   const [editing, setEditing] = useState<MenuItem | null>(null);
   const [form, setForm] = useState(empty());
   const [saving, setSaving] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   async function load() {
-    const res = await fetch("/api/menu");
-    setItems(await res.json());
+    const [mRes, pRes] = await Promise.all([fetch("/api/menu"), fetch("/api/pages")]);
+    setItems(await mRes.json());
+    setPages(await pRes.json());
   }
 
   useEffect(() => { load(); }, []);
+
+  // Hedef seçiciden seçim yapıldığında href'i (ve boşsa etiketi) doldur
+  function pickDestination(href: string, label: string) {
+    if (!href) return;
+    setForm(f => ({ ...f, href, label: f.label || label }));
+  }
 
   function openNew() { setEditing(null); setForm(empty()); setShowForm(true); }
   function openEdit(item: MenuItem) {
@@ -60,7 +80,7 @@ export default function AdminMenuPage() {
   const allFlat = items.flatMap(i => [i, ...(i.children || [])]);
 
   return (
-    <div className="max-w-3xl">
+    <div className="w-full">
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-3xl font-bold">Menü Yönetimi</h1>
@@ -85,8 +105,35 @@ export default function AdminMenuPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Link <span className="text-red-500">*</span></label>
               <input value={form.href} onChange={e => setForm(f => ({ ...f, href: e.target.value }))}
-                placeholder="/packages"
+                placeholder="/packages veya https://..."
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C4A234]" />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Hazır sayfa seç (linki otomatik doldurur)</label>
+              <select
+                value=""
+                onChange={e => {
+                  const opt = e.target.selectedOptions[0];
+                  if (opt) pickDestination(opt.value, opt.dataset.label || "");
+                }}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#C4A234]"
+              >
+                <option value="">— Sayfa seç (veya yukarıdan elle yaz) —</option>
+                <optgroup label="Sabit sayfalar">
+                  {STATIC_PAGES.map(p => (
+                    <option key={p.href} value={p.href} data-label={p.label}>{p.label} ({p.href})</option>
+                  ))}
+                </optgroup>
+                {pages.length > 0 && (
+                  <optgroup label="Dinamik sayfalar">
+                    {pages.map(p => (
+                      <option key={p.id} value={`/${p.slug}`} data-label={p.title}>
+                        {p.title} (/{p.slug}){p.status !== "PUBLISHED" ? " — taslak" : ""}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Sıra</label>

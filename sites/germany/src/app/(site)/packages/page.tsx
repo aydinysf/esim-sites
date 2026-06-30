@@ -1,29 +1,40 @@
+import { prisma } from "@/lib/db";
 import { getPackages } from "@/lib/cache";
 import PackageGrid from "@/components/site/PackageGrid";
+import PageHeader from "@/components/site/PageHeader";
 import type { Metadata } from "next";
 
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
 
-export const metadata: Metadata = {
-  title: "Germany eSIM Plans & Prices 2024 | Compare All",
-  description: "Compare all Germany eSIM plans. Find the best data package for your trip.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const hp = await prisma.homepage.findUnique({
+    where: { country: COUNTRY },
+    select: { packagesPageTitle: true, packagesPageSubtitle: true, metaSiteTitle: true },
+  });
+  return {
+    title: hp?.packagesPageTitle ? `${hp.packagesPageTitle} | ${hp.metaSiteTitle || "eSIM"}` : "Germany eSIM Plans | Compare All",
+    description: hp?.packagesPageSubtitle || "Compare all Germany eSIM plans.",
+  };
+}
 
 export default async function PackagesPage() {
-  let packages = [];
-  try {
-    packages = await getPackages(COUNTRY);
-  } catch {
-    // API erişilemiyorsa boş liste dön
-  }
+  const [hp, packages] = await Promise.all([
+    prisma.homepage.findUnique({
+      where: { country: COUNTRY },
+      select: { packagesPageTitle: true, packagesPageSubtitle: true },
+    }),
+    getPackages(COUNTRY).catch(() => [] as any[]),
+  ]);
+
+  const title    = hp?.packagesPageTitle    || "Germany eSIM Plans";
+  const subtitle = hp?.packagesPageSubtitle || "";
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-3">Germany eSIM Plans</h1>
-      <p className="text-gray-600 mb-10">
-        Compare all available eSIM plans for Germany. Buy online and activate instantly.
-      </p>
-      <PackageGrid packages={packages} />
-    </div>
+    <>
+      <PageHeader title={title} subtitle={subtitle} eyebrow="Tarife" breadcrumb={[{ label: "Pakete" }]} />
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        <PackageGrid packages={packages} />
+      </div>
+    </>
   );
 }

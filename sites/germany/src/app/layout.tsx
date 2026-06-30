@@ -1,34 +1,35 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Playfair_Display } from "next/font/google";
+import { Syne } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const syne = Syne({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-syne",
+  weight: ["700", "800"],
   display: "swap",
 });
 
-const playfair = Playfair_Display({
+const dmSans = DM_Sans({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-dm-sans",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://esim-germany.com"),
   title: {
-    default: "Germany eSIM | esim-germany.com",
-    template: "%s | esim-germany.com",
+    default: "Germany eSIM | PoloSim",
+    template: "%s | PoloSim",
   },
-  description: "Compare Germany eSIM plans. Buy online, activate instantly.",
+  description: "Die besten eSIM-Tarife für Deutschland. Sofort aktivieren, kein Vertrag.",
   robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="antialiased bg-ivory text-ink font-sans">{children}</body>
+    <html lang="de" className={`${syne.variable} ${dmSans.variable}`}>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

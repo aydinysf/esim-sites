@@ -1,33 +1,53 @@
 import { prisma } from "@/lib/db";
 import GuideCard from "@/components/site/GuideCard";
+import PageHeader from "@/components/site/PageHeader";
+import Reveal from "@/components/site/Reveal";
 import type { Metadata } from "next";
 
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
 
-export const metadata: Metadata = {
-  title: "Germany eSIM Guides | Setup & Activation",
-  description: "Step-by-step guides for activating and using eSIM in Germany.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const hp = await prisma.homepage.findUnique({
+    where: { country: COUNTRY },
+    select: { guidesPageTitle: true, guidesPageSubtitle: true, metaSiteTitle: true },
+  });
+  return {
+    title: hp?.guidesPageTitle ? `${hp.guidesPageTitle} | ${hp.metaSiteTitle || "eSIM"}` : "Guides | Germany eSIM",
+    description: hp?.guidesPageSubtitle || "Step-by-step guides for Germany eSIM.",
+  };
+}
 
 export default async function GuidesPage() {
-  const guides = await prisma.guide.findMany({
-    where: { country: COUNTRY, status: "PUBLISHED" },
-    orderBy: { order: "asc" },
-  });
+  const [guides, hp] = await Promise.all([
+    prisma.guide.findMany({
+      where: { country: COUNTRY, status: "PUBLISHED" },
+      orderBy: { order: "asc" },
+    }),
+    prisma.homepage.findUnique({
+      where: { country: COUNTRY },
+      select: { guidesPageTitle: true, guidesPageSubtitle: true },
+    }),
+  ]);
+
+  const title    = hp?.guidesPageTitle    || "eSIM Guides";
+  const subtitle = hp?.guidesPageSubtitle || "";
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-3">eSIM Guides for Germany</h1>
-      <p className="text-gray-600 mb-10">Everything you need to set up and use your Germany eSIM.</p>
-      {guides.length === 0 ? (
-        <p className="text-gray-500">Henüz rehber yok.</p>
-      ) : (
-        <div className="grid md:grid-cols-2 gap-6">
-          {guides.map((guide) => (
-            <GuideCard key={guide.id} guide={guide} />
-          ))}
-        </div>
-      )}
-    </div>
+    <>
+      <PageHeader title={title} subtitle={subtitle} eyebrow="Anleitungen" breadcrumb={[{ label: "Guides" }]} />
+      <div className="max-w-6xl mx-auto px-6 py-12">
+        {guides.length === 0 ? (
+          <p className="text-muted">Noch keine Guides vorhanden.</p>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-6">
+            {guides.map((guide, i) => (
+              <Reveal key={guide.id} delay={(i % 2) * 80}>
+                <GuideCard guide={guide} />
+              </Reveal>
+            ))}
+          </div>
+        )}
+      </div>
+    </>
   );
 }

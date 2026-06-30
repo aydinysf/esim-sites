@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
@@ -11,7 +12,10 @@ interface Props {
 }
 
 export default function RichTextEditor({ value, onChange }: Props) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
   const editor = useEditor({
+    immediatelyRender: false,
     extensions: [
       StarterKit,
       Image,
@@ -22,6 +26,18 @@ export default function RichTextEditor({ value, onChange }: Props) {
       onChange(editor.getHTML());
     },
   });
+
+  async function uploadAndInsert(file: File) {
+    if (!editor) return;
+    setUploading(true);
+    const fd = new FormData();
+    fd.append("file", file);
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    const data = await res.json();
+    setUploading(false);
+    if (data.url) editor.chain().focus().setImage({ src: data.url }).run();
+    else alert(data.error || "Yükleme başarısız");
+  }
 
   const btn = (action: () => void, label: string, active?: boolean) => (
     <button
@@ -51,6 +67,18 @@ export default function RichTextEditor({ value, onChange }: Props) {
           const url = window.prompt("URL:");
           if (url) editor.chain().focus().setLink({ href: url }).run();
         }, "Link")}
+        {btn(() => {
+          const url = window.prompt("Görsel URL'si (galeriden kopyalayabilirsin):");
+          if (url) editor.chain().focus().setImage({ src: url }).run();
+        }, "🖼 URL")}
+        {btn(() => fileRef.current?.click(), uploading ? "Yükleniyor…" : "⬆ Görsel Yükle")}
+        <input
+          ref={fileRef}
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+          className="hidden"
+          onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadAndInsert(f); e.currentTarget.value = ""; }}
+        />
       </div>
       <EditorContent
         editor={editor}

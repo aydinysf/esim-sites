@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import { notFound } from "next/navigation";
+import Breadcrumb from "@/components/site/Breadcrumb";
 import type { Metadata } from "next";
 
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
@@ -30,8 +31,11 @@ export default async function DynamicPage({ params }: Props) {
   if (!page || page.status !== "PUBLISHED") notFound();
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-12">
-      <h1 className="text-4xl font-bold mb-8">{page.title}</h1>
+    <div className="max-w-3xl mx-auto px-6 py-10">
+      <div className="mb-6">
+        <Breadcrumb items={[{ label: page.title }]} />
+      </div>
+      <h1 className="font-display text-4xl md:text-5xl font-bold text-ink leading-[1.1] tracking-tight mb-8">{page.title}</h1>
       <div
         className="prose prose-lg max-w-none"
         dangerouslySetInnerHTML={{ __html: page.body }}

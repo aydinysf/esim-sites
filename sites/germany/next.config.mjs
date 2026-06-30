@@ -9,6 +9,12 @@ const nextConfig = {
       },
     ],
   },
+  // Dosya yükleme limiti (resim ~10MB, video ~200MB)
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "200mb",
+    },
+  },
 };
 
 export default nextConfig;

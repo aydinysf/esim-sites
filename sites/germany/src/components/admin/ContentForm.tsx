@@ -65,7 +65,7 @@ export default function ContentForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6 space-y-5 max-w-3xl">
+    <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm p-6 space-y-5 w-full">
       {fields.map((field) => (
         <div key={field.name}>
           <label className="block text-sm font-medium text-gray-700 mb-1">

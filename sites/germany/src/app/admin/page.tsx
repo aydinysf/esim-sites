@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
@@ -25,14 +26,14 @@ export default async function AdminDashboard() {
           { label: "Rehberler", count: guideCount, href: "/admin/guides" },
           { label: "SSS", count: faqCount, href: "/admin/faq" },
         ].map((item) => (
-          <a
+          <Link
             key={item.label}
             href={item.href}
             className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition"
           >
             <div className="text-4xl font-bold text-brand-600">{item.count}</div>
             <div className="text-gray-600 mt-1">{item.label}</div>
-          </a>
+          </Link>
         ))}
       </div>
 
@@ -50,9 +51,9 @@ export default async function AdminDashboard() {
             {recentPosts.map((post) => (
               <tr key={post.id} className="border-b last:border-0">
                 <td className="py-3">
-                  <a href={`/admin/blog/${post.id}`} className="hover:text-brand-600">
+                  <Link href={`/admin/blog/${post.id}`} className="hover:text-brand-600">
                     {post.title}
-                  </a>
+                  </Link>
                 </td>
                 <td className="py-3">
                   <span
