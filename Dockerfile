@@ -34,7 +34,7 @@ RUN apk add --no-cache libc6-compat openssl
 
 WORKDIR /app
 
-# Production node_modules'dan cikti (optional, full install yapabiliriz)
+# Production node_modules
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/packages ./packages
 COPY --from=builder /app/sites/germany ./sites/germany
