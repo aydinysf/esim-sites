@@ -25,7 +25,7 @@ RUN npx prisma generate --schema=packages/db/prisma/schema.prisma
 WORKDIR /app/sites/germany
 
 # Build
-RUN npm run build 2>&1 | head -100
+RUN npm run build
 
 # Runtime stage
 FROM node:20-alpine
