@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
 
 export default async function AdminDashboard() {

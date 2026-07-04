@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 
+export const dynamic = "force-dynamic";
+
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
 
 export async function GET() {

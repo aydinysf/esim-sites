@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import { fetchPackagesFromAPI } from "@/lib/polosim";
 
+export const dynamic = "force-dynamic";
+
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
 
 export async function GET() {
