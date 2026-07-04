@@ -12,7 +12,7 @@ COPY packages/db/src ./packages/db/src
 
 # sites/germany app
 COPY sites/germany/package.json ./sites/germany/
-COPY sites/germany/next.config.mjs sites/germany/tsconfig.json sites/germany/tailwind.config.ts sites/germany/postcss.config.mjs sites/germany/middleware.ts ./sites/germany/
+COPY sites/germany/next.config.mjs sites/germany/tsconfig.json sites/germany/tailwind.config.ts sites/germany/postcss.config.mjs ./sites/germany/
 COPY sites/germany/src ./sites/germany/src
 COPY sites/germany/public ./sites/germany/public
 
