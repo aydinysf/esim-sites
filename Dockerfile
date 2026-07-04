@@ -41,6 +41,10 @@ COPY --from=builder /app/sites/germany ./sites/germany
 
 WORKDIR /app/sites/germany
 
+ENV NODE_ENV=production
+
 EXPOSE 3000
 
-CMD ["npm", "start"]
+RUN npm run build 2>&1 || true
+
+CMD ["sh", "-c", "npx prisma migrate deploy --skip-generate && npm start"]
