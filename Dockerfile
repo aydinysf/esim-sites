@@ -45,5 +45,5 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-# Start app directly
-CMD ["npm", "start"]
+# Migration'ları uygula + seed data'yı yükle (idempotent, upsert kullanır) + başlat
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=/app/packages/db/prisma/schema.prisma && npx tsx /app/packages/db/prisma/seed.ts && npm start"]
