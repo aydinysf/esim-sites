@@ -45,5 +45,5 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-# Force rebuild
-CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]
+# Start app directly
+CMD ["npm", "start"]
