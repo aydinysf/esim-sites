@@ -45,6 +45,4 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-RUN npm run build 2>&1 || true
-
 CMD ["sh", "-c", "npx prisma migrate deploy --skip-generate && npm start"]
