@@ -9,8 +9,10 @@ type SortKey = "price" | "data";
 export default function PackageGrid({ packages }: { packages: PolosimPackage[] }) {
   const [sortBy, setSortBy] = useState<SortKey>("price");
 
+  // Unlimited paketler "veri" sıralamasında en üstte gelsin.
+  const dataWeight = (p: PolosimPackage) => (p.unlimited ? Infinity : p.dataAmount);
   const sorted = [...packages].sort((a, b) =>
-    sortBy === "price" ? a.price - b.price : b.dataAmount - a.dataAmount
+    sortBy === "price" ? a.price - b.price : dataWeight(b) - dataWeight(a)
   );
 
   if (packages.length === 0) {

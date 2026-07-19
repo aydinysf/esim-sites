@@ -37,7 +37,8 @@ services:
       DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
       PUBLIC_COUNTRY_CODE: DE
       NEXT_PUBLIC_SITE_URL: http://localhost:3001
-      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/germany
+      # Satın alma → polosim.com sepetine deep-link (?add=<product_id> ile paket sepete eklenir)
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/de/cart
       # Aşağıdakileri .env.local ile override et:
       # POLOSIM_API_BASE=
       # POLOSIM_API_KEY=

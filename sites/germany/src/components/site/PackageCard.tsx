@@ -43,8 +43,17 @@ export default function PackageCard({ pkg }: Props) {
         {/* data + validity */}
         <div>
           <div className="flex items-baseline gap-1.5">
-            <span className="font-display text-3xl font-bold text-ink tabular">{pkg.dataAmount}</span>
-            <span className="text-base font-semibold text-stone">{pkg.dataUnit}</span>
+            {pkg.unlimited ? (
+              <>
+                <span className="font-display text-3xl font-bold text-ink leading-none">∞</span>
+                <span className="text-base font-semibold text-stone">Unbegrenzt</span>
+              </>
+            ) : (
+              <>
+                <span className="font-display text-3xl font-bold text-ink tabular">{pkg.dataAmount}</span>
+                <span className="text-base font-semibold text-stone">{pkg.dataUnit}</span>
+              </>
+            )}
           </div>
           <div className="flex items-center gap-2 mt-1 text-xs text-stone">
             <span className="inline-flex items-center gap-1">
