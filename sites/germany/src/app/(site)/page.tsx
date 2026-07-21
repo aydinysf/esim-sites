@@ -2,7 +2,9 @@ import { prisma } from "@/lib/db";
 import HeroBanner from "@/components/site/HeroBanner";
 import BannerSlider from "@/components/site/BannerSlider";
 import BlogCard from "@/components/site/BlogCard";
+import PackageCard from "@/components/site/PackageCard";
 import Reveal from "@/components/site/Reveal";
+import { getPackages } from "@/lib/cache";
 import type { Metadata } from "next";
 
 
@@ -20,18 +22,22 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HomePage() {
-  const [homepage, featuredPosts, banners] = await Promise.all([
+  const [homepage, featuredPosts, banners, packages] = await Promise.all([
     prisma.homepage.findUnique({ where: { country: COUNTRY } }),
     prisma.post.findMany({
       where: { country: COUNTRY, status: "PUBLISHED", featured: true },
       orderBy: { publishedAt: "desc" },
-      take: 3,
+      take: 1,
     }),
     prisma.banner.findMany({
       where: { country: COUNTRY, active: true },
       orderBy: { order: "asc" },
     }),
+    getPackages(COUNTRY).catch(() => []),
   ]);
+
+  // Ana sayfa teaser'ı: en ucuz 3 tarife (tamamı /packages'ta)
+  const teaserPackages = [...packages].sort((a, b) => a.price - b.price).slice(0, 3);
 
   if (!homepage) {
     return <div className="p-8 text-center text-stone">Ana sayfa içeriği henüz eklenmedi.</div>;
@@ -122,9 +128,39 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured posts */}
-      {featuredPosts.length > 0 && (
+      {/* Tarife (ülkeye göre planlar) */}
+      {teaserPackages.length > 0 && (
         <section className="py-20 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gold mb-2">Tarife</p>
+                <h2 className="font-display text-4xl font-bold text-ink">
+                  {homepage.packagesPageTitle || "Beliebte eSIM-Tarife"}
+                </h2>
+                {homepage.packagesPageSubtitle && (
+                  <p className="text-sm text-stone mt-2 max-w-xl">{homepage.packagesPageSubtitle}</p>
+                )}
+              </div>
+              <a href="/packages" className="text-sm font-semibold text-gold hover:text-gold-dark transition-colors flex items-center gap-1 whitespace-nowrap">
+                Alle Tarife ansehen
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {teaserPackages.map((pkg) => (
+                <PackageCard key={pkg.id} pkg={pkg} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Öne çıkan blog yazısı (planların altında) */}
+      {featuredPosts.length > 0 && (
+        <section className="pb-20 px-6">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-end justify-between mb-10">
               <div>
