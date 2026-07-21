@@ -61,6 +61,36 @@ export default async function HomePage() {
         />
       )}
 
+      {/* Tarife (ülkeye göre planlar) — banner'ın hemen altında */}
+      {teaserPackages.length > 0 && (
+        <section className="py-20 px-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex items-end justify-between mb-10">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-gold mb-2">Tarife</p>
+                <h2 className="font-display text-4xl font-bold text-ink">
+                  {homepage.packagesPageTitle || "Beliebte eSIM-Tarife"}
+                </h2>
+                {homepage.packagesPageSubtitle && (
+                  <p className="text-sm text-stone mt-2 max-w-xl">{homepage.packagesPageSubtitle}</p>
+                )}
+              </div>
+              <a href="/packages" className="text-sm font-semibold text-gold hover:text-gold-dark transition-colors flex items-center gap-1 whitespace-nowrap">
+                Alle Tarife ansehen
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {teaserPackages.map((pkg) => (
+                <PackageCard key={pkg.id} pkg={pkg} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Stats bar */}
       {stats.length > 0 && (
         <section className="bg-gold">
@@ -128,37 +158,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Tarife (ülkeye göre planlar) */}
-      {teaserPackages.length > 0 && (
-        <section className="py-20 px-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-gold mb-2">Tarife</p>
-                <h2 className="font-display text-4xl font-bold text-ink">
-                  {homepage.packagesPageTitle || "Beliebte eSIM-Tarife"}
-                </h2>
-                {homepage.packagesPageSubtitle && (
-                  <p className="text-sm text-stone mt-2 max-w-xl">{homepage.packagesPageSubtitle}</p>
-                )}
-              </div>
-              <a href="/packages" className="text-sm font-semibold text-gold hover:text-gold-dark transition-colors flex items-center gap-1 whitespace-nowrap">
-                Alle Tarife ansehen
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
-            </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {teaserPackages.map((pkg) => (
-                <PackageCard key={pkg.id} pkg={pkg} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Öne çıkan blog yazısı (planların altında) */}
+      {/* Öne çıkan blog yazısı */}
       {featuredPosts.length > 0 && (
         <section className="pb-20 px-6">
           <div className="max-w-6xl mx-auto">
