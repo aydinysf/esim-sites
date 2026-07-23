@@ -45,5 +45,7 @@ ENV NODE_ENV=production
 
 EXPOSE 3000
 
-# Migration'ları uygula + seed data'yı yükle (idempotent, upsert kullanır) + başlat
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=/app/packages/db/prisma/schema.prisma && npx tsx /app/packages/db/prisma/seed.ts && npm start"]
+# Migration'ları uygula + seed data'yı yükle (idempotent, upsert kullanır) + başlat.
+# Not: migrate/seed adımları HATA verse bile ("|| true") uygulama yine de başlar
+# ('&&' zinciri kırılıp "Service is not reachable" olmasın diye). Hatalar loga düşer.
+CMD ["sh", "-c", "npx prisma migrate deploy --schema=/app/packages/db/prisma/schema.prisma || true; npx tsx /app/packages/db/prisma/seed.ts || true; npm start"]
