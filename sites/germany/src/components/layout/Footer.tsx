@@ -44,11 +44,10 @@ export default async function Footer() {
           <p className="text-[11px] font-bold uppercase tracking-widest text-white/25 mb-4">Seiten</p>
           <ul className="space-y-3">
             {[
-              { href: "/packages", label: "Pakete"  },
-              { href: "/guides",   label: "Guides"  },
-              { href: "/blog",     label: "Blog"    },
-              { href: "/faq",      label: "FAQ"     },
-              { href: "/gallery",  label: "Galerie" },
+              { href: "/packages", label: "Tarife"   },
+              { href: "/guides",   label: "Ratgeber" },
+              { href: "/blog",     label: "Blog"     },
+              { href: "/faq",      label: "FAQ"      },
             ].map(({ href, label }) => (
               <li key={href}>
                 <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors">
@@ -73,7 +72,7 @@ export default async function Footer() {
               </a>
             </li>
             <li>
-              <Link href="/admin" className="text-sm text-white/50 hover:text-white transition-colors">Admin</Link>
+              <a href="mailto:support@polosim.com" className="text-sm text-white/50 hover:text-white transition-colors">support@polosim.com</a>
             </li>
           </ul>
         </div>

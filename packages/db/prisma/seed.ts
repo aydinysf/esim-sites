@@ -268,12 +268,11 @@ async function main() {
 
   // ─── Varsayılan Menü Öğeleri ─────────────────────────────
   const defaultMenu = [
-    { label: "Start",   href: "/",         order: 0 },
-    { label: "Pakete",  href: "/packages", order: 1 },
-    { label: "Guides",  href: "/guides",   order: 2 },
-    { label: "Blog",    href: "/blog",     order: 3 },
-    { label: "FAQ",     href: "/faq",      order: 4 },
-    { label: "Galerie", href: "/gallery",  order: 5 },
+    { label: "Start",    href: "/",         order: 0 },
+    { label: "Tarife",   href: "/packages", order: 1 },
+    { label: "Ratgeber", href: "/guides",   order: 2 },
+    { label: "Blog",     href: "/blog",     order: 3 },
+    { label: "FAQ",      href: "/faq",      order: 4 },
   ];
   for (const mi of defaultMenu) {
     const exists = await prisma.menuItem.findFirst({ where: { country: "DE", href: mi.href } });
