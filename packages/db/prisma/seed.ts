@@ -21,38 +21,38 @@ async function main() {
       country: "DE",
 
       // Hero
-      heroHeadline: "Germany eSIM — Sofort aktivieren",
-      heroSubheadline: "Die besten eSIM-Tarife für Deutschland. Kein Warten, sofort online.",
-      heroCtaText: "Tarife ansehen",
-      heroImage: null,
+      heroHeadline: "eSIM für Deutschland — online in 5 Minuten",
+      heroSubheadline: "Prepaid-Datentarife ab 1,88 € — ohne Vertrag, ohne Roaming-Gebühren. QR-Code scannen und sofort lossurfen.",
+      heroCtaText: "Tarife vergleichen",
+      heroImage: "/images/hero-germany.svg",
 
       // Stats
       stats: [
-        { value: "50+", label: "Tarife" },
+        { value: "ab 1,88 €", label: "Tarife" },
         { value: "24/7", label: "Support" },
-        { value: "5min", label: "Aktivierung" },
+        { value: "5 Min.", label: "Aktivierung" },
       ],
 
       // Why eSIM
       whyEsimTitle: "Warum eSIM?",
       whyEsimItems: [
-        { icon: "zap", title: "Sofort aktivieren", description: "Kein Warten auf eine physische SIM-Karte" },
-        { icon: "globe", title: "Deutschlandweit", description: "Stabile Verbindung im ganzen Land" },
-        { icon: "shield", title: "Sicher & zuverlässig", description: "Verschlüsselte Verbindung" },
+        { icon: "zap", title: "Sofort startklar", description: "eSIM per E-Mail und QR-Code — keine Wartezeit, kein Versand, keine Abholung" },
+        { icon: "globe", title: "Starkes Netz, deutschlandweit", description: "Zuverlässiges 4G/LTE von Berlin bis München — auch unterwegs und im Zug" },
+        { icon: "shield", title: "Ohne Vertrag, ohne Risiko", description: "Prepaid statt Abo-Falle. 30 Tage Geld-zurück, solange die eSIM nicht installiert wurde" },
       ],
 
       // How it works
       howItWorksTitle: "So funktioniert es",
       howItWorksSteps: [
-        { step: 1, title: "Tarif wählen", description: "Vergleichen Sie unsere eSIM-Tarife" },
-        { step: 2, title: "Kaufen & aktivieren", description: "QR-Code scannen und fertig" },
-        { step: 3, title: "Verbunden", description: "Sofort online in Deutschland" },
+        { step: 1, title: "Tarif wählen", description: "Datenmenge und Laufzeit vergleichen — Tarife ab 1,88 €" },
+        { step: 2, title: "Sicher bezahlen", description: "Mit Kreditkarte oder PayPal auf polosim.com — der QR-Code kommt sofort per E-Mail" },
+        { step: 3, title: "Scannen & lossurfen", description: "QR-Code scannen, eSIM aktivieren — in unter 5 Minuten online" },
       ],
 
       // CTA band
       ctaBandTitle: "Bereit für Deutschland?",
-      ctaBandSubtitle: "Vergleiche alle Tarife und aktiviere deine eSIM in unter 5 Minuten.",
-      ctaBandCtaText: "Tarife vergleichen →",
+      ctaBandSubtitle: "Wähle deinen Tarif und sei in 5 Minuten online — ohne Vertrag, ohne versteckte Kosten.",
+      ctaBandCtaText: "Jetzt Tarife vergleichen →",
       ctaBandCtaHref: "/packages",
 
       // Header
@@ -60,7 +60,7 @@ async function main() {
       headerCtaHref: "/packages",
 
       // Footer
-      footerTagline: "Die besten eSIM-Tarife für Deutschland. Sofort aktivieren — keine physische SIM, kein Warten.",
+      footerTagline: "Prepaid eSIM-Tarife für Deutschland. Sofort per QR-Code — ohne Vertrag, ohne Roaming-Gebühren.",
 
       // Blog sayfası
       blogPageTitle: "Blog",
