@@ -44,10 +44,11 @@ export default async function Footer() {
           <p className="text-[11px] font-bold uppercase tracking-widest text-white/25 mb-4">Seiten</p>
           <ul className="space-y-3">
             {[
-              { href: "/packages", label: "Tarife"   },
-              { href: "/guides",   label: "Ratgeber" },
-              { href: "/blog",     label: "Blog"     },
-              { href: "/faq",      label: "FAQ"      },
+              { href: "/packages",             label: "Tarife"              },
+              { href: "/guides",               label: "Ratgeber"            },
+              { href: "/blog",                 label: "Blog"                },
+              { href: "/faq",                  label: "FAQ"                 },
+              { href: "/esim-kompatibilitaet", label: "eSIM-Kompatibilität" },
             ].map(({ href, label }) => (
               <li key={href}>
                 <Link href={href} className="text-sm text-white/50 hover:text-white transition-colors">
@@ -72,6 +73,9 @@ export default async function Footer() {
               </a>
             </li>
             <li>
+              <Link href="/ueber-polosim" className="text-sm text-white/50 hover:text-white transition-colors">Über PoloSim</Link>
+            </li>
+            <li>
               <a href="mailto:support@polosim.com" className="text-sm text-white/50 hover:text-white transition-colors">support@polosim.com</a>
             </li>
           </ul>
@@ -80,8 +84,11 @@ export default async function Footer() {
 
       <div className="border-t border-white/[0.06]">
         <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-white/25">
-          <span>© {new Date().getFullYear()} esim-germany.com — Powered by PoloSim</span>
-          <span>Made with <span className="text-gold">♥</span></span>
+          <span>© {new Date().getFullYear()} polosim.de — Powered by PoloSim</span>
+          <span className="flex items-center gap-4">
+            <Link href="/impressum" className="hover:text-white transition-colors">Impressum</Link>
+            <Link href="/datenschutz" className="hover:text-white transition-colors">Datenschutz</Link>
+          </span>
         </div>
       </div>
     </footer>
