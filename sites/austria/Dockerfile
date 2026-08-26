@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
@@ -7,7 +7,7 @@ COPY packages/db ./packages/db
 COPY config ./config
 COPY sites/austria ./sites/austria
 
-RUN npm install
+RUN npm install && npm cache clean --force
 RUN npx prisma generate --schema=packages/db/prisma/schema.prisma
 
 ARG DATABASE_URL
@@ -23,6 +23,18 @@ ENV NEXT_PUBLIC_POLOSIM_BUY_URL=$NEXT_PUBLIC_POLOSIM_BUY_URL
 ENV SITE_LANG=$SITE_LANG
 
 RUN npx turbo run build --filter=@esim/austria
+
+FROM node:20-alpine AS runner
+RUN apk add --no-cache libc6-compat openssl
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --from=builder /app/package.json /app/turbo.json /app/package-lock.json ./
+COPY --from=builder /app/packages ./packages
+COPY --from=builder /app/config ./config
+COPY --from=builder /app/sites/austria ./sites/austria
+COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 3000
 CMD ["npx", "turbo", "run", "start", "--filter=@esim/austria"]
