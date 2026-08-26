@@ -36,5 +36,7 @@ COPY --from=builder /app/config ./config
 COPY --from=builder /app/sites/europe ./sites/europe
 COPY --from=builder /app/node_modules ./node_modules
 
+WORKDIR /app/sites/europe
+
 EXPOSE 3000
-CMD ["npx", "turbo", "run", "start", "--filter=@esim/europe"]
+CMD ["npm", "run", "start"]

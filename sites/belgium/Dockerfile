@@ -36,5 +36,7 @@ COPY --from=builder /app/config ./config
 COPY --from=builder /app/sites/belgium ./sites/belgium
 COPY --from=builder /app/node_modules ./node_modules
 
+WORKDIR /app/sites/belgium
+
 EXPOSE 3000
-CMD ["npx", "turbo", "run", "start", "--filter=@esim/belgium"]
+CMD ["npm", "run", "start"]

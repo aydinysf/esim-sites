@@ -36,5 +36,7 @@ COPY --from=builder /app/config ./config
 COPY --from=builder /app/sites/czechia ./sites/czechia
 COPY --from=builder /app/node_modules ./node_modules
 
+WORKDIR /app/sites/czechia
+
 EXPOSE 3000
-CMD ["npx", "turbo", "run", "start", "--filter=@esim/czechia"]
+CMD ["npm", "run", "start"]

@@ -36,5 +36,7 @@ COPY --from=builder /app/config ./config
 COPY --from=builder /app/sites/vietnam ./sites/vietnam
 COPY --from=builder /app/node_modules ./node_modules
 
+WORKDIR /app/sites/vietnam
+
 EXPOSE 3000
-CMD ["npx", "turbo", "run", "start", "--filter=@esim/vietnam"]
+CMD ["npm", "run", "start"]
