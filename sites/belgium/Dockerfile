@@ -25,4 +25,4 @@ ENV SITE_LANG=$SITE_LANG
 RUN npx turbo run build --filter=@esim/belgium
 
 EXPOSE 3000
-CMD ["npm", "run", "start", "--filter=@esim/belgium"]
+CMD ["npx", "turbo", "run", "start", "--filter=@esim/belgium"]
