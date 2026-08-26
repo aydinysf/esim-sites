@@ -5,283 +5,429 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.admin.upsert({
-    where: { email: "admin@esim-germany.com" },
+    where: { email: "admin@esim-sites.com" },
     update: {},
     create: {
-      email: "admin@esim-germany.com",
+      email: "admin@esim-sites.com",
       passwordHash: await bcrypt.hash("change-me-123", 12),
       name: "Admin",
     },
   });
 
-  await prisma.homepage.upsert({
-    where: { country: "DE" },
-    update: {},
-    create: {
-      country: "DE",
-
-      // Hero
+  const countryData = [
+    {
+      code: "DE",
+      domain: "esim-germany.com",
+      name: "Deutschland",
       heroHeadline: "eSIM für Deutschland — online in 5 Minuten",
       heroSubheadline: "Prepaid-Datentarife ab 1,88 € — ohne Vertrag, ohne Roaming-Gebühren. QR-Code scannen und sofort lossurfen.",
       heroCtaText: "Tarife vergleichen",
-      heroImage: "/images/hero-germany.svg",
-
-      // Stats
-      stats: [
-        { value: "ab 1,88 €", label: "Tarife" },
-        { value: "24/7", label: "Support" },
-        { value: "5 Min.", label: "Aktivierung" },
+      stats: [{ value: "ab 1,88 €", label: "Tarife" }, { value: "24/7", label: "Support" }, { value: "5 Min.", label: "Aktivierung" }],
+      whyTitle: "Warum eSIM?",
+      whyItems: [
+        { icon: "zap", title: "Sofort startklar", description: "eSIM per E-Mail und QR-Code — keine Wartezeit, kein Versand." },
+        { icon: "globe", title: "Starkes Netz, deutschlandweit", description: "Zuverlässiges 4G/LTE von Berlin bis München." },
+        { icon: "shield", title: "Ohne Vertrag", description: "Prepaid statt Abo-Falle. Keine versteckten Kosten." }
       ],
-
-      // Why eSIM
-      whyEsimTitle: "Warum eSIM?",
-      whyEsimItems: [
-        { icon: "zap", title: "Sofort startklar", description: "eSIM per E-Mail und QR-Code — keine Wartezeit, kein Versand, keine Abholung" },
-        { icon: "globe", title: "Starkes Netz, deutschlandweit", description: "Zuverlässiges 4G/LTE von Berlin bis München — auch unterwegs und im Zug" },
-        { icon: "shield", title: "Ohne Vertrag, ohne Risiko", description: "Prepaid statt Abo-Falle. 30 Tage Geld-zurück, solange die eSIM nicht installiert wurde" },
+      howTitle: "So funktioniert es",
+      howSteps: [
+        { step: 1, title: "Tarif wählen", description: "Datenmenge und Laufzeit vergleichen." },
+        { step: 2, title: "Sicher bezahlen", description: "Der QR-Code kommt sofort per E-Mail." },
+        { step: 3, title: "Scannen & lossurfen", description: "QR-Code scannen — in unter 5 Min. online." }
       ],
-
-      // How it works
-      howItWorksTitle: "So funktioniert es",
-      howItWorksSteps: [
-        { step: 1, title: "Tarif wählen", description: "Datenmenge und Laufzeit vergleichen — Tarife ab 1,88 €" },
-        { step: 2, title: "Sicher bezahlen", description: "Mit Kreditkarte oder PayPal auf polosim.com — der QR-Code kommt sofort per E-Mail" },
-        { step: 3, title: "Scannen & lossurfen", description: "QR-Code scannen, eSIM aktivieren — in unter 5 Minuten online" },
+      ctaTitle: "Bereit für Deutschland?",
+      ctaSub: "Wähle deinen Tarif und sei in 5 Minuten online.",
+      headerCta: "Tarife ansehen",
+      footerTagline: "Die besten eSIM-Tarife für Deutschland. Sofort aktivieren.",
+      menu: [
+        { label: "Start", href: "/", order: 0 },
+        { label: "Tarife", href: "/packages", order: 1 },
+        { label: "Guides", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
+    },
+    {
+      code: "AZ",
+      domain: "esim-azerbaijan.com",
+      name: "Azərbaycan",
+      heroHeadline: "Azərbaycan üçün eSIM — 5 dəqiqəyə onlayn olun",
+      heroSubheadline: "Ən sərfəli prepaid məlumat tarifləri — müqaviləsiz, roaming haqqı olmadan. QR-kod skan edin və qoşulun.",
+      heroCtaText: "Tarifləri müqayisə et",
+      stats: [{ value: "Sərfəli", label: "Tariflər" }, { value: "24/7", label: "Dəstək" }, { value: "5 Dəq.", label: "Aktivləşdirmə" }],
+      whyTitle: "Niyə eSIM?",
+      whyItems: [
+        { icon: "zap", title: "Dərhal hazır", description: "eSIM e-poçt və QR-kod ilə — gözləmədən dərhal qoşulun." },
+        { icon: "globe", title: "Güclü şəbəkə", description: "Azərbaycan üzrə etibarlı 4G/LTE şəbəkəsi." },
+        { icon: "shield", title: "Müqaviləsiz", description: "Gizli xərclər olmadan prepaid istifadə." }
       ],
-
-      // CTA band
-      ctaBandTitle: "Bereit für Deutschland?",
-      ctaBandSubtitle: "Wähle deinen Tarif und sei in 5 Minuten online — ohne Vertrag, ohne versteckte Kosten.",
-      ctaBandCtaText: "Jetzt Tarife vergleichen →",
-      ctaBandCtaHref: "/packages",
-
-      // Header
-      headerCtaText: "Tarife ansehen",
-      headerCtaHref: "/packages",
-
-      // Footer
-      footerTagline: "Prepaid eSIM-Tarife für Deutschland. Sofort per QR-Code — ohne Vertrag, ohne Roaming-Gebühren.",
-
-      // Blog sayfası
-      blogPageTitle: "Blog",
-      blogPageSubtitle: "Tipps, Anleitungen und Neuigkeiten rund um Germany eSIM.",
-
-      // Rehberler
-      guidesPageTitle: "eSIM Guides für Deutschland",
-      guidesPageSubtitle: "Alles, was Sie zur Einrichtung und Nutzung Ihrer Germany eSIM wissen müssen.",
-
-      // SSS
-      faqPageTitle: "Häufig gestellte Fragen",
-      faqPageSubtitle: "Alles, was Sie über Germany eSIM-Tarife und Aktivierung wissen müssen.",
-
-      // Paketler
-      packagesPageTitle: "Germany eSIM Tarife",
-      packagesPageSubtitle: "Vergleiche alle verfügbaren eSIM-Tarife für Deutschland. Online kaufen und sofort aktivieren.",
-
-      // Meta
-      metaSiteTitle: "Germany eSIM | PoloSim",
-      metaSiteDescription: "Die besten eSIM-Tarife für Deutschland. Sofort aktivieren, kein Vertrag.",
-    },
-  });
-
-  // ─── Blog Yazıları ───────────────────────────────────────
-  const now = new Date();
-  const daysAgo = (d: number) => new Date(now.getTime() - d * 86400000);
-
-  const posts = [
-    {
-      slug: "esim-deutschland-aktivieren-anleitung",
-      title: "eSIM in Deutschland aktivieren — die komplette Anleitung 2026",
-      excerpt: "Schritt für Schritt: So richtest du deine eSIM in unter 5 Minuten ein und bist sofort im deutschen Netz online.",
-      category: "GUIDE" as const,
-      tags: ["aktivierung", "anleitung", "qr-code"],
-      featured: true,
-      publishedAt: daysAgo(2),
-      body: `<p>Eine eSIM ist die einfachste Art, in Deutschland online zu gehen. Keine physische Karte, kein Warten – du scannst einen QR-Code und bist verbunden.</p>
-<h2>Was du brauchst</h2>
-<ul><li>Ein eSIM-fähiges Smartphone (iPhone XS oder neuer, die meisten Android-Geräte ab 2019)</li><li>Eine stabile WLAN-Verbindung zur Einrichtung</li><li>Deinen eSIM-QR-Code von PoloSim</li></ul>
-<h2>Schritt für Schritt</h2>
-<p>Öffne die Einstellungen, wähle „Mobilfunk“ und dann „eSIM hinzufügen“. Scanne den QR-Code, den du nach dem Kauf erhältst. Aktiviere das Datenroaming und fertig – du bist im deutschen Netz.</p>
-<p>Der gesamte Vorgang dauert weniger als fünf Minuten. Bei Fragen steht unser Support rund um die Uhr bereit.</p>`,
+      howTitle: "Necə çalışır",
+      howSteps: [
+        { step: 1, title: "Tarifi seçin", description: "Sizə uyğun paketi seçin." },
+        { step: 2, title: "Təhlükəsiz ödəyin", description: "Ödənişdən sonra QR-kod e-poçtunuza gəlir." },
+        { step: 3, title: "Skan edin və istifadə edin", description: "QR-kodu skan edərək 5 dəqiqəyə qoşulun." }
+      ],
+      ctaTitle: "Azərbaycan üçün hazırsınız?",
+      ctaSub: "Paketinizi seçin və dərhal onlayn olun.",
+      headerCta: "Tariflərə bax",
+      footerTagline: "Azərbaycan üçün prepaid eSIM tarifləri. Müqaviləsiz, dərhal aktivləşdirmə.",
+      menu: [
+        { label: "Ana səhifə", href: "/", order: 0 },
+        { label: "Tariflər", href: "/packages", order: 1 },
+        { label: "Bələdçi", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "SSS", href: "/faq", order: 4 }
+      ]
     },
     {
-      slug: "esim-vs-physische-sim-vergleich",
-      title: "eSIM vs. physische SIM-Karte: Was lohnt sich 2026?",
-      excerpt: "Vor- und Nachteile im direkten Vergleich. Wir zeigen, warum die eSIM für Reisende und Vielnutzer fast immer die bessere Wahl ist.",
-      category: "COMPARISON" as const,
-      tags: ["vergleich", "esim", "sim-karte"],
-      featured: true,
-      publishedAt: daysAgo(6),
-      body: `<p>Die klassische SIM-Karte hat ausgedient – zumindest für die meisten Anwendungsfälle. Hier der ehrliche Vergleich.</p>
-<h2>Geschwindigkeit der Aktivierung</h2>
-<p>Während du bei einer physischen SIM auf den Versand wartest oder in einen Shop musst, ist die eSIM sofort einsatzbereit. Kaufen, scannen, online.</p>
-<h2>Flexibilität</h2>
-<p>Mit einer eSIM kannst du mehrere Tarife auf einem Gerät speichern und bequem zwischen ihnen wechseln – ideal für Reisende.</p>
-<h2>Fazit</h2>
-<p>Für Reisende, Pendler und alle, die schnell online sein wollen, ist die eSIM klar im Vorteil.</p>`,
+      code: "EU",
+      domain: "esim-europe.com",
+      name: "Europe",
+      heroHeadline: "eSIM for Europe — Online in 5 minutes",
+      heroSubheadline: "Best prepaid data plans across 30+ European countries. Instant QR activation, zero roaming fees.",
+      heroCtaText: "Compare Plans",
+      stats: [{ value: "30+ EU", label: "Countries" }, { value: "24/7", label: "Support" }, { value: "5 Min", label: "Activation" }],
+      whyTitle: "Why Europe eSIM?",
+      whyItems: [
+        { icon: "zap", title: "Instant Delivery", description: "Get your QR code via email immediately after purchase." },
+        { icon: "globe", title: "Cross-Border Connectivity", description: "One eSIM works seamlessly across all major European destinations." },
+        { icon: "shield", title: "No Contracts", description: "Prepaid data only. No hidden roaming charges." }
+      ],
+      howTitle: "How It Works",
+      howSteps: [
+        { step: 1, title: "Choose Your Plan", description: "Select data volume and validity for Europe." },
+        { step: 2, title: "Pay Securely", description: "Receive instant QR code in your inbox." },
+        { step: 3, title: "Scan & Connect", description: "Scan the QR code and enjoy instant 4G/5G data." }
+      ],
+      ctaTitle: "Traveling to Europe?",
+      ctaSub: "Get connected in 5 minutes across EU countries without changing SIM cards.",
+      headerCta: "View Plans",
+      footerTagline: "Best eSIM data plans for Europe. Instant QR delivery without roaming fees.",
+      menu: [
+        { label: "Home", href: "/", order: 0 },
+        { label: "Plans", href: "/packages", order: 1 },
+        { label: "Guides", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
     },
     {
-      slug: "beste-esim-tarife-deutschland-2026",
-      title: "Die besten eSIM-Tarife für Deutschland im Jahr 2026",
-      excerpt: "Von günstigen Datenpaketen bis Unlimited – wir haben die Top-Tarife für jeden Bedarf zusammengestellt.",
-      category: "TIP" as const,
-      tags: ["tarife", "vergleich", "daten"],
-      featured: true,
-      publishedAt: daysAgo(10),
-      body: `<p>Nicht jeder braucht das gleiche Datenvolumen. Hier findest du den passenden Tarif für deinen Bedarf.</p>
-<h2>Für Kurzreisen</h2>
-<p>5 GB für 7 Tage reichen für Karten, Messenger und gelegentliches Surfen völlig aus.</p>
-<h2>Für längere Aufenthalte</h2>
-<p>20 GB oder mehr mit 30 Tagen Gültigkeit – perfekt für Geschäftsreisen oder Studienaufenthalte.</p>
-<h2>Für Vielnutzer</h2>
-<p>Unlimited-Tarife sorgen für sorgenfreies Streaming und Tethering ohne Limit.</p>`,
+      code: "AT",
+      domain: "esimcard.at",
+      name: "Österreich",
+      heroHeadline: "eSIM für Österreich — in 5 Minuten online",
+      heroSubheadline: "Prepaid-Datentarife ohne Vertrag, ohne Roaming-Gebühren. QR-Code scannen und sofort lossurfen.",
+      heroCtaText: "Tarife vergleichen",
+      stats: [{ value: "4G/5G", label: "Speed" }, { value: "24/7", label: "Support" }, { value: "5 Min.", label: "Aktivierung" }],
+      whyTitle: "Warum eSIM für Österreich?",
+      whyItems: [
+        { icon: "zap", title: "Sofort startklar", description: "eSIM per E-Mail und QR-Code — keine Wartezeit, kein Versand." },
+        { icon: "globe", title: "Starkes Netz in ganz Österreich", description: "Zuverlässiges 4G/LTE in Wien, Salzburg und Tirol." },
+        { icon: "shield", title: "Ohne Vertrag, ohne Risiko", description: "Prepaid statt Abo. Keine versteckten Kosten." }
+      ],
+      howTitle: "So funktioniert es",
+      howSteps: [
+        { step: 1, title: "Tarif wählen", description: "Datenmenge und Laufzeit für Österreich vergleichen." },
+        { step: 2, title: "Sicher bezahlen", description: "Der QR-Code kommt sofort per E-Mail." },
+        { step: 3, title: "Scannen & lossurfen", description: "QR-Code scannen, eSIM aktivieren — in unter 5 Min. online." }
+      ],
+      ctaTitle: "Bereit für Österreich?",
+      ctaSub: "Wähle deinen Tarif und sei in 5 Minuten online.",
+      headerCta: "Tarife ansehen",
+      footerTagline: "Die besten eSIM-Tarife für Österreich. Sofort aktivieren.",
+      menu: [
+        { label: "Start", href: "/", order: 0 },
+        { label: "Tarife", href: "/packages", order: 1 },
+        { label: "Ratgeber", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
     },
     {
-      slug: "datenroaming-eu-deutschland",
-      title: "Datenroaming in der EU: Das musst du über Deutschland wissen",
-      excerpt: "Roaming-Gebühren, EU-Regelungen und wie du mit einer eSIM die volle Kontrolle über deine Kosten behältst.",
-      category: "GUIDE" as const,
-      tags: ["roaming", "eu", "kosten"],
-      featured: false,
-      publishedAt: daysAgo(14),
-      body: `<p>Innerhalb der EU gilt „Roam like at home“ – doch bei eSIMs gibt es ein paar Besonderheiten zu beachten.</p>
-<h2>Wie funktioniert Roaming mit eSIM?</h2>
-<p>Deine PoloSim eSIM verbindet sich automatisch mit dem stärksten verfügbaren Netz. Du musst nichts manuell einstellen.</p>
-<h2>Kostenkontrolle</h2>
-<p>Da du ein festes Datenpaket kaufst, gibt es keine bösen Überraschungen auf der Rechnung.</p>`,
+      code: "BE",
+      domain: "esimcard.be",
+      name: "België",
+      heroHeadline: "eSIM voor België — Binnen 5 minuten online",
+      heroSubheadline: "Prepaid mobiele data zonder contract en zonder roamingkosten. Scan de QR-code en surf direct.",
+      heroCtaText: "Tarieven vergelijken",
+      stats: [{ value: "4G/5G", label: "Snelheid" }, { value: "24/7", label: "Support" }, { value: "5 Min.", label: "Activering" }],
+      whyTitle: "Waarom eSIM voor België?",
+      whyItems: [
+        { icon: "zap", title: "Direct klaar voor gebruik", description: "eSIM per e-mail en QR-code — geen wachttijd, geen verzending." },
+        { icon: "globe", title: "Sterk netwerk in heel België", description: "Betrouwbaar 4G/LTE netwerk in Brussel, Antwerpen en Gent." },
+        { icon: "shield", title: "Zonder contract", description: "Prepaid data zonder abonnement of verborgen kosten." }
+      ],
+      howTitle: "Hoe het werkt",
+      howSteps: [
+        { step: 1, title: "Kies je tarief", description: "Vergelijk databundels en geldigheid voor België." },
+        { step: 2, title: "Veilig betalen", description: "Ontvang je QR-code direct in je mailbox." },
+        { step: 3, title: "Scan en surf", description: "Scan de QR-code en wees binnen 5 minuten online." }
+      ],
+      ctaTitle: "Klaar voor België?",
+      ctaSub: "Kies je bundel en wees binnen 5 minuten online.",
+      headerCta: "Bekijk Tarieven",
+      footerTagline: "De beste eSIM-abonnementen voor België. Direct geactiveerd.",
+      menu: [
+        { label: "Home", href: "/", order: 0 },
+        { label: "Tarieven", href: "/packages", order: 1 },
+        { label: "Gidsen", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
     },
     {
-      slug: "esim-fuer-iphone-einrichten",
-      title: "eSIM auf dem iPhone einrichten: Die schnelle Anleitung",
-      excerpt: "iOS macht die eSIM-Einrichtung besonders einfach. So gehst du vor – mit Screenshots aus den Einstellungen.",
-      category: "GUIDE" as const,
-      tags: ["iphone", "ios", "einrichtung"],
-      featured: false,
-      publishedAt: daysAgo(20),
-      body: `<p>Apple-Geräte gehören zu den eSIM-freundlichsten Smartphones überhaupt. Hier die Anleitung für iOS.</p>
-<h2>Einstellungen öffnen</h2>
-<p>Gehe zu „Einstellungen“ → „Mobilfunk“ → „eSIM hinzufügen“ → „QR-Code verwenden“.</p>
-<h2>QR-Code scannen</h2>
-<p>Halte die Kamera über den Code. iOS erkennt die eSIM automatisch und installiert sie.</p>`,
+      code: "CH",
+      domain: "esimcard.ch",
+      name: "Schweiz",
+      heroHeadline: "eSIM für die Schweiz — in 5 Minuten online",
+      heroSubheadline: "Prepaid-Datentarife ohne Vertrag, ohne teure Schweizer Roaming-Gebühren. QR-Code scannen.",
+      heroCtaText: "Tarife vergleichen",
+      stats: [{ value: "4G/5G", label: "Speed" }, { value: "24/7", label: "Support" }, { value: "5 Min.", label: "Aktivierung" }],
+      whyTitle: "Warum eSIM für die Schweiz?",
+      whyItems: [
+        { icon: "zap", title: "Sofort startklar", description: "eSIM per E-Mail und QR-Code — direkt einsatzbereit." },
+        { icon: "globe", title: "Starkes Schweizer Netz", description: "Zuverlässiges 4G/LTE in Zürich, Genf und den Alpen." },
+        { icon: "shield", title: "Keine Roaming-Falle", description: "Prepaid-Guthaben ohne teure Zusatzkosten." }
+      ],
+      howTitle: "So funktioniert es",
+      howSteps: [
+        { step: 1, title: "Tarif wählen", description: "Datenmenge für die Schweiz wählen." },
+        { step: 2, title: "Sicher bezahlen", description: "QR-Code kommt sofort per E-Mail." },
+        { step: 3, title: "Scannen & lossurfen", description: "QR-Code scannen und in unter 5 Min. online sein." }
+      ],
+      ctaTitle: "Bereit für die Schweiz?",
+      ctaSub: "Wähle deinen Tarif und sei in 5 Minuten online.",
+      headerCta: "Tarife ansehen",
+      footerTagline: "Die besten eSIM-Tarife für die Schweiz. Sofort aktivieren.",
+      menu: [
+        { label: "Start", href: "/", order: 0 },
+        { label: "Tarife", href: "/packages", order: 1 },
+        { label: "Ratgeber", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
     },
     {
-      slug: "esim-netzabdeckung-deutschland",
-      title: "Netzabdeckung in Deutschland: Wo du überall online bist",
-      excerpt: "Stadt, Land, Bahn – ein Überblick über die Mobilfunkabdeckung und welches Netz wo am stärksten ist.",
-      category: "NEWS" as const,
-      tags: ["netz", "abdeckung", "5g"],
-      featured: false,
-      publishedAt: daysAgo(28),
-      body: `<p>Deutschland hat in den letzten Jahren stark in 4G und 5G investiert. Hier der Stand 2026.</p>
-<h2>Ballungsräume</h2>
-<p>In Städten wie Berlin, München und Hamburg ist 5G nahezu flächendeckend verfügbar.</p>
-<h2>Ländliche Regionen</h2>
-<p>Auch auf dem Land hat sich die Abdeckung deutlich verbessert. PoloSim wählt automatisch das beste verfügbare Netz.</p>`,
+      code: "CZ",
+      domain: "esimcard.cz",
+      name: "Česko",
+      heroHeadline: "eSIM pro Česko — Online do 5 minut",
+      heroSubheadline: "Prepaid datové tarify bez smlouvy a bez poplatků za roaming. Naskenujte QR kód a surfujte.",
+      heroCtaText: "Porovnat tarify",
+      stats: [{ value: "4G/5G", label: "Rychlost" }, { value: "24/7", label: "Podpora" }, { value: "5 Min.", label: "Aktivace" }],
+      whyTitle: "Proč eSIM pro Českou republiku?",
+      whyItems: [
+        { icon: "zap", title: "Okamžitě připraveno", description: "eSIM e-mailem a přes QR kód — žádné čekání ani doručování." },
+        { icon: "globe", title: "Silná síť po celém Česku", description: "Spolehlivé 4G/LTE v Praze, Brně i na horách." },
+        { icon: "shield", title: "Bez smlouvy", description: "Prepaid data bez paušálu a bez skrytých poplatků." }
+      ],
+      howTitle: "Jak to funguje",
+      howSteps: [
+        { step: 1, title: "Vyberte si tarif", description: "Porovnejte objem dat a platnost pro Česko." },
+        { step: 2, title: "Zaplaťte bezpečně", description: "Obdržte QR kód ihned do své e-mailové schránky." },
+        { step: 3, title: "Naskenujte a surfujte", description: "Aktivujte eSIM do 5 minut a buďte online." }
+      ],
+      ctaTitle: "Jste připraveni pro Česko?",
+      ctaSub: "Vyberte si tarif a buďte online do 5 minut.",
+      headerCta: "Zobrazit tarify",
+      footerTagline: "Nejlepší eSIM tarify pro Českou republiku. Okamžitá aktivace.",
+      menu: [
+        { label: "Domů", href: "/", order: 0 },
+        { label: "Tarify", href: "/packages", order: 1 },
+        { label: "Návody", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
     },
+    {
+      code: "ES",
+      domain: "esimcard.es",
+      name: "España",
+      heroHeadline: "eSIM para España — Conéctate en 5 minutos",
+      heroSubheadline: "Tarifas de datos prepago sin contrato ni gastos de roaming. Escanea el código QR y navega.",
+      heroCtaText: "Comparar planes",
+      stats: [{ value: "4G/5G", label: "Velocidad" }, { value: "24/7", label: "Soporte" }, { value: "5 Min.", label: "Activación" }],
+      whyTitle: "¿Por qué eSIM para España?",
+      whyItems: [
+        { icon: "zap", title: "Listo al instante", description: "Recibe tu eSIM por email con código QR sin esperas ni envíos." },
+        { icon: "globe", title: "Gran cobertura en toda España", description: "Red 4G/LTE de alta velocidad en Madrid, Barcelona y costas." },
+        { icon: "shield", title: "Sin contrato", description: "Prepago sin permanencia ni costes ocultos." }
+      ],
+      howTitle: "Cómo funciona",
+      howSteps: [
+        { step: 1, title: "Elige tu plan", description: "Compara paquetes de datos y duración para España." },
+        { step: 2, title: "Pago seguro", description: "Recibe tu código QR de inmediato en tu correo." },
+        { step: 3, title: "Escanea y navega", description: "Escanea el código QR y conéctate en menos de 5 minutos." }
+      ],
+      ctaTitle: "¿Listo para España?",
+      ctaSub: "Elige tu plan y conéctate en 5 minutos.",
+      headerCta: "Ver planes",
+      footerTagline: "Las mejores tarifas eSIM para España. Activación instantánea.",
+      menu: [
+        { label: "Inicio", href: "/", order: 0 },
+        { label: "Planes", href: "/packages", order: 1 },
+        { label: "Guías", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
+    },
+    {
+      code: "PH",
+      domain: "esimcard.ph",
+      name: "Philippines",
+      heroHeadline: "eSIM for Philippines — Online in 5 Minutes",
+      heroSubheadline: "Fast prepaid mobile data with no contract and no roaming fees across the Philippines.",
+      heroCtaText: "Compare Plans",
+      stats: [{ value: "4G/5G", label: "Speed" }, { value: "24/7", label: "Support" }, { value: "5 Min", label: "Activation" }],
+      whyTitle: "Why eSIM for the Philippines?",
+      whyItems: [
+        { icon: "zap", title: "Instant Setup", description: "Receive your QR code via email immediately." },
+        { icon: "globe", title: "Nationwide Coverage", description: "Reliable 4G/LTE across Manila, Cebu, Boracay and islands." },
+        { icon: "shield", title: "No Contract", description: "Pure prepaid data without hidden fees." }
+      ],
+      howTitle: "How It Works",
+      howSteps: [
+        { step: 1, title: "Select Plan", description: "Choose your data allowance and validity." },
+        { step: 2, title: "Pay Securely", description: "Receive your QR code instantly." },
+        { step: 3, title: "Scan & Connect", description: "Scan QR code and connect in 5 minutes." }
+      ],
+      ctaTitle: "Ready for the Philippines?",
+      ctaSub: "Choose your plan and get connected in 5 minutes.",
+      headerCta: "View Plans",
+      footerTagline: "Best eSIM data plans for the Philippines. Instant QR delivery.",
+      menu: [
+        { label: "Home", href: "/", order: 0 },
+        { label: "Plans", href: "/packages", order: 1 },
+        { label: "Guides", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
+    },
+    {
+      code: "RO",
+      domain: "esimcard.ro",
+      name: "România",
+      heroHeadline: "eSIM pentru România — Online în 5 minute",
+      heroSubheadline: "Cartele prepaid de date fără abonament și fără taxe de roaming. Scanează codul QR și navighează.",
+      heroCtaText: "Compară planurile",
+      stats: [{ value: "4G/5G", label: "Viteză" }, { value: "24/7", label: "Suport" }, { value: "5 Min.", label: "Activare" }],
+      whyTitle: "De ce eSIM pentru România?",
+      whyItems: [
+        { icon: "zap", title: "Gata instant", description: "Primești eSIM pe e-mail prin cod QR — fără așteptare, fără livrare fizică." },
+        { icon: "globe", title: "Acoperire națională", description: "Rețea rapidă 4G/LTE în București, Cluj și în întreaga țară." },
+        { icon: "shield", title: "Fără abonament", description: "Serviciu prepaid fără costuri ascunse." }
+      ],
+      howTitle: "Cum funcționează",
+      howSteps: [
+        { step: 1, title: "Alege planul", description: "Compară pachetele de date și valabilitatea pentru România." },
+        { step: 2, title: "Plătește în siguranță", description: "Primești codul QR imediat pe e-mail." },
+        { step: 3, title: "Scanează și conectează-te", description: "Scanează codul QR și fii online în sub 5 minute." }
+      ],
+      ctaTitle: "Ești gata pentru România?",
+      ctaSub: "Alege planul tău și conectează-te în 5 minute.",
+      headerCta: "Vezi planurile",
+      footerTagline: "Cele mai bune cartele eSIM pentru România. Activare instantă.",
+      menu: [
+        { label: "Acasă", href: "/", order: 0 },
+        { label: "Planuri", href: "/packages", order: 1 },
+        { label: "Ghiduri", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
+    },
+    {
+      code: "VN",
+      domain: "esimcard.vn",
+      name: "Việt Nam",
+      heroHeadline: "eSIM cho Việt Nam — Kết nối internet sau 5 phút",
+      heroSubheadline: "Gói cước dữ liệu trả trước không hợp đồng, không phí chuyển vùng. Quét mã QR và dùng ngay.",
+      heroCtaText: "So sánh gói cước",
+      stats: [{ value: "4G/5G", label: "Tốc độ" }, { value: "24/7", label: "Hỗ trợ" }, { value: "5 Phút", label: "Kích hoạt" }],
+      whyTitle: "Tại sao chọn eSIM cho Việt Nam?",
+      whyItems: [
+        { icon: "zap", title: "Sẵn sàng tức thì", description: "Nhận eSIM qua email bằng mã QR — không cần chờ đợi giao hàng." },
+        { icon: "globe", title: "Mạng tốc độ cao toàn quốc", description: "Mạng 4G/LTE ổn định tại Hà Nội, TP.HCM, Đà Nẵng va các điểm du lịch." },
+        { icon: "shield", title: "Không hợp đồng", description: "Trả trước linh hoạt, không chi phí ẩn." }
+      ],
+      howTitle: "Cách thức hoạt động",
+      howSteps: [
+        { step: 1, title: "Chọn gói cước", description: "So sánh dung lượng và thời hạn phù hợp cho chuyến đi Việt Nam." },
+        { step: 2, title: "Thanh toán an toàn", description: "Nhận mã QR ngay lập tức qua email." },
+        { step: 3, title: "Quét mã & kết nối", description: "Quét mã QR để kích hoạt eSIM và online sau 5 phút." }
+      ],
+      ctaTitle: "Sẵn sàng đến Việt Nam?",
+      ctaSub: "Chọn gói cước của bạn và kết nối internet sau 5 phút.",
+      headerCta: "Xem gói cước",
+      footerTagline: "Gói cước eSIM hàng đầu cho Việt Nam. Kích hoạt tức thì.",
+      menu: [
+        { label: "Trang chủ", href: "/", order: 0 },
+        { label: "Gói cước", href: "/packages", order: 1 },
+        { label: "Hướng dẫn", href: "/guides", order: 2 },
+        { label: "Blog", href: "/blog", order: 3 },
+        { label: "FAQ", href: "/faq", order: 4 }
+      ]
+    }
   ];
 
-  for (const p of posts) {
-    await prisma.post.upsert({
-      where: { country_slug: { country: "DE", slug: p.slug } },
-      update: {},
+  for (const c of countryData) {
+    await prisma.homepage.upsert({
+      where: { country: c.code },
+      update: {
+        heroHeadline: c.heroHeadline,
+        heroSubheadline: c.heroSubheadline,
+        heroCtaText: c.heroCtaText,
+        stats: c.stats,
+        whyEsimTitle: c.whyTitle,
+        whyEsimItems: c.whyItems,
+        howItWorksTitle: c.howTitle,
+        howItWorksSteps: c.howSteps,
+        ctaBandTitle: c.ctaTitle,
+        ctaBandSubtitle: c.ctaSub,
+        headerCtaText: c.headerCta,
+        footerTagline: c.footerTagline,
+      },
       create: {
-        country: "DE",
-        status: "PUBLISHED",
-        coverImage: null,
-        metaTitle: p.title,
-        metaDescription: p.excerpt,
-        ...p,
+        country: c.code,
+        heroHeadline: c.heroHeadline,
+        heroSubheadline: c.heroSubheadline,
+        heroCtaText: c.heroCtaText,
+        heroImage: "/images/hero-germany.svg",
+        stats: c.stats,
+        whyEsimTitle: c.whyTitle,
+        whyEsimItems: c.whyItems,
+        howItWorksTitle: c.howTitle,
+        howItWorksSteps: c.howSteps,
+        ctaBandTitle: c.ctaTitle,
+        ctaBandSubtitle: c.ctaSub,
+        ctaBandCtaText: c.heroCtaText + " →",
+        ctaBandCtaHref: "/packages",
+        headerCtaText: c.headerCta,
+        headerCtaHref: "/packages",
+        footerTagline: c.footerTagline,
+        blogPageTitle: "Blog",
+        blogPageSubtitle: "Guides & news",
+        guidesPageTitle: "eSIM Guides",
+        guidesPageSubtitle: "Everything you need to know",
+        faqPageTitle: "FAQ",
+        faqPageSubtitle: "Frequently Asked Questions",
+        packagesPageTitle: `eSIM ${c.name}`,
+        packagesPageSubtitle: `Compare all available eSIM packages for ${c.name}`,
+        metaSiteTitle: `eSIM ${c.name} | ${c.domain}`,
+        metaSiteDescription: c.footerTagline,
       },
     });
-  }
 
-  // ─── Rehberler ───────────────────────────────────────────
-  const guides = [
-    { slug: "was-ist-eine-esim", title: "Was ist eine eSIM und wie funktioniert sie?", order: 1, difficulty: "EASY" as const, estimatedTime: "3 Min.",
-      body: `<p>Eine eSIM (embedded SIM) ist ein fest im Gerät verbauter Chip, der die Funktion einer klassischen SIM-Karte übernimmt – nur digital. Statt eine Plastikkarte einzulegen, lädst du dein Mobilfunkprofil per QR-Code herunter.</p><p>Das spart Platz im Gerät, ermöglicht mehrere Profile gleichzeitig und macht den Anbieterwechsel zum Kinderspiel.</p>` },
-    { slug: "esim-kompatible-geraete", title: "Welche Geräte unterstützen eSIM?", order: 2, difficulty: "EASY" as const, estimatedTime: "4 Min.",
-      body: `<p>Die meisten modernen Smartphones unterstützen eSIM. Dazu gehören iPhone XS und neuer, Google Pixel ab Generation 3, Samsung Galaxy S20 und neuer sowie viele weitere.</p><p>Prüfe im Zweifel die Spezifikationen deines Geräts oder wähle in den Einstellungen „eSIM hinzufügen“ – ist die Option vorhanden, bist du startklar.</p>` },
-    { slug: "esim-installation-android", title: "eSIM auf Android-Geräten installieren", order: 3, difficulty: "MEDIUM" as const, estimatedTime: "5 Min.",
-      body: `<p>Bei Android-Geräten findest du die eSIM-Einrichtung unter „Einstellungen“ → „Netzwerk & Internet“ → „SIMs“ → „SIM hinzufügen“ → „Stattdessen eine eSIM herunterladen“.</p><p>Scanne den QR-Code und folge den Anweisungen. Aktiviere anschließend das Datenroaming.</p>` },
-    { slug: "esim-aktivierung-probleme-loesen", title: "Häufige Aktivierungsprobleme und Lösungen", order: 4, difficulty: "ADVANCED" as const, estimatedTime: "6 Min.",
-      body: `<p>Funktioniert die Aktivierung nicht? Hier die häufigsten Ursachen: kein WLAN während der Einrichtung, deaktiviertes Datenroaming oder ein nicht entsperrtes Gerät.</p><p>Starte das Gerät neu, prüfe die APN-Einstellungen und kontaktiere bei anhaltenden Problemen unseren 24/7-Support.</p>` },
-    { slug: "esim-datenverbrauch-verwalten", title: "Datenverbrauch verwalten und sparen", order: 5, difficulty: "MEDIUM" as const, estimatedTime: "4 Min.",
-      body: `<p>Behalte deinen Verbrauch im Blick: In den Einstellungen kannst du den Datenzähler einsehen und Warnungen einrichten.</p><p>Tipps zum Sparen: Updates nur über WLAN, Streaming-Qualität reduzieren und Hintergrunddaten für nicht genutzte Apps deaktivieren.</p>` },
-  ];
-
-  for (const g of guides) {
-    await prisma.guide.upsert({
-      where: { country_slug: { country: "DE", slug: g.slug } },
-      update: {},
-      create: { country: "DE", status: "PUBLISHED", metaTitle: g.title, ...g },
-    });
-  }
-
-  // ─── SSS ─────────────────────────────────────────────────
-  const existingFaqs = await prisma.faq.count({ where: { country: "DE" } });
-  if (existingFaqs === 0) {
-    await prisma.faq.createMany({
-      data: [
-        { country: "DE", category: "GENERAL", order: 1, question: "Was ist eine eSIM?", answer: "Eine eSIM ist eine digitale SIM-Karte, die fest in deinem Gerät verbaut ist. Du aktivierst sie per QR-Code – ganz ohne physische Karte." },
-        { country: "DE", category: "GENERAL", order: 2, question: "Funktioniert die eSIM in ganz Deutschland?", answer: "Ja. Unsere eSIMs verbinden sich automatisch mit dem stärksten verfügbaren Netz und bieten deutschlandweite Abdeckung." },
-        { country: "DE", category: "SETUP", order: 3, question: "Wie aktiviere ich meine eSIM?", answer: "Nach dem Kauf erhältst du einen QR-Code. Diesen scannst du in den Mobilfunk-Einstellungen deines Geräts. Die Aktivierung dauert weniger als 5 Minuten." },
-        { country: "DE", category: "SETUP", order: 4, question: "Brauche ich WLAN zur Einrichtung?", answer: "Ja, für die einmalige Installation des eSIM-Profils benötigst du eine WLAN-Verbindung. Danach nutzt du das Mobilfunknetz." },
-        { country: "DE", category: "SETUP", order: 5, question: "Welche Geräte werden unterstützt?", answer: "Die meisten Smartphones ab 2019, darunter iPhone XS und neuer, Google Pixel 3+, Samsung Galaxy S20+ und viele weitere." },
-        { country: "DE", category: "PACKAGES", order: 6, question: "Wie lange ist mein Tarif gültig?", answer: "Die Gültigkeit hängt vom gewählten Tarif ab – von 7 bis 30 Tagen. Die genaue Laufzeit findest du bei jedem Paket." },
-        { country: "DE", category: "PACKAGES", order: 7, question: "Was passiert, wenn mein Datenvolumen aufgebraucht ist?", answer: "Du kannst jederzeit ein neues Paket kaufen und es zusätzlich aktivieren. Es entstehen keine automatischen Zusatzkosten." },
-        { country: "DE", category: "PACKAGES", order: 8, question: "Kann ich meinen Tarif zurückerstatten lassen?", answer: "Solange die eSIM noch nicht aktiviert wurde, ist eine Rückerstattung möglich. Kontaktiere dazu einfach unseren Support." },
-        { country: "DE", category: "OPERATORS", order: 9, question: "Mit welchen Netzen arbeitet PoloSim?", answer: "Wir arbeiten mit den führenden deutschen Mobilfunknetzen zusammen, um die bestmögliche Abdeckung sicherzustellen." },
-        { country: "DE", category: "OPERATORS", order: 10, question: "Kann ich meine eSIM auch im EU-Ausland nutzen?", answer: "Viele unserer Tarife unterstützen EU-weites Roaming. Achte bei der Auswahl auf den Hinweis „EU-Roaming inklusive“." },
-      ],
-    });
-  }
-
-  // ─── Banner / Slider ─────────────────────────────────────
-  const existingBanners = await prisma.banner.count({ where: { country: "DE" } });
-  if (existingBanners === 0) {
-    await prisma.banner.createMany({
-      data: [
-        {
-          country: "DE", order: 0, active: true,
-          image: "/uploads/banner-1.svg",
-          title: "Germany eSIM — sofort online",
-          subtitle: "Kein Warten, keine physische Karte. QR-Code scannen und in unter 5 Minuten verbunden.",
-          ctaText: "Tarife ansehen", ctaHref: "/packages",
-        },
-        {
-          country: "DE", order: 1, active: true,
-          image: "/uploads/banner-2.svg",
-          title: "Deutschlandweite Abdeckung",
-          subtitle: "Stabile 4G/5G-Verbindung im ganzen Land — automatisch im stärksten Netz.",
-          ctaText: "Mehr erfahren", ctaHref: "/guides",
-        },
-        {
-          country: "DE", order: 2, active: true,
-          image: "/uploads/banner-3.svg",
-          title: "Flexibel & ohne Vertrag",
-          subtitle: "Wähle genau das Datenpaket, das du brauchst. Keine Bindung, keine versteckten Kosten.",
-          ctaText: "Jetzt vergleichen", ctaHref: "/packages",
-        },
-      ],
-    });
-  }
-
-  // ─── Varsayılan Menü Öğeleri ─────────────────────────────
-  const defaultMenu = [
-    { label: "Start",    href: "/",         order: 0 },
-    { label: "Tarife",   href: "/packages", order: 1 },
-    { label: "Ratgeber", href: "/guides",   order: 2 },
-    { label: "Blog",     href: "/blog",     order: 3 },
-    { label: "FAQ",      href: "/faq",      order: 4 },
-  ];
-  for (const mi of defaultMenu) {
-    const exists = await prisma.menuItem.findFirst({ where: { country: "DE", href: mi.href } });
-    if (!exists) {
-      await prisma.menuItem.create({ data: { country: "DE", target: "_self", ...mi } });
+    for (const mi of c.menu) {
+      const exists = await prisma.menuItem.findFirst({ where: { country: c.code, href: mi.href } });
+      if (exists) {
+        await prisma.menuItem.update({ where: { id: exists.id }, data: { label: mi.label } });
+      } else {
+        await prisma.menuItem.create({ data: { country: c.code, target: "_self", ...mi } });
+      }
     }
   }
 
-  console.log("Seed tamamlandı");
+  console.log("Database re-seeded with native language content for all 11 countries!");
 }
 
 main()

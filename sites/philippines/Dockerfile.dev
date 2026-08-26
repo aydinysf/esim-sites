@@ -1,0 +1,31 @@
+FROM node:20-alpine
+
+RUN apk add --no-cache libc6-compat openssl
+
+WORKDIR /app
+
+# Monorepo root package.json
+COPY package.json turbo.json ./
+
+# packages/db
+COPY packages/db/package.json ./packages/db/
+COPY packages/db/prisma ./packages/db/prisma
+COPY packages/db/src ./packages/db/src
+
+# sites/philippines
+COPY sites/philippines/package.json ./sites/philippines/
+
+# Bağımlılıkları yükle
+RUN npm install
+
+# Prisma client üret
+RUN npx prisma generate --schema=packages/db/prisma/schema.prisma
+
+# Kaynak kodu
+COPY sites/philippines ./sites/philippines
+
+WORKDIR /app/sites/philippines
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]

@@ -24,36 +24,36 @@ export default async function AdminDashboard() {
       <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
       <div className="grid grid-cols-3 gap-6 mb-10">
         {[
-          { label: "Blog Yazıları", count: postCount, href: "/admin/blog" },
-          { label: "Rehberler", count: guideCount, href: "/admin/guides" },
-          { label: "SSS", count: faqCount, href: "/admin/faq" },
+          { label: "Blog", count: postCount, href: "/admin/blog" },
+          { label: "Ratgeber", count: guideCount, href: "/admin/guides" },
+          { label: "FAQ", count: faqCount, href: "/admin/faq" },
         ].map((item) => (
           <Link
             key={item.label}
             href={item.href}
             className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition"
           >
-            <div className="text-4xl font-bold text-brand-600">{item.count}</div>
+            <div className="text-4xl font-bold text-amber-600">{item.count}</div>
             <div className="text-gray-600 mt-1">{item.label}</div>
           </Link>
         ))}
       </div>
 
       <div className="bg-white rounded-xl shadow-sm p-6">
-        <h2 className="text-xl font-semibold mb-4">Son Yazılar</h2>
+        <h2 className="text-xl font-semibold mb-4">Neueste Beiträge</h2>
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-gray-500 border-b">
-              <th className="pb-2">Başlık</th>
-              <th className="pb-2">Durum</th>
-              <th className="pb-2">Tarih</th>
+              <th className="pb-2">Titel</th>
+              <th className="pb-2">Status</th>
+              <th className="pb-2">Datum</th>
             </tr>
           </thead>
           <tbody>
             {recentPosts.map((post) => (
               <tr key={post.id} className="border-b last:border-0">
                 <td className="py-3">
-                  <Link href={`/admin/blog/${post.id}`} className="hover:text-brand-600">
+                  <Link href={`/admin/blog/${post.id}`} className="hover:text-amber-600">
                     {post.title}
                   </Link>
                 </td>
@@ -65,11 +65,11 @@ export default async function AdminDashboard() {
                         : "bg-yellow-100 text-yellow-700"
                     }`}
                   >
-                    {post.status === "PUBLISHED" ? "Yayında" : "Taslak"}
+                    {post.status === "PUBLISHED" ? "Veröffentlicht" : "Entwurf"}
                   </span>
                 </td>
                 <td className="py-3 text-gray-500">
-                  {new Date(post.createdAt).toLocaleDateString("tr-TR")}
+                  {new Date(post.createdAt).toLocaleDateString("de-DE")}
                 </td>
               </tr>
             ))}

@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
 
 export const metadata: Metadata = {
-  title: "Galerie | Germany eSIM",
+  title: "Galerie | Deutschland eSIM",
 };
 
 function youtubeId(url: string) {
@@ -22,7 +22,7 @@ export default async function GalleryPage() {
 
   return (
     <>
-      <PageHeader title="Galerie" subtitle="Eindrücke und Videos rund um Germany eSIM." eyebrow="Medien" breadcrumb={[{ label: "Galerie" }]} />
+      <PageHeader title="Galerie" subtitle="Eindrücke und Videos rund um Deutschland eSIM." eyebrow="Medien" breadcrumb={[{ label: "Galerie" }]} />
       <div className="max-w-6xl mx-auto px-6 py-12">
         {photos.length > 0 && (
           <section className="mb-16">

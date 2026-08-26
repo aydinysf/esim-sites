@@ -37,16 +37,262 @@ services:
       DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
       PUBLIC_COUNTRY_CODE: DE
       NEXT_PUBLIC_SITE_URL: http://localhost:3001
-      # Satın alma → polosim.com sepetine deep-link (?add=<product_id> ile paket sepete eklenir)
       NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/de/cart
-      # Aşağıdakileri .env.local ile override et:
-      # POLOSIM_API_BASE=
-      # POLOSIM_API_KEY=
-      # AUTH_SECRET=
-      # NEXT_PUBLIC_GA_ID=
     env_file:
       - sites/germany/.env.local
     command: sh -c "npx prisma migrate deploy && npx tsx ../../packages/db/prisma/seed.ts 2>/dev/null || true && npm run dev"
 
+  azerbaijan:
+    build:
+      context: .
+      dockerfile: sites/azerbaijan/Dockerfile.dev
+    container_name: esim_azerbaijan
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./sites/azerbaijan:/app/sites/azerbaijan
+      - ./packages:/app/packages
+      - /app/sites/azerbaijan/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: AZ
+      NEXT_PUBLIC_SITE_URL: http://localhost:3002
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/azerbaijan
+    env_file:
+      - sites/azerbaijan/.env.local
+    command: sh -c "npm run dev"
+
+  europe:
+    build:
+      context: .
+      dockerfile: sites/europe/Dockerfile.dev
+    container_name: esim_europe
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3003:3000"
+    volumes:
+      - ./sites/europe:/app/sites/europe
+      - ./packages:/app/packages
+      - /app/sites/europe/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: EU
+      NEXT_PUBLIC_SITE_URL: http://localhost:3003
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/europe
+    env_file:
+      - sites/europe/.env.local
+    command: sh -c "npm run dev"
+
+  austria:
+    build:
+      context: .
+      dockerfile: sites/austria/Dockerfile.dev
+    container_name: esim_austria
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3004:3000"
+    volumes:
+      - ./sites/austria:/app/sites/austria
+      - ./packages:/app/packages
+      - /app/sites/austria/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: AT
+      NEXT_PUBLIC_SITE_URL: http://localhost:3004
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/austria
+    env_file:
+      - sites/austria/.env.local
+    command: sh -c "npm run dev"
+
+  belgium:
+    build:
+      context: .
+      dockerfile: sites/belgium/Dockerfile.dev
+    container_name: esim_belgium
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3005:3000"
+    volumes:
+      - ./sites/belgium:/app/sites/belgium
+      - ./packages:/app/packages
+      - /app/sites/belgium/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: BE
+      NEXT_PUBLIC_SITE_URL: http://localhost:3005
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/belgium
+    env_file:
+      - sites/belgium/.env.local
+    command: sh -c "npm run dev"
+
+  switzerland:
+    build:
+      context: .
+      dockerfile: sites/switzerland/Dockerfile.dev
+    container_name: esim_switzerland
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3006:3000"
+    volumes:
+      - ./sites/switzerland:/app/sites/switzerland
+      - ./packages:/app/packages
+      - /app/sites/switzerland/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: CH
+      NEXT_PUBLIC_SITE_URL: http://localhost:3006
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/switzerland
+    env_file:
+      - sites/switzerland/.env.local
+    command: sh -c "npm run dev"
+
+  czechia:
+    build:
+      context: .
+      dockerfile: sites/czechia/Dockerfile.dev
+    container_name: esim_czechia
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3007:3000"
+    volumes:
+      - ./sites/czechia:/app/sites/czechia
+      - ./packages:/app/packages
+      - /app/sites/czechia/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: CZ
+      NEXT_PUBLIC_SITE_URL: http://localhost:3007
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/czech-republic
+    env_file:
+      - sites/czechia/.env.local
+    command: sh -c "npm run dev"
+
+  spain:
+    build:
+      context: .
+      dockerfile: sites/spain/Dockerfile.dev
+    container_name: esim_spain
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3008:3000"
+    volumes:
+      - ./sites/spain:/app/sites/spain
+      - ./packages:/app/packages
+      - /app/sites/spain/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: ES
+      NEXT_PUBLIC_SITE_URL: http://localhost:3008
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/spain
+    env_file:
+      - sites/spain/.env.local
+    command: sh -c "npm run dev"
+
+  philippines:
+    build:
+      context: .
+      dockerfile: sites/philippines/Dockerfile.dev
+    container_name: esim_philippines
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3009:3000"
+    volumes:
+      - ./sites/philippines:/app/sites/philippines
+      - ./packages:/app/packages
+      - /app/sites/philippines/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: PH
+      NEXT_PUBLIC_SITE_URL: http://localhost:3009
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/philippines
+    env_file:
+      - sites/philippines/.env.local
+    command: sh -c "npm run dev"
+
+  romania:
+    build:
+      context: .
+      dockerfile: sites/romania/Dockerfile.dev
+    container_name: esim_romania
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3010:3000"
+    volumes:
+      - ./sites/romania:/app/sites/romania
+      - ./packages:/app/packages
+      - /app/sites/romania/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: RO
+      NEXT_PUBLIC_SITE_URL: http://localhost:3010
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/romania
+    env_file:
+      - sites/romania/.env.local
+    command: sh -c "npm run dev"
+
+  vietnam:
+    build:
+      context: .
+      dockerfile: sites/vietnam/Dockerfile.dev
+    container_name: esim_vietnam
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3011:3000"
+    volumes:
+      - ./sites/vietnam:/app/sites/vietnam
+      - ./packages:/app/packages
+      - /app/sites/vietnam/node_modules
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://esim:esim_dev_pass@postgres:5432/esim_sites
+      PUBLIC_COUNTRY_CODE: VN
+      NEXT_PUBLIC_SITE_URL: http://localhost:3011
+      NEXT_PUBLIC_POLOSIM_BUY_URL: https://www.polosim.com/tr/destination/vietnam
+    env_file:
+      - sites/vietnam/.env.local
+    command: sh -c "npm run dev"
+
 volumes:
   postgres_data:
+
+

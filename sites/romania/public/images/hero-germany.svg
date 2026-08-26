@@ -1,0 +1,127 @@
+<svg viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="eSIM für Deutschland — Smartphone mit QR-Code vor Brandenburger Tor Silhouette">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.7" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="0.55" stop-color="#0F172A"/>
+      <stop offset="1" stop-color="#020617"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.72" cy="0.45" r="0.5">
+      <stop offset="0" stop-color="#C4A234" stop-opacity="0.16"/>
+      <stop offset="0.6" stop-color="#C4A234" stop-opacity="0.05"/>
+      <stop offset="1" stop-color="#C4A234" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="phone" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1e293b"/>
+      <stop offset="1" stop-color="#0b1120"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="1.5" cy="1.5" r="1.5" fill="#C4A234" opacity="0.10"/>
+    </pattern>
+  </defs>
+
+  <!-- Zemin -->
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect width="1600" height="900" fill="url(#dots)"/>
+  <rect width="1600" height="900" fill="url(#glow)"/>
+
+  <!-- Brandenburg Kapısı silüeti (sağ-orta, ince altın çizgi) -->
+  <g stroke="#C4A234" stroke-width="2.5" fill="none" opacity="0.30" transform="translate(880,300) scale(1.15)">
+    <!-- taban -->
+    <line x1="0" y1="380" x2="560" y2="380"/>
+    <!-- üst saçak (entablature) -->
+    <rect x="20" y="90" width="520" height="34" rx="2"/>
+    <rect x="60" y="56" width="440" height="34" rx="2"/>
+    <!-- quadriga kaidesi + soyut at arabası -->
+    <rect x="230" y="22" width="100" height="34" rx="2"/>
+    <path d="M245 22 L255 -8 L275 -2 L285 -18 L300 -6 L315 -20 L325 -4 L345 -10 L355 22"/>
+    <!-- 6 sütun -->
+    <g>
+      <rect x="30"  y="124" width="42" height="256"/>
+      <rect x="126" y="124" width="42" height="256"/>
+      <rect x="222" y="124" width="42" height="256"/>
+      <rect x="318" y="124" width="42" height="256"/>
+      <rect x="414" y="124" width="42" height="256"/>
+      <rect x="488" y="124" width="42" height="256"/>
+    </g>
+    <!-- sütun başlıkları -->
+    <g stroke-width="2">
+      <line x1="24" y1="124" x2="78" y2="124"/>
+      <line x1="120" y1="124" x2="174" y2="124"/>
+      <line x1="216" y1="124" x2="270" y2="124"/>
+      <line x1="312" y1="124" x2="366" y2="124"/>
+      <line x1="408" y1="124" x2="462" y2="124"/>
+      <line x1="482" y1="124" x2="536" y2="124"/>
+    </g>
+  </g>
+
+  <!-- Sinyal halkaları (telefonun arkasından yayılan) -->
+  <g fill="none" stroke="#C4A234" stroke-dasharray="3 7" opacity="0.35">
+    <circle cx="1150" cy="430" r="210" stroke-width="1.5"/>
+    <circle cx="1150" cy="430" r="290" stroke-width="1.2" opacity="0.6"/>
+    <circle cx="1150" cy="430" r="370" stroke-width="1" opacity="0.35"/>
+  </g>
+
+  <!-- Telefon mockup -->
+  <g transform="translate(1030,190) rotate(4 120 240)">
+    <!-- gövde -->
+    <rect x="0" y="0" width="240" height="490" rx="36" fill="url(#phone)" stroke="#334155" stroke-width="2"/>
+    <rect x="10" y="10" width="220" height="470" rx="28" fill="#0F172A"/>
+    <!-- kamera çentiği -->
+    <rect x="92" y="20" width="56" height="8" rx="4" fill="#1e293b"/>
+
+    <!-- ekran içeriği -->
+    <!-- durum çubuğu: sinyal + 5G -->
+    <g transform="translate(28,48)">
+      <rect x="0"  y="10" width="5" height="8"  rx="1" fill="#C4A234"/>
+      <rect x="8"  y="7"  width="5" height="11" rx="1" fill="#C4A234"/>
+      <rect x="16" y="4"  width="5" height="14" rx="1" fill="#C4A234"/>
+      <rect x="24" y="0"  width="5" height="18" rx="1" fill="#C4A234"/>
+      <text x="150" y="15" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#E2E8F0">5G</text>
+    </g>
+
+    <!-- "eSIM aktiv" rozeti -->
+    <g transform="translate(48,92)">
+      <rect x="0" y="0" width="144" height="34" rx="17" fill="#C4A234" opacity="0.15"/>
+      <rect x="0" y="0" width="144" height="34" rx="17" fill="none" stroke="#C4A234" stroke-width="1.5"/>
+      <circle cx="22" cy="17" r="5" fill="#4ade80"/>
+      <text x="38" y="22" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#EDD96A">eSIM aktiv</text>
+    </g>
+
+    <!-- QR kod bloğu -->
+    <g transform="translate(45,160)">
+      <rect x="0" y="0" width="150" height="150" rx="12" fill="#F1F5F9"/>
+      <g fill="#0F172A">
+        <!-- köşe hedefleri -->
+        <rect x="14" y="14" width="34" height="34" rx="3"/><rect x="21" y="21" width="20" height="20" fill="#F1F5F9" rx="2"/><rect x="27" y="27" width="8" height="8"/>
+        <rect x="102" y="14" width="34" height="34" rx="3"/><rect x="109" y="21" width="20" height="20" fill="#F1F5F9" rx="2"/><rect x="115" y="27" width="8" height="8"/>
+        <rect x="14" y="102" width="34" height="34" rx="3"/><rect x="21" y="109" width="20" height="20" fill="#F1F5F9" rx="2"/><rect x="27" y="115" width="8" height="8"/>
+        <!-- veri desenleri -->
+        <rect x="58" y="16" width="8" height="8"/><rect x="74" y="16" width="8" height="8"/>
+        <rect x="66" y="28" width="8" height="8"/><rect x="82" y="28" width="8" height="8"/>
+        <rect x="58" y="40" width="8" height="8"/><rect x="90" y="40" width="8" height="8"/>
+        <rect x="16" y="58" width="8" height="8"/><rect x="32" y="58" width="8" height="8"/><rect x="58" y="58" width="16" height="8"/><rect x="90" y="58" width="8" height="8"/><rect x="114" y="58" width="8" height="8"/><rect x="130" y="56" width="6" height="10"/>
+        <rect x="24" y="72" width="8" height="8"/><rect x="48" y="72" width="8" height="8"/><rect x="74" y="72" width="8" height="8"/><rect x="98" y="72" width="16" height="8"/><rect x="122" y="72" width="8" height="8"/>
+        <rect x="16" y="86" width="16" height="8"/><rect x="58" y="86" width="8" height="8"/><rect x="82" y="86" width="8" height="8"/><rect x="106" y="86" width="8" height="8"/><rect x="130" y="86" width="6" height="8"/>
+        <rect x="58" y="102" width="8" height="8"/><rect x="74" y="104" width="8" height="8"/><rect x="90" y="102" width="8" height="8"/><rect x="114" y="102" width="8" height="8"/>
+        <rect x="58" y="118" width="16" height="8"/><rect x="90" y="118" width="8" height="8"/><rect x="106" y="118" width="14" height="8"/><rect x="128" y="116" width="8" height="10"/>
+      </g>
+    </g>
+
+    <!-- alt metin satırları (soyut) -->
+    <rect x="48" y="336" width="144" height="10" rx="5" fill="#334155"/>
+    <rect x="68" y="356" width="104" height="10" rx="5" fill="#1e293b"/>
+
+    <!-- CTA hap buton -->
+    <rect x="48" y="392" width="144" height="40" rx="20" fill="#C4A234"/>
+    <text x="120" y="417" text-anchor="middle" font-family="system-ui,sans-serif" font-size="15" font-weight="700" fill="#0F172A">Verbinden</text>
+  </g>
+
+  <!-- havada süzülen küçük altın parçacıklar -->
+  <g fill="#C4A234">
+    <circle cx="960" cy="180" r="3" opacity="0.5"/>
+    <circle cx="1380" cy="240" r="2.5" opacity="0.4"/>
+    <circle cx="1420" cy="560" r="3.5" opacity="0.45"/>
+    <circle cx="900" cy="640" r="2.5" opacity="0.35"/>
+    <circle cx="1300" cy="120" r="2" opacity="0.35"/>
+  </g>
+</svg>

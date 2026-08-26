@@ -6,16 +6,16 @@ import { signOut } from "next-auth/react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
-  { label: "─ İçerik", icon: "", href: "", divider: true },
+  { label: "─ Inhalt", icon: "", href: "", divider: true },
   { href: "/admin/blog", label: "Blog", icon: "📝" },
-  { href: "/admin/guides", label: "Rehberler", icon: "📚" },
-  { href: "/admin/faq", label: "SSS", icon: "❓" },
-  { href: "/admin/pages", label: "Sayfalar", icon: "📄" },
-  { label: "─ Tasarım", icon: "", href: "", divider: true },
+  { href: "/admin/guides", label: "Ratgeber", icon: "📚" },
+  { href: "/admin/faq", label: "FAQ", icon: "❓" },
+  { href: "/admin/pages", label: "Seiten", icon: "📄" },
+  { label: "─ Design", icon: "", href: "", divider: true },
   { href: "/admin/banners", label: "Banner/Slider", icon: "🖼️" },
-  { href: "/admin/media", label: "Medya Galerisi", icon: "🎬" },
+  { href: "/admin/media", label: "Medien-Galerie", icon: "🎬" },
   { href: "/admin/menu", label: "Menü", icon: "☰" },
-  { href: "/admin/homepage", label: "Ana Sayfa", icon: "🏠" },
+  { href: "/admin/homepage", label: "Homepage", icon: "🏠" },
 ];
 
 export default function AdminSidebar() {
@@ -55,13 +55,13 @@ export default function AdminSidebar() {
       </nav>
       <div className="p-3 border-t border-gray-700 space-y-1">
         <a href="/" target="_blank" className="flex items-center gap-3 px-3 py-2 text-sm rounded-lg hover:bg-gray-800 hover:text-white transition">
-          🌐 Siteyi Gör
+          🌐 Website ansehen
         </a>
         <button
           onClick={() => signOut({ callbackUrl: "/admin/login" })}
           className="w-full text-left flex items-center gap-3 px-3 py-2 text-sm rounded-lg hover:bg-gray-800 hover:text-white transition"
         >
-          🚪 Çıkış Yap
+          🚪 Abmelden
         </button>
       </div>
     </aside>

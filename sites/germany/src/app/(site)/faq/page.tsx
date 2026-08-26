@@ -11,8 +11,8 @@ export async function generateMetadata(): Promise<Metadata> {
     select: { faqPageTitle: true, faqPageSubtitle: true, metaSiteTitle: true },
   });
   return {
-    title: hp?.faqPageTitle ? `${hp.faqPageTitle} | ${hp.metaSiteTitle || "eSIM"}` : "FAQ | Germany eSIM",
-    description: hp?.faqPageSubtitle || "Frequently asked questions about Germany eSIM.",
+    title: hp?.faqPageTitle ? `${hp.faqPageTitle} | ${hp.metaSiteTitle || "eSIM"}` : "FAQ | Deutschland eSIM",
+    description: hp?.faqPageSubtitle || "Frequently asked questions about Deutschland eSIM.",
   };
 }
 

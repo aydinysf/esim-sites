@@ -1,0 +1,25 @@
+# PoloSim Germany eSIM
+
+> Country site for prepaid Germany travel eSIMs by PoloSim (polosim.com).
+> Data plans that work across Germany (and the wider Europe region) are listed
+> with live prices; purchase is completed on polosim.com. Content is in German.
+
+## Key facts
+
+- Plans covering Germany: fixed data packages (1GB–20GB) and Unlimited, validity 1–30 days
+- Prices in EUR, fetched live from the PoloSim catalogue (typically from ~€1.88)
+- Instant delivery by QR code, activation in ~5 minutes, no roaming fees
+- Data-only, hotspot/tethering allowed, 4G/LTE speeds
+- Buying: each plan links directly into the polosim.com cart
+
+## Main pages
+
+- [Tarife (all Germany plans and prices)](/packages)
+- [Ratgeber (guides: eSIM activation in Germany, eSIM vs physical SIM, best plans)](/guides)
+- [FAQ](/faq)
+- [Blog](/blog)
+
+## Contact
+
+- Support: support@polosim.com
+- Operated by Check for Trips GmbH, Rüsselsheim, Germany

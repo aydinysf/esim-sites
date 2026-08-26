@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
-import { Syne } from "next/font/google";
-import { DM_Sans } from "next/font/google";
+import { Syne, DM_Sans } from "next/font/google";
 import "./globals.css";
 
 const syne = Syne({
@@ -19,10 +18,10 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://esim-germany.com"),
   title: {
-    default: "Germany eSIM | PoloSim",
+    default: "eSIM Deutschland | PoloSim",
     template: "%s | PoloSim",
   },
-  description: "Die besten eSIM-Tarife für Deutschland. Sofort aktivieren, kein Vertrag.",
+  description: "Die besten eSIM-Tarife für Deutschland vergleichen und sofort aktivieren.",
   robots: { index: true, follow: true },
 };
 
