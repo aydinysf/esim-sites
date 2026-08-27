@@ -7,7 +7,7 @@ COPY packages/db ./packages/db
 COPY config ./config
 COPY sites/philippines ./sites/philippines
 
-RUN npm install && npm cache clean --force
+RUN npm install --include=dev && npm cache clean --force
 RUN npx prisma generate --schema=packages/db/prisma/schema.prisma
 
 ARG DATABASE_URL
@@ -29,14 +29,12 @@ RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-COPY --from=builder /app/package.json /app/turbo.json /app/package-lock.json ./
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/config ./config
-COPY --from=builder /app/sites/philippines ./sites/philippines
-COPY --from=builder /app/node_modules ./node_modules
-
-WORKDIR /app/sites/philippines
+COPY --from=builder /app/sites/philippines/public ./sites/philippines/public
+COPY --from=builder /app/sites/philippines/.next/standalone ./
+COPY --from=builder /app/sites/philippines/.next/static ./sites/philippines/.next/static
 
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+CMD ["node", "sites/philippines/server.js"]

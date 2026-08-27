@@ -7,7 +7,7 @@ COPY packages/db ./packages/db
 COPY config ./config
 COPY sites/vietnam ./sites/vietnam
 
-RUN npm install && npm cache clean --force
+RUN npm install --include=dev && npm cache clean --force
 RUN npx prisma generate --schema=packages/db/prisma/schema.prisma
 
 ARG DATABASE_URL
@@ -29,14 +29,12 @@ RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-COPY --from=builder /app/package.json /app/turbo.json /app/package-lock.json ./
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/config ./config
-COPY --from=builder /app/sites/vietnam ./sites/vietnam
-COPY --from=builder /app/node_modules ./node_modules
-
-WORKDIR /app/sites/vietnam
+COPY --from=builder /app/sites/vietnam/public ./sites/vietnam/public
+COPY --from=builder /app/sites/vietnam/.next/standalone ./
+COPY --from=builder /app/sites/vietnam/.next/static ./sites/vietnam/.next/static
 
 EXPOSE 3000
-CMD ["npm", "run", "start"]
+CMD ["node", "sites/vietnam/server.js"]
