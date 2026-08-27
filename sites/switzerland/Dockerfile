@@ -7,7 +7,7 @@ COPY packages/db ./packages/db
 COPY config ./config
 COPY sites/switzerland ./sites/switzerland
 
-RUN npm install --include=dev && npm cache clean --force
+RUN npm install --no-audit --no-fund --include=dev && npm cache clean --force
 RUN npx prisma generate --schema=packages/db/prisma/schema.prisma
 
 ARG DATABASE_URL
