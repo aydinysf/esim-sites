@@ -10,11 +10,9 @@ const nextConfig = {
       },
     ],
   },
-  // Dosya yükleme limiti (resim ~10MB, video ~200MB)
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "200mb",
-    },
+  // Server Actions limit (Next.js 14 format)
+  serverActions: {
+    bodySizeLimit: "200mb",
   },
 };
 
