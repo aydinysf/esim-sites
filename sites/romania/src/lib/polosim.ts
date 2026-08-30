@@ -212,7 +212,7 @@ function buildName(
   return `${dataLabel} eSIM ${cName} – ${duration} ${daysLabel}`;
 }
 
-function buildBuyUrl(country: string, productId: number | string): string {
+export function buildBuyUrl(country: string, productId: number | string): string {
   const code = country.toUpperCase();
   let lang = "en";
   if (["DE", "AT", "CH"].includes(code)) {

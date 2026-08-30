@@ -10,9 +10,10 @@ const nextConfig = {
       },
     ],
   },
-  // Server Actions limit (Next.js 14 format)
-  serverActions: {
-    bodySizeLimit: "200mb",
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "200mb",
+    },
   },
 };
 
