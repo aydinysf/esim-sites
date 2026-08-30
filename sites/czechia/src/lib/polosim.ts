@@ -213,9 +213,23 @@ function buildName(
 }
 
 function buildBuyUrl(country: string, productId: number | string): string {
-  const base =
+  let base =
     process.env.NEXT_PUBLIC_POLOSIM_BUY_URL ||
     "https://www.polosim.com/tr/cart";
+
+  try {
+    const u = new URL(base);
+    if (u.pathname.includes("/destination/")) {
+      const parts = u.pathname.split("/").filter(Boolean);
+      const lang = parts.length > 0 && parts[0].length === 2 ? parts[0] : "tr";
+      base = `${u.origin}/${lang}/cart`;
+    } else if (!u.pathname.endsWith("/cart")) {
+      base = "https://www.polosim.com/tr/cart";
+    }
+  } catch (e) {
+    base = "https://www.polosim.com/tr/cart";
+  }
+
   const params = new URLSearchParams({
     add: String(productId),
     utm_source: `esim-${country.toLowerCase()}.com`,
