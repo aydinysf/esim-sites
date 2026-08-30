@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { fetchPackagesFromAPI, type PolosimPackage } from "@/lib/polosim";
+import { fetchPackagesFromAPI, buildBuyUrl, type PolosimPackage } from "@/lib/polosim";
 
 export async function getPackages(country: string): Promise<PolosimPackage[]> {
   try {
@@ -11,7 +11,13 @@ export async function getPackages(country: string): Promise<PolosimPackage[]> {
     });
 
     if (cached.length > 0) {
-      return cached.map((p) => p.data as unknown as PolosimPackage);
+      return cached.map((p) => {
+        const pkg = p.data as unknown as PolosimPackage;
+        return {
+          ...pkg,
+          buyUrl: buildBuyUrl(country, pkg.id),
+        };
+      });
     }
 
     const packages = await fetchPackagesFromAPI(country);
