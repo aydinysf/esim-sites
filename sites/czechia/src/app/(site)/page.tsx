@@ -1,3 +1,4 @@
+import { ProductListJsonLd } from "@/components/seo/JsonLd";
 import { prisma } from "@/lib/db";
 import HeroBanner from "@/components/site/HeroBanner";
 import BannerSlider from "@/components/site/BannerSlider";
@@ -21,6 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "";
 export default async function HomePage() {
   const [homepage, featuredPosts, banners, packages] = await Promise.all([
     prisma.homepage.findUnique({ where: { country: COUNTRY } }),
@@ -48,6 +50,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <ProductListJsonLd packages={packages} siteUrl={SITE_URL} />
       {banners.length > 0 ? (
         <BannerSlider banners={banners} />
       ) : (

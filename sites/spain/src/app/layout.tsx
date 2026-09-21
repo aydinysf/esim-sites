@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Syne, DM_Sans } from "next/font/google";
 import "./globals.css";
+import { OrganizationJsonLd } from "@/components/seo/JsonLd";
 
 const syne = Syne({
   subsets: ["latin"],
@@ -15,20 +16,65 @@ const dmSans = DM_Sans({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://esimcard.es";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://esimcard.es"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "eSIM España | esimcard.es",
+    default: "eSIM España | PoloSim",
     template: "%s | PoloSim",
   },
-  description: "Las mejores tarifas eSIM para España. Activación instantánea.",
-  robots: { index: true, follow: true },
+  description: "Compara los mejores planes de datos eSIM para España y actívalos al instante.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: siteUrl,
+    languages: {
+      "de-AT": "https://esimcard.at",
+      "nl-BE": "https://esimcard.be",
+      "de-CH": "https://esimcard.ch",
+      "cs-CZ": "https://esimcard.cz",
+      "es-ES": "https://esimcard.es",
+      "en-PH": "https://esimcard.ph",
+      "ro-RO": "https://esimcard.ro",
+      "vi-VN": "https://esimcard.vn",
+      "de-DE": "https://esim-germany.com",
+      "az-AZ": "https://esim-azerbaijan.com",
+      "en-EU": "https://esim-europe.com",
+      "x-default": "https://esim-europe.com"
+},
+  },
+  openGraph: {
+    title: "eSIM España | PoloSim",
+    description: "Compara los mejores planes de datos eSIM para España y actívalos al instante.",
+    url: siteUrl,
+    siteName: "PoloSim eSIM",
+    locale: "es_ES",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "eSIM España | PoloSim",
+    description: "Compara los mejores planes de datos eSIM para España y actívalos al instante.",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${syne.variable} ${dmSans.variable}`}>
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <OrganizationJsonLd siteUrl={siteUrl} siteName="eSIM España | PoloSim" />
+        {children}
+      </body>
     </html>
   );
 }
