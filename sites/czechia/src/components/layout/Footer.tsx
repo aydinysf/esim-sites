@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w">
+    <footer>
       <span>© 2026 PoloSim</span>
       <nav>
         <Link href="/impressum">Impressum</Link>

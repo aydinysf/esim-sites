@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="w">
+    <header>
       <Link href="/" className="flex items-center gap-4 text-decoration-none">
         <Image
           src="/images/polosim-logo.png"
