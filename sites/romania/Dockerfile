@@ -2,6 +2,9 @@ FROM node:20-alpine AS builder
 RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+ENV NEXT_TELEMETRY_DISABLED=1
+
 COPY package.json turbo.json package-lock.json ./
 COPY packages/db ./packages/db
 COPY config ./config
