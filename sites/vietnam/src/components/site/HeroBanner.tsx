@@ -1,7 +1,14 @@
 "use client";
 import React, { useState } from "react";
 
-export default function HeroBanner() {
+interface Props {
+  headline: string;
+  subheadline: string;
+  ctaText: string;
+  ctaHref: string;
+}
+
+export default function HeroBanner({ headline, subheadline, ctaText, ctaHref }: Props) {
   const [deviceResult, setDeviceResult] = useState("");
 
   const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -19,10 +26,10 @@ export default function HeroBanner() {
     <>
       <div className="hero">
         <div>
-          <h1>Đến nơi, quét mã, kết nối ngay.</h1>
-          <p className="lead">eSIM trả trước cho Việt Nam không cần hợp đồng, không phí chuyển vùng. Mã QR gửi ngay qua e-mail.</p>
+          <h1>{headline}</h1>
+          <p className="lead">{subheadline}</p>
           <div className="check">
-            <label htmlFor="dev">Điện thoại của bạn có hỗ trợ eSIM?</label>
+            <label htmlFor="dev">Unterstützt dein Handy eSIM?</label>
             <div className="row">
               <select id="dev" onChange={handleDeviceChange}>
                 <option value="">Gerät wählen</option>
@@ -31,7 +38,7 @@ export default function HeroBanner() {
                 <option value="1">Google Pixel 3 oder neuer</option>
                 <option value="0">Anderes Gerät</option>
               </select>
-              <a className="btn" href="#tarife">Xem gói cước</a>
+              <a className="btn" href={ctaHref || "#tarife"}>{ctaText || "Tarife ansehen"}</a>
             </div>
             <p id="res">{deviceResult}</p>
           </div>
