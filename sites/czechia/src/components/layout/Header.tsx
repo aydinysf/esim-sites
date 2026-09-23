@@ -1,76 +1,16 @@
 import Link from "next/link";
-import { prisma } from "@/lib/db";
-import Image from "next/image";
-import { t } from "@/lib/i18n";
 
-const COUNTRY = process.env.PUBLIC_COUNTRY_CODE!;
-
-const defaultNav = [
-  { id: "home",   label: t.nav.home,     href: "/",         target: "_self", children: [] },
-  { id: "pkgs",   label: t.nav.packages, href: "/packages", target: "_self", children: [] },
-  { id: "guides", label: t.nav.guides,   href: "/guides",   target: "_self", children: [] },
-  { id: "blog",   label: t.nav.blog,     href: "/blog",     target: "_self", children: [] },
-  { id: "faq",    label: t.nav.faq,      href: "/faq",      target: "_self", children: [] },
-];
-
-async function getHeaderData() {
-  try {
-    const [menuItems, homepage] = await Promise.all([
-      prisma.menuItem.findMany({
-        where: { country: COUNTRY, parentId: null },
-        orderBy: { order: "asc" },
-        include: { children: { orderBy: { order: "asc" } } },
-      }),
-      prisma.homepage.findUnique({
-        where: { country: COUNTRY },
-        select: { headerCtaText: true, headerCtaHref: true },
-      }),
-    ]);
-    return {
-      navItems: menuItems.length > 0 ? menuItems : defaultNav,
-      ctaText: homepage?.headerCtaText || t.nav.cta,
-      ctaHref: homepage?.headerCtaHref || "/packages",
-    };
-  } catch {
-    return { navItems: defaultNav, ctaText: t.nav.cta, ctaHref: "/packages" };
-  }
-}
-
-export default async function Header() {
-  const { navItems, ctaText, ctaHref } = await getHeaderData();
-
+export default function Header() {
   return (
-    <header className="bg-white border-b border-[#E2E8F0] sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between gap-8">
-        <Link href="/" className="flex items-center flex-shrink-0" aria-label="PoloSim">
-          <Image src="/images/polosim-logo.png" alt="PoloSim" width={1536} height={1024} priority className="h-16 w-auto" />
-        </Link>
-        <nav className="hidden md:flex items-center gap-1 flex-1 justify-center">
-          {navItems.map((item: any) =>
-            item.children?.length > 0 ? (
-              <div key={item.id} className="relative group">
-                <button className="flex items-center gap-1 px-3.5 py-2 text-sm font-medium text-muted hover:text-ink transition-colors rounded-lg hover:bg-[#F1F5F9]">
-                  {item.label}
-                </button>
-                <div className="absolute top-full left-0 mt-1.5 bg-white border border-[#E2E8F0] rounded-card shadow-lift min-w-[200px] py-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150">
-                  {item.children.map((child: any) => (
-                    <Link key={child.id} href={child.href} target={child.target} className="flex items-center px-4 py-2.5 text-sm text-muted hover:text-ink hover:bg-[#F8FAFC] transition-colors">
-                      {child.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <Link key={item.id} href={item.href} target={item.target} className="px-3.5 py-2 text-sm font-medium text-muted hover:text-ink transition-colors rounded-lg hover:bg-[#F1F5F9]">
-                {item.label}
-              </Link>
-            )
-          )}
-        </nav>
-        <Link href={ctaHref} className="flex-shrink-0 bg-gold hover:bg-gold-dark text-white text-sm font-semibold px-5 py-2.5 rounded-pill transition-colors shadow-gold whitespace-nowrap">
-          {ctaText}
-        </Link>
-      </div>
+    <header className="w">
+      <Link className="logo" href="/">esimcard.cz</Link>
+      <nav>
+        <a href="#tarife">Tarife</a>
+        <a href="#ablauf">Ablauf</a>
+        <a href="#faq">FAQ</a>
+        <Link href="/blog">Blog</Link>
+      </nav>
+      <span className="lang">DE · EN</span>
     </header>
   );
 }
