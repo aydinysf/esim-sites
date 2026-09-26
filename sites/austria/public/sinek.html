@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SİNEK — Prototype v0.1</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#d9e2d0}
+  body{touch-action:none;user-select:none}
+  #game{position:relative;width:100vw;height:100dvh;overflow:hidden;background:
+    linear-gradient(#dfe8d7 0 68%,#b9a17d 68% 100%);
+  }
+  /* simple kitchen */
+  .cabinet{position:absolute;left:0;right:0;top:13%;height:27%;background:
+    linear-gradient(90deg,#c5d0c0 0 24%,#d9e0d4 24% 25%,#c5d0c0 25% 49%,#d9e0d4 49% 50%,#c5d0c0 50% 74%,#d9e0d4 74% 75%,#c5d0c0 75%);
+    border-bottom:8px solid #8e9b88}
+  .counter{position:absolute;left:0;right:0;bottom:28%;height:7%;background:#8e7155;box-shadow:0 -8px 0 #b99a76}
+  .plate{position:absolute;left:50%;top:48%;width:110px;height:26px;transform:translateX(-50%);border-radius:50%;background:#eee;box-shadow:0 8px 0 #c9c9c9}
+  .hud{position:absolute;top:0;left:0;right:0;padding:14px 16px;display:flex;justify-content:space-between;z-index:10;font-weight:800;color:#172016}
+  .pill{background:rgba(255,255,255,.78);border:2px solid rgba(0,0,0,.08);border-radius:18px;padding:8px 12px;box-shadow:0 3px 10px rgba(0,0,0,.08)}
+  #combo{transition:transform .1s}
+  #combo.hot{transform:scale(1.18)}
+  #fly{position:absolute;left:50%;top:50%;width:52px;height:52px;z-index:5;display:none;will-change:transform}
+  .fly-body{position:absolute;left:18px;top:17px;width:19px;height:28px;border-radius:50%;background:#242424;box-shadow:0 2px 0 #111}
+  .wing{position:absolute;top:10px;width:25px;height:17px;background:rgba(245,250,255,.72);border:2px solid rgba(80,90,100,.3);border-radius:70% 30% 60% 40%}
+  .wing.l{left:0;transform:rotate(-25deg)}
+  .wing.r{right:0;transform:scaleX(-1) rotate(-25deg)}
+  .eye{position:absolute;top:20px;width:5px;height:5px;border-radius:50%;background:#e9f2ff}
+  .eye.l{left:21px}.eye.r{left:29px}
+  .leg{position:absolute;width:17px;height:2px;background:#222;top:39px}
+  .leg.a{left:2px;transform:rotate(20deg)}.leg.b{right:2px;transform:rotate(-20deg)}
+  #tapFx{position:absolute;z-index:8;pointer-events:none;font-size:44px;display:none;transform:translate(-50%,-50%)}
+  #scoreText{position:absolute;z-index:9;pointer-events:none;font-weight:900;font-size:24px;display:none;transform:translate(-50%,-50%);color:#1e5d25;text-shadow:0 2px #fff}
+  #start{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(24,34,23,.22);backdrop-filter:blur(3px)}
+  .card{width:min(88vw,380px);padding:28px;border-radius:24px;background:#fff;box-shadow:0 18px 60px rgba(0,0,0,.22);text-align:center}
+  h1{margin:0 0 8px;font-size:42px;letter-spacing:2px}
+  .sub{margin:0 0 22px;color:#596257}
+  button{border:0;border-radius:16px;padding:15px 26px;font-size:20px;font-weight:900;background:#182018;color:white;cursor:pointer}
+  #hint{position:absolute;bottom:7%;left:50%;transform:translateX(-50%);z-index:4;color:#fff;font-weight:800;text-shadow:0 2px 4px #333;text-align:center;white-space:nowrap}
+  #gameover{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.35)}
+  #gameover .card{padding:24px}
+  .small{font-size:14px;color:#687068;margin-top:10px}
+</style>
+</head>
+<body>
+<div id="game">
+  <div class="cabinet"></div>
+  <div class="counter"></div>
+  <div class="plate"></div>
+
+  <div class="hud">
+    <div class="pill">🪙 <span id="coins">0</span></div>
+    <div class="pill" id="combo">🔥 COMBO ×0</div>
+  </div>
+
+  <div id="fly" aria-label="sinek">
+    <div class="wing l"></div><div class="wing r"></div>
+    <div class="fly-body"></div>
+    <div class="eye l"></div><div class="eye r"></div>
+    <div class="leg a"></div><div class="leg b"></div>
+  </div>
+
+  <div id="tapFx">👋</div>
+  <div id="scoreText">+1</div>
+  <div id="hint">Sineği yakala! 👆</div>
+
+  <div id="start">
+    <div class="card">
+      <h1>🪰 SİNEK</h1>
+      <p class="sub">İlk prototip — 30 saniyelik av</p>
+      <button id="startBtn">OYNA</button>
+      <div class="small">Sineğe dokun. Hızlı öldürürsen combo kazanırsın.</div>
+    </div>
+  </div>
+
+  <div id="gameover">
+    <div class="card">
+      <h2>🪰 Av Bitti!</h2>
+      <p>Coin: <b id="finalCoins">0</b></p>
+      <p>En yüksek combo: <b id="finalCombo">0</b></p>
+      <button id="againBtn">TEKRAR OYNA</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const game = document.getElementById('game');
+  const fly = document.getElementById('fly');
+  const coinsEl = document.getElementById('coins');
+  const comboEl = document.getElementById('combo');
+  const start = document.getElementById('start');
+  const gameover = document.getElementById('gameover');
+  const startBtn = document.getElementById('startBtn');
+  const againBtn = document.getElementById('againBtn');
+  const tapFx = document.getElementById('tapFx');
+  const scoreText = document.getElementById('scoreText');
+  const hint = document.getElementById('hint');
+
+  let running=false, coins=0, combo=0, bestCombo=0;
+  let flyX=0, flyY=0, vx=0, vy=0, last=0, spawnTimer=0, comboTimer=0, timeLeft=30;
+  let audioCtx=null;
+
+  function sound(type){
+    try{
+      audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      const now=audioCtx.currentTime;
+      if(type==='hit'){o.frequency.setValueAtTime(180,now);o.frequency.exponentialRampToValueAtTime(70,now+.09)}
+      else {o.frequency.setValueAtTime(500,now);o.frequency.exponentialRampToValueAtTime(180,now+.07)}
+      g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.12,now+.01);g.gain.exponentialRampToValueAtTime(.0001,now+.11);
+      o.start(now);o.stop(now+.12);
+    }catch(e){}
+  }
+
+  function reset(){
+    running=true; coins=0; combo=0; bestCombo=0; timeLeft=30; spawnTimer=0; comboTimer=0;
+    coinsEl.textContent='0'; updateCombo();
+    start.style.display='none'; gameover.style.display='none'; hint.textContent='Sineği yakala! 👆';
+    spawnFly(true);
+  }
+
+  function updateCombo(){
+    comboEl.textContent=`🔥 COMBO ×${combo}`;
+    comboEl.classList.toggle('hot', combo>0);
+  }
+
+  function spawnFly(first=false){
+    const r=game.getBoundingClientRect();
+    flyX=50+Math.random()*(r.width-100);
+    flyY=90+Math.random()*(r.height*0.58);
+    const speed=first?120:90+Math.random()*80+combo*3;
+    const angle=Math.random()*Math.PI*2;
+    vx=Math.cos(angle)*speed; vy=Math.sin(angle)*speed;
+    fly.style.display='block';
+    fly.style.transform=`translate(${flyX-26}px,${flyY-26}px)`;
+  }
+
+  function hit(e){
+    if(!running) return;
+    const rect=game.getBoundingClientRect();
+    const x=e.clientX-rect.left, y=e.clientY-rect.top;
+    const dist=Math.hypot(x-flyX,y-flyY);
+    if(dist>48) return;
+
+    e.preventDefault();
+    coins += 1 + Math.floor(combo/5);
+    combo++; bestCombo=Math.max(bestCombo,combo); comboTimer=2.5;
+    coinsEl.textContent=coins; updateCombo();
+    sound('hit');
+
+    tapFx.style.left=x+'px'; tapFx.style.top=y+'px'; tapFx.style.display='block';
+    scoreText.textContent='+'+(1+Math.floor(combo/5));
+    scoreText.style.left=x+'px'; scoreText.style.top=(y-28)+'px'; scoreText.style.display='block';
+    setTimeout(()=>{tapFx.style.display='none';scoreText.style.display='none'},140);
+
+    fly.style.display='none';
+    spawnTimer=.15;
+  }
+
+  game.addEventListener('pointerdown', hit, {passive:false});
+
+  function end(){
+    running=false; fly.style.display='none';
+    document.getElementById('finalCoins').textContent=coins;
+    document.getElementById('finalCombo').textContent=bestCombo;
+    gameover.style.display='flex';
+  }
+
+  function frame(t){
+    const dt=Math.min(.035,(t-last)/1000||0); last=t;
+    if(running){
+      timeLeft-=dt;
+      if(timeLeft<=0){end(); requestAnimationFrame(frame); return;}
+
+      comboTimer-=dt;
+      if(comboTimer<=0 && combo!==0){combo=0;updateCombo()}
+
+      if(fly.style.display!=='none'){
+        flyX += vx*dt; flyY += vy*dt;
+        const r=game.getBoundingClientRect(), pad=35;
+        if(flyX<pad || flyX>r.width-pad){vx*=-1;flyX=Math.max(pad,Math.min(r.width-pad,flyX))}
+        if(flyY<75 || flyY>r.height*.68){vy*=-1;flyY=Math.max(75,Math.min(r.height*.68,flyY))}
+        // subtle wobble
+        const wobble=Math.sin(t/120)*9;
+        fly.style.transform=`translate(${flyX-26+wobble}px,${flyY-26}px) rotate(${vx<0?-12:12}deg)`;
+      } else {
+        spawnTimer-=dt;
+        if(spawnTimer<=0) spawnFly();
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  startBtn.addEventListener('click', reset);
+  againBtn.addEventListener('click', reset);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
