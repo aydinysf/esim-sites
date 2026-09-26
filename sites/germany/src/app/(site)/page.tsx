@@ -23,6 +23,15 @@ export default async function HomePage() {
   const ctaText = homepage?.heroCtaText || "Zeig mir die Tarife";
   const ctaHref = homepage?.headerCtaHref || "#tarife";
 
+  
+  const howItWorksTitle = homepage?.howItWorksTitle || "In 3 einfachen Schritten online";
+  const rawSteps = homepage?.howItWorksSteps as Array<{ title?: string; description?: string; step?: string }> | null;
+  const stepsList = (Array.isArray(rawSteps) && rawSteps.length > 0) ? rawSteps : [
+    { step: "01", title: "Tarif für Deutschland wählen", description: "Wähle das passende Datenpaket für deine Reise. Der QR-Code wird sofort per E-Mail geliefert." },
+    { step: "02", title: "QR-Code scannen", description: "Scanne den QR-Code in den Einstellungen deines Smartphones unter 'Mobilfunk hinzufügen'." },
+    { step: "03", title: "Sofort verknüpft & surfen", description: "Aktiviere die Datenleitung bei deiner Ankunft. Du bist sofort mit dem besten Netz verbunden." }
+  ];
+
   return (
     <>
       <ProductListJsonLd packages={packages} siteUrl={SITE_URL} />
@@ -62,24 +71,18 @@ export default async function HomePage() {
 
       <section id="ablauf">
         <div className="eyebrow" style={{ color: "var(--c6)" }}>IN DREI SCHRITTEN ONLINE</div>
-        <h2>undefined</h2>
-        <p className="lead" style={{ fontSize: "16px" }}>undefined</p>
+        <h2>{howItWorksTitle}</h2>
+        <p className="lead" style={{ fontSize: "16px" }}>
+          In weniger als 2 Minuten surffähig — ganz ohne physische SIM-Karte.
+        </p>
         <div className="steps">
-          <div className="step-card">
-            <div className="step-num">01</div>
-            <h3>undefined</h3>
-            <p>undefined</p>
-          </div>
-          <div className="step-card">
-            <div className="step-num">02</div>
-            <h3>undefined</h3>
-            <p>undefined</p>
-          </div>
-          <div className="step-card">
-            <div className="step-num">03</div>
-            <h3>undefined</h3>
-            <p>undefined</p>
-          </div>
+          {stepsList.map((step, idx) => (
+            <div key={idx} className="step-card">
+              <div className="step-num">{step.step || `0${idx + 1}`}</div>
+              <h3>{step.title}</h3>
+              <p>{step.description}</p>
+            </div>
+          ))}
         </div>
       </section>
 
