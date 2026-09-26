@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getTranslation, LangMode } from "@/lib/i18n";
 
 interface Props {
   headline?: string;
@@ -16,18 +17,31 @@ export default function HeroBanner({
   subheadline,
   ctaText,
   ctaHref,
-  nativeCountryName = "ÖSTERREICH",
-  activeCity = "Wien",
-  tickerCities = "WIEN ✦ SALZBURG ✦ INNSBRUCK ✦ GRAZ ✦ LINZ ✦ KLAGENFURT ✦ BREGENZ"
+  nativeCountryName = "ČESKO",
+  activeCity = "Prag",
+  tickerCities = "PRAG ✦ BRÜNN ✦ OSTRAU ✦ PILSEN ✦ REICHENBERG ✦ BUDWEIS ✦ OLMÜTZ"
 }: Props) {
   const [deviceResult, setDeviceResult] = useState("");
+  const [lang, setLang] = useState<LangMode>("NATIVE");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("polosim_lang") as LangMode;
+    if (saved) setLang(saved);
+
+    const handleLangChange = (e: any) => {
+      if (e.detail) setLang(e.detail);
+    };
+
+    window.addEventListener("polosim_lang_change", handleLangChange);
+    return () => window.removeEventListener("polosim_lang_change", handleLangChange);
+  }, []);
 
   const handleDeviceChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     if (val === "1") {
-      setDeviceResult("✓ Dein Gerät ist 100% eSIM-kompatibel!");
+      setDeviceResult(getTranslation("device_check_success", lang));
     } else if (val === "0") {
-      setDeviceResult("✕ Dieses Gerät unterstützt evtl. keine eSIM.");
+      setDeviceResult(getTranslation("device_check_warn", lang));
     } else {
       setDeviceResult("");
     }
@@ -44,27 +58,27 @@ export default function HeroBanner({
           {/* Eyebrow Tag */}
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/30 text-cyan-400 font-mono text-xs font-bold tracking-widest uppercase mb-6 shadow-sm">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#38bdf8]" />
-            <span>LIVE · NETZABDECKUNG {nativeCountryName}</span>
+            <span>{getTranslation("eyebrow_live", lang)}</span>
           </div>
 
-          {/* Headline with Exact Multi-color Gradient Styling matching reference image */}
+          {/* Headline with Multi-color Gradient Styling */}
           <h1 className="font-extrabold text-4xl sm:text-5xl lg:text-[62px] leading-[1.05] tracking-tight text-white mb-6">
-            Verbinde dich <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#38bdf8] to-[#818cf8]">bevor </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a855f7] to-[#c084fc]">du </span><br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f472b6] to-[#ec4899]">landest</span>
+            {getTranslation("headline_p1", lang)} <br className="hidden sm:inline" />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#38bdf8] to-[#818cf8]">{getTranslation("headline_p2_1", lang)}</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#a855f7] to-[#c084fc]">{getTranslation("headline_p2_2", lang)}</span><br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#f472b6] to-[#ec4899]">{getTranslation("headline_p3", lang).replace(".", "")}</span>
             <span className="text-[#ef4444]">.</span>
           </h1>
 
           {/* Subheadline Paragraph */}
           <p className="text-[#94a3b8] text-base sm:text-lg leading-relaxed max-w-[540px] mb-8 font-normal">
-            {subheadline || `Prepaid-eSIM ohne Vertrag und ohne Roaming-Falle. QR-Code direkt per E-Mail — aktiv, bevor das Gepäckband startet.`}
+            {subheadline || getTranslation("subheadline_fallback", lang)}
           </p>
 
           {/* Device Compatibility Check Card */}
           <div className="w-full max-w-[540px] bg-[#162544]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-5 sm:p-6 shadow-2xl">
             <label htmlFor="dev" className="block text-white font-semibold text-sm sm:text-base mb-3.5">
-              Unterstützt dein Handy eSIM?
+              {getTranslation("device_check_title", lang)}
             </label>
             <div className="flex flex-col sm:flex-row gap-3">
               <select
@@ -72,7 +86,7 @@ export default function HeroBanner({
                 onChange={handleDeviceChange}
                 className="flex-1 bg-[#1e3056] border border-white/15 rounded-xl px-4 py-3.5 text-white text-sm font-medium focus:outline-none focus:border-cyan-400 cursor-pointer"
               >
-                <option value="">Gerät wählen</option>
+                <option value="">{getTranslation("device_check_select", lang)}</option>
                 <option value="1">iPhone XS / XR oder neuer</option>
                 <option value="1">Samsung Galaxy S20 oder neuer</option>
                 <option value="1">Google Pixel 3 oder neuer</option>
@@ -82,7 +96,7 @@ export default function HeroBanner({
                 href={ctaHref || "#tarife"}
                 className="bg-gradient-to-r from-[#38bdf8] via-[#818cf8] to-[#c084fc] text-[#060714] font-bold px-6 py-3.5 rounded-xl shadow-[0_0_25px_rgba(56,189,248,0.45)] hover:shadow-[0_0_35px_rgba(168,85,247,0.65)] hover:scale-[1.02] transition-all duration-300 text-center whitespace-nowrap text-sm sm:text-base flex items-center justify-center"
               >
-                {ctaText || "Zeig mir die Tarife"}
+                {ctaText || getTranslation("device_check_btn", lang)}
               </a>
             </div>
             {deviceResult && (
@@ -93,7 +107,7 @@ export default function HeroBanner({
           </div>
         </div>
 
-        {/* Right Column - Phone / QR Code Stage Mockup matching reference image */}
+        {/* Right Column - Phone / QR Code Stage Mockup */}
         <div className="lg:col-span-5 flex justify-center lg:justify-end relative mt-6 lg:mt-0">
           <div className="w-full max-w-[300px] sm:max-w-[320px] relative">
             
@@ -113,7 +127,7 @@ export default function HeroBanner({
 
                 {/* Top Monospace Title inside Card */}
                 <div className="text-[11px] font-mono tracking-[0.25em] text-cyan-400 font-bold mb-6 text-center uppercase">
-                  ESIM · SIGNAL
+                  {getTranslation("stage_title", lang)}
                 </div>
 
                 {/* Crisp White QR Code Container */}
@@ -123,19 +137,15 @@ export default function HeroBanner({
                     viewBox="0 0 100 100"
                     fill="currentColor"
                   >
-                    {/* Corner Position Detection Pattern Top-Left */}
                     <rect x="5" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" strokeWidth="6" />
                     <rect x="14" y="14" width="12" height="12" rx="2" fill="currentColor" />
 
-                    {/* Corner Position Detection Pattern Top-Right */}
                     <rect x="65" y="5" width="30" height="30" rx="4" fill="none" stroke="currentColor" strokeWidth="6" />
                     <rect x="74" y="14" width="12" height="12" rx="2" fill="currentColor" />
 
-                    {/* Corner Position Detection Pattern Bottom-Left */}
                     <rect x="5" y="65" width="30" height="30" rx="4" fill="none" stroke="currentColor" strokeWidth="6" />
                     <rect x="14" y="74" width="12" height="12" rx="2" fill="currentColor" />
 
-                    {/* QR Code Data Dots & Squares */}
                     <rect x="42" y="10" width="6" height="6" rx="1" />
                     <rect x="52" y="10" width="6" height="6" rx="1" />
                     <rect x="42" y="22" width="6" height="6" rx="1" />
@@ -158,24 +168,24 @@ export default function HeroBanner({
                   </svg>
                 </div>
 
-                {/* Scan & Connect Text */}
+                {/* Scan & Connect Text (Reactive Translated) */}
                 <div className="font-extrabold text-xl text-white tracking-tight mb-4">
-                  Scan & Connect
+                  {getTranslation("stage_scan", lang)}
                 </div>
 
                 {/* Active City Pill Badge */}
                 <div className="bg-[#0b243b]/90 border border-cyan-500/40 text-cyan-300 font-mono text-xs px-4 py-1.5 rounded-full inline-flex items-center gap-2 font-semibold shadow-inner">
                   <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                  <span>Aktiv in {activeCity}</span>
+                  <span>{lang === "EN" ? `Active in ${activeCity}` : getTranslation("stage_active_in", lang)}</span>
                 </div>
 
               </div>
             </div>
 
-            {/* Bottom Right Floating "Live in 5 Min." Badge */}
+            {/* Bottom Right Floating Badge */}
             <div className="absolute -bottom-3 -right-4 sm:-right-6 z-20 bg-[#162544]/95 border border-white/20 backdrop-blur-xl rounded-xl px-4 py-2.5 font-mono text-xs text-white shadow-2xl flex items-center gap-2 font-semibold tracking-wide border-t-white/30">
               <span className="text-amber-400 text-sm">⚡</span>
-              <span>Live in 5 Min.</span>
+              <span>{getTranslation("stage_live_5min", lang)}</span>
             </div>
 
           </div>
