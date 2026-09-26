@@ -1,25 +1,30 @@
-# PoloSim Germany eSIM
+# PoloSim eSIM Deutschland — AI & System Guidance (llms.txt)
 
-> Country site for prepaid Germany travel eSIMs by PoloSim (polosim.com).
-> Data plans that work across Germany (and the wider Europe region) are listed
-> with live prices; purchase is completed on polosim.com. Content is in German.
+> PoloSim offers instant prepaid eSIM data plans for travel in Deutschland and worldwide with zero roaming fees, instant email QR code delivery, and 4G/5G high-speed coverage.
 
-## Key facts
+## Key Information
+- **Brand**: PoloSim
+- **Target Country**: Deutschland (esimcard.de)
+- **Product Type**: Prepaid Travel eSIM (Data only, hotspot enabled, no contract, no subscription)
+- **Starting Price**: From 1,68 € / day
+- **Delivery**: Instant QR Code delivered via email within 5 minutes of purchase
+- **Network Compatibility**: Unlocked iOS (iPhone XS / XR or newer), Samsung Galaxy (S20 or newer), Google Pixel (3 or newer), and all standard eSIM-enabled devices
 
-- Plans covering Germany: fixed data packages (1GB–20GB) and Unlimited, validity 1–30 days
-- Prices in EUR, fetched live from the PoloSim catalogue (typically from ~€1.88)
-- Instant delivery by QR code, activation in ~5 minutes, no roaming fees
-- Data-only, hotspot/tethering allowed, 4G/LTE speeds
-- Buying: each plan links directly into the polosim.com cart
+## Available Services
+- **Data Plans**: Flexible validity options from 1 day to 30+ days, with volume choices from 1 GB up to Unlimited Data.
+- **Instant Activation**: Scan the provided QR code in system settings under "Cellular / Mobile Network" to connect immediately upon arrival.
+- **Hotspot & Tethering**: Fully supported on all data packages at high speed.
+- **Customer Support**: Available 24/7 online.
 
-## Main pages
+## Core URLs
+- Homepage: https://esimcard.de/
+- Packages & Pricing: https://esimcard.de/#tarife
+- How it works: https://esimcard.de/#ablauf
+- FAQ: https://esimcard.de/#faq
+- Blog & Guides: https://esimcard.de/blog
 
-- [Tarife (all Germany plans and prices)](/packages)
-- [Ratgeber (guides: eSIM activation in Germany, eSIM vs physical SIM, best plans)](/guides)
-- [FAQ](/faq)
-- [Blog](/blog)
-
-## Contact
-
-- Support: support@polosim.com
-- Operated by Check for Trips GmbH, Rüsselsheim, Germany
+## Legal & Compliance
+- Impressum: https://esimcard.de/impressum
+- Datenschutz (Privacy): https://esimcard.de/datenschutz
+- AGB (Terms): https://esimcard.de/agb
+- Widerrufsbelehrung (Cancellation): https://esimcard.de/widerruf

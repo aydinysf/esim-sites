@@ -44,6 +44,15 @@ export default function Footer() {
 
         <div className="text-xs text-[var(--soft)] font-mono text-center md:text-right">
           © {new Date().getFullYear()} PoloSim. {getTranslation("footer_rights", lang)}
+        <div className="flex items-center justify-center gap-4 text-xs text-[var(--soft)] mt-4">
+          <Link href="/impressum" className="hover:text-white transition-colors">Impressum</Link>
+          <span>·</span>
+          <Link href="/datenschutz" className="hover:text-white transition-colors">Datenschutz</Link>
+          <span>·</span>
+          <Link href="/agb" className="hover:text-white transition-colors">AGB</Link>
+          <span>·</span>
+          <Link href="/widerruf" className="hover:text-white transition-colors">Widerruf</Link>
+        </div>
         </div>
       </div>
     </footer>
