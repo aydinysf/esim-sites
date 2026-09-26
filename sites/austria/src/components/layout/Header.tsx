@@ -4,17 +4,17 @@ import Image from "next/image";
 export default function Header() {
   return (
     <header>
-      <Link href="/" className="flex items-center gap-3 decoration-none">
+      <Link href="/" className="flex items-center gap-4 text-decoration-none">
         <div className="logo-box" />
         <Image
           src="/images/polosim-logo.png"
           alt="PoloSim"
-          width={180}
-          height={48}
+          width={400}
+          height={120}
           priority
-          className="h-8 w-auto object-contain"
+          className="h-16 sm:h-20 lg:h-24 w-auto object-contain"
         />
-        <span className="logo-text text-lg border-l border-white/20 pl-3">
+        <span className="logo-text text-xl sm:text-2xl border-l-2 border-white/20 pl-4">
           esimcard.at
         </span>
       </Link>
@@ -26,7 +26,7 @@ export default function Header() {
         <Link href="/blog">Blog</Link>
       </nav>
 
-      <span className="font-mono text-xs font-bold tracking-widest text-[var(--soft)]">DE · EN</span>
+      <span className="font-mono text-sm font-bold tracking-widest text-[var(--soft)]">DE · EN</span>
     </header>
   );
 }
