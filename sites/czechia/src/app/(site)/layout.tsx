@@ -5,9 +5,11 @@ export const dynamic = "force-dynamic";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="w">
+    <div className="min-h-screen flex flex-col w-full">
       <Header />
-      <main className="min-h-screen">{children}</main>
+      <main className="flex-1 w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)] py-6">
+        {children}
+      </main>
       <Footer />
     </div>
   );
