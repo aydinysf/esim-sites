@@ -3,200 +3,1184 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>SİNEK — Prototype v0.1</title>
+<title>SİNEK — Mega Sürüm v0.6</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,sans-serif;background:#d9e2d0}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0d1117}
   body{touch-action:none;user-select:none}
-  #game{position:relative;width:100vw;height:100dvh;overflow:hidden;background:
-    linear-gradient(#dfe8d7 0 68%,#b9a17d 68% 100%);
+  
+  #game-container{position:relative;width:100vw;height:100dvh;overflow:hidden;transition:background 0.6s ease}
+  
+  /* Bölüm Ortamları */
+  .theme-kitchen{background:linear-gradient(#dce7d4 0 65%,#baa07b 65% 100%)}
+  .theme-salon{background:linear-gradient(#f4ebd9 0 65%,#8d6e63 65% 100%)}
+  .theme-balcony{background:linear-gradient(#cbe7ff 0 65%,#90a4ae 65% 100%)}
+  .theme-night{background:linear-gradient(#0a0e14 0 65%,#1c2128 65% 100%)}
+  .theme-picnic{background:linear-gradient(#c8e6c9 0 65%,#5d4037 65% 100%)}
+
+  .counter{position:absolute;left:0;right:0;bottom:30%;height:10%;background:rgba(0,0,0,0.18);box-shadow:0 -6px 0 rgba(0,0,0,0.1)}
+
+  /* 🔦 Gece Modu Feneri */
+  #night-overlay{
+    position:absolute;inset:0;z-index:18;pointer-events:none;display:none;
+    background:radial-gradient(circle 125px at var(--fx, 50%) var(--fy, 50%), transparent 0%, rgba(0,0,0,0.94) 80%);
   }
-  /* simple kitchen */
-  .cabinet{position:absolute;left:0;right:0;top:13%;height:27%;background:
-    linear-gradient(90deg,#c5d0c0 0 24%,#d9e0d4 24% 25%,#c5d0c0 25% 49%,#d9e0d4 49% 50%,#c5d0c0 50% 74%,#d9e0d4 74% 75%,#c5d0c0 75%);
-    border-bottom:8px solid #8e9b88}
-  .counter{position:absolute;left:0;right:0;bottom:28%;height:7%;background:#8e7155;box-shadow:0 -8px 0 #b99a76}
-  .plate{position:absolute;left:50%;top:48%;width:110px;height:26px;transform:translateX(-50%);border-radius:50%;background:#eee;box-shadow:0 8px 0 #c9c9c9}
-  .hud{position:absolute;top:0;left:0;right:0;padding:14px 16px;display:flex;justify-content:space-between;z-index:10;font-weight:800;color:#172016}
-  .pill{background:rgba(255,255,255,.78);border:2px solid rgba(0,0,0,.08);border-radius:18px;padding:8px 12px;box-shadow:0 3px 10px rgba(0,0,0,.08)}
-  #combo{transition:transform .1s}
-  #combo.hot{transform:scale(1.18)}
-  #fly{position:absolute;left:50%;top:50%;width:52px;height:52px;z-index:5;display:none;will-change:transform}
-  .fly-body{position:absolute;left:18px;top:17px;width:19px;height:28px;border-radius:50%;background:#242424;box-shadow:0 2px 0 #111}
-  .wing{position:absolute;top:10px;width:25px;height:17px;background:rgba(245,250,255,.72);border:2px solid rgba(80,90,100,.3);border-radius:70% 30% 60% 40%}
-  .wing.l{left:0;transform:rotate(-25deg)}
-  .wing.r{right:0;transform:scaleX(-1) rotate(-25deg)}
-  .eye{position:absolute;top:20px;width:5px;height:5px;border-radius:50%;background:#e9f2ff}
-  .eye.l{left:21px}.eye.r{left:29px}
-  .leg{position:absolute;width:17px;height:2px;background:#222;top:39px}
-  .leg.a{left:2px;transform:rotate(20deg)}.leg.b{right:2px;transform:rotate(-20deg)}
-  #tapFx{position:absolute;z-index:8;pointer-events:none;font-size:44px;display:none;transform:translate(-50%,-50%)}
-  #scoreText{position:absolute;z-index:9;pointer-events:none;font-weight:900;font-size:24px;display:none;transform:translate(-50%,-50%);color:#1e5d25;text-shadow:0 2px #fff}
-  #start{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(24,34,23,.22);backdrop-filter:blur(3px)}
-  .card{width:min(88vw,380px);padding:28px;border-radius:24px;background:#fff;box-shadow:0 18px 60px rgba(0,0,0,.22);text-align:center}
-  h1{margin:0 0 8px;font-size:42px;letter-spacing:2px}
-  .sub{margin:0 0 22px;color:#596257}
-  button{border:0;border-radius:16px;padding:15px 26px;font-size:20px;font-weight:900;background:#182018;color:white;cursor:pointer}
-  #hint{position:absolute;bottom:7%;left:50%;transform:translateX(-50%);z-index:4;color:#fff;font-weight:800;text-shadow:0 2px 4px #333;text-align:center;white-space:nowrap}
-  #gameover{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.35)}
-  #gameover .card{padding:24px}
-  .small{font-size:14px;color:#687068;margin-top:10px}
+
+  /* 🍽️ Hedef Alanları */
+  .food-target{
+    position:absolute;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    pointer-events:none;transform:translate(-50%,-50%);
+  }
+  .food-emoji{font-size:54px;filter:drop-shadow(0 6px 8px rgba(0,0,0,0.25))}
+  .food-hp-bg{width:64px;height:8px;background:rgba(0,0,0,0.5);border-radius:6px;overflow:hidden;border:1.5px solid #fff;margin-top:2px;display:none}
+  .food-hp-fill{width:100%;height:100%;background:#4caf50;transition:width .15s}
+  .food-ring{position:absolute;width:95px;height:95px;border:2px dashed rgba(245,158,11,0.6);border-radius:50%;animation:pulseRing 2s infinite linear}
+  @keyframes pulseRing{0%{transform:scale(0.95);opacity:0.8}50%{transform:scale(1.1);opacity:0.3}100%{transform:scale(0.95);opacity:0.8}}
+
+  /* 🧂 Çevresel Etkileşimli Nesneler */
+  .prop{position:absolute;z-index:12;cursor:pointer;display:flex;flex-direction:column;align-items:center;transition:transform .1s}
+  .prop:active{transform:scale(0.9)}
+  .prop-icon{font-size:38px;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.25))}
+  .prop-hint{font-size:9px;font-weight:900;background:rgba(0,0,0,0.6);color:#fff;padding:2px 6px;border-radius:8px;margin-top:-2px}
+
+  /* HUD */
+  .hud-top{position:absolute;top:0;left:0;right:0;padding:10px 14px;display:flex;flex-direction:column;gap:5px;z-index:25}
+  .hud-row{display:flex;justify-content:space-between;align-items:center}
+  .pill{background:rgba(255,255,255,0.92);backdrop-filter:blur(4px);border:2px solid rgba(0,0,0,0.08);border-radius:20px;padding:5px 12px;box-shadow:0 4px 10px rgba(0,0,0,0.08);font-size:13px;font-weight:800;color:#182018}
+  #combo{transition:transform .12s cubic-bezier(0.175, 0.885, 0.32, 1.275)}
+  #combo.hot{transform:scale(1.15);color:#d32f2f;border-color:#d32f2f}
+
+  .level-progress-wrap{width:100%;display:flex;flex-direction:column;gap:2px;align-items:center}
+  .level-info{font-size:11px;font-weight:900;color:#1b2419;text-shadow:0 1px 2px rgba(255,255,255,0.8)}
+  .theme-night .level-info{color:#fff;text-shadow:0 1px 4px #000}
+  .level-bar-bg{width:100%;height:8px;background:rgba(255,255,255,0.6);border-radius:6px;overflow:hidden;border:1px solid rgba(0,0,0,0.1)}
+  .level-bar-fill{height:100%;background:linear-gradient(90deg,#43a047,#1b5e20);width:0%;transition:width .2s ease-out}
+
+  /* 🚨 SÜRÜ AKINI UYARISI */
+  #swarm-banner{
+    position:absolute;top:18%;left:0;right:0;background:rgba(211,47,47,0.9);color:#fff;
+    font-size:20px;font-weight:900;text-align:center;padding:8px;z-index:28;display:none;
+    letter-spacing:2px;animation:swarmFlash .3s infinite alternate;box-shadow:0 0 20px #d32f2f;
+  }
+  @keyframes swarmFlash{from{transform:scale(0.98);opacity:0.8}to{transform:scale(1.02);opacity:1}}
+
+  /* Boss Bar */
+  #boss-bar-wrap{position:absolute;top:76px;left:50%;transform:translateX(-50%);width:min(80vw,320px);display:none;flex-direction:column;align-items:center;z-index:25}
+  .boss-label{font-size:12px;font-weight:900;color:#d32f2f;text-shadow:0 1px 2px #fff;margin-bottom:2px}
+  .boss-bar-bg{width:100%;height:12px;background:rgba(0,0,0,0.4);border-radius:10px;padding:2px;border:2px solid #fff}
+  .boss-bar-fill{height:100%;background:linear-gradient(90deg,#ff5252,#b71c1c);border-radius:8px;width:100%;transition:width .1s}
+
+  /* ⚡ Aktif Süper Yetenek Butonları (Yan Menü) */
+  .skills-bar{position:absolute;right:12px;top:40%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:25}
+  .skill-btn{
+    width:52px;height:52px;border-radius:50%;border:3px solid #fff;background:#1e293b;
+    color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;position:relative;box-shadow:0 4px 15px rgba(0,0,0,0.3);transition:transform .1s;
+  }
+  .skill-btn:active{transform:scale(0.9)}
+  .skill-btn:disabled{opacity:0.4;filter:grayscale(1);cursor:not-allowed}
+  .skill-cooldown{position:absolute;inset:0;background:rgba(0,0,0,0.65);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:12px;font-weight:900}
+
+  /* Alt Silah Barı */
+  .weapon-bar{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:25;background:rgba(255,255,255,0.92);padding:6px;border-radius:24px;box-shadow:0 6px 20px rgba(0,0,0,0.18)}
+  .weapon-btn{border:2px solid transparent;background:#f0f2ef;border-radius:18px;padding:7px 11px;font-weight:800;font-size:12px;color:#222;cursor:pointer;display:flex;align-items:center;gap:4px;transition:all .15s}
+  .weapon-btn.active{background:#1a251a;color:#fff;border-color:#1a251a;transform:scale(1.05)}
+  .weapon-btn:disabled{opacity:0.35;cursor:not-allowed}
+
+  /* Sinekler */
+  .creature{position:absolute;z-index:15;will-change:transform;cursor:pointer}
+  .fly-inner{position:relative;width:56px;height:56px}
+  .fly-body{position:absolute;left:20px;top:18px;width:18px;height:26px;border-radius:50%;background:#1a1a1a;box-shadow:0 2px 4px rgba(0,0,0,0.4)}
+  .wing{position:absolute;top:10px;width:24px;height:16px;background:rgba(240,248,255,0.75);border:1.5px solid rgba(100,110,120,0.3);border-radius:70% 30% 60% 40%}
+  .wing.l{left:2px;transform-origin:right center;animation:flapL .05s infinite alternate}
+  .wing.r{right:2px;transform-origin:left center;transform:scaleX(-1);animation:flapR .05s infinite alternate}
+  @keyframes flapL{from{transform:rotate(-35deg)}to{transform:rotate(10deg)}}
+  @keyframes flapR{from{transform:scaleX(-1) rotate(-35deg)}to{transform:scaleX(-1) rotate(10deg)}}
+  .eye{position:absolute;top:20px;width:5px;height:5px;border-radius:50%;background:#ff3333}
+  .eye.l{left:22px}.eye.r{left:30px}
+
+  /* Buz Tutmuş / Sersemlemiş Sinek */
+  .creature.frozen .fly-inner{filter:drop-shadow(0 0 8px #00e5ff)}
+  .creature.frozen .wing{animation-play-state:paused}
+  .creature.stunned .fly-inner{filter:hue-rotate(90deg)}
+  .stun-stars{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:14px;display:none}
+  .creature.stunned .stun-stars{display:block;animation:spinStars 1s infinite linear}
+  @keyframes spinStars{to{transform:translateX(-50%) rotate(360deg)}}
+
+  .dive-alert{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:16px;display:none;animation:bounce .4s infinite alternate}
+  @keyframes bounce{from{transform:translate(-50%,0)}to{transform:translate(-50%,-6px)}}
+  .creature.diving .dive-alert{display:block}
+
+  .creature.fast .fly-body{background:#2a4d69}
+  .creature.boomerang .fly-body{background:#9c27b0}
+  .creature.ninja .fly-body{background:#212121;box-shadow:0 0 8px #00e676}
+  .creature.bomb .fly-body{background:#d50000;box-shadow:0 0 10px #ff1744;animation:pulseBomb .3s infinite alternate}
+  @keyframes pulseBomb{from{transform:scale(1)}to{transform:scale(1.15)}}
+
+  .creature.boss .fly-inner{width:110px;height:110px}
+  .creature.boss .fly-body{left:38px;top:32px;width:38px;height:54px;background:#4a0e17}
+  .creature.boss .wing{width:46px;height:32px;top:18px}
+  .creature.boss .eye{width:9px;height:9px;top:38px}
+  .creature.boss .eye.l{left:42px}.creature.boss .eye.r{left:60px}
+
+  .creature.ladybug .fly-body{background:#e53935;border:2px solid #000}
+  .creature.ladybug .wing{display:none}
+  .creature.ladybug .eye{background:#000}
+  .creature.ladybug .dot{position:absolute;width:4px;height:4px;background:#000;border-radius:50%}
+
+  .fly-hp-wrap{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:36px;height:5px;background:rgba(0,0,0,0.5);border-radius:3px;overflow:hidden;display:none}
+  .fly-hp-fill{width:100%;height:100%;background:#4caf50}
+
+  /* 💥 Ezilme Lekesi (Juice Splat) */
+  .splat{position:absolute;pointer-events:none;z-index:6;transform:translate(-50%,-50%);font-size:26px;opacity:0.8;animation:splatFade 3s forwards}
+  @keyframes splatFade{0%{transform:translate(-50%,-50%) scale(0.6)}20%{transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
+
+  /* Duman / Tuz Efektleri */
+  .smoke-cloud{position:absolute;inset:0;background:rgba(76,175,80,0.3);z-index:22;pointer-events:none;animation:smokeFade 4s forwards;backdrop-filter:blur(2px)}
+  @keyframes smokeFade{0%{opacity:0}20%{opacity:1}80%{opacity:1}100%{opacity:0}}
+
+  .salt-cloud{position:absolute;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,0.8) 0%,transparent 70%);z-index:14;pointer-events:none;transform:translate(-50%,-50%);animation:saltPoof .6s forwards}
+  @keyframes saltPoof{0%{transform:translate(-50%,-50%) scale(0.2);opacity:1}100%{transform:translate(-50%,-50%) scale(1.4);opacity:0}}
+
+  /* Floating Text */
+  .float-text{position:absolute;pointer-events:none;font-weight:900;font-size:20px;z-index:30;transform:translate(-50%,-50%);animation:floatUp .55s forwards}
+  @keyframes floatUp{0%{opacity:1;transform:translate(-50%,-50%) scale(0.8)}50%{transform:translate(-50%,-80%) scale(1.2)}100%{opacity:0;transform:translate(-50%,-110%) scale(1)}}
+  .float-text.crit{color:#d32f2f;font-size:25px;text-shadow:0 0 6px #fff}
+  .float-text.coin{color:#fbc02d;text-shadow:0 1px 2px #000}
+  .float-text.warn{color:#ff1744;font-size:24px;text-shadow:0 0 8px #fff}
+
+  .particle{position:absolute;pointer-events:none;border-radius:50%;z-index:25;animation:partFade .4s forwards}
+  @keyframes partFade{to{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}
+
+  /* Modallar */
+  .modal{position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(10,15,10,0.6);backdrop-filter:blur(5px)}
+  .card{width:min(90vw,390px);padding:24px;border-radius:24px;background:#fff;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:center}
+  h1{margin:0 0 6px;font-size:32px;color:#182018}
+  .btn{border:0;border-radius:16px;padding:14px 22px;font-size:16px;font-weight:900;background:#1a251a;color:#fff;cursor:pointer;transition:transform .1s}
+  .btn:active{transform:scale(0.97)}
+  .btn-secondary{background:#e7ebe5;color:#242c23;margin-top:8px}
+  .shop-list{max-height:200px;overflow-y:auto;margin:14px 0;text-align:left;display:flex;flex-direction:column;gap:8px}
+  .shop-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f5f7f4;border-radius:14px;border:1px solid #e2e6e1}
+  .shop-item-info b{display:block;font-size:13px}
+  .shop-item-info span{font-size:11px;color:#6d756b}
+  .buy-btn{border:0;background:#2e7d32;color:#fff;padding:6px 12px;border-radius:10px;font-weight:800;font-size:12px;cursor:pointer}
+  .buy-btn:disabled{background:#9e9e9e}
 </style>
 </head>
 <body>
-<div id="game">
-  <div class="cabinet"></div>
+<div id="game-container" class="theme-kitchen">
   <div class="counter"></div>
-  <div class="plate"></div>
+  <div id="night-overlay"></div>
+  <div id="swarm-banner">🚨 SÜRÜ BASKINI GELİYOR! 🚨</div>
 
-  <div class="hud">
-    <div class="pill">🪙 <span id="coins">0</span></div>
-    <div class="pill" id="combo">🔥 COMBO ×0</div>
+  <!-- Dinamik Hedefler Konteyneri -->
+  <div id="targets-layer"></div>
+
+  <!-- 🧂 Etkileşimli Nesneler -->
+  <div class="prop" id="prop-salt" style="left:16%;top:58%">
+    <div class="prop-icon">🧂</div>
+    <div class="prop-hint">TUZ SAÇ</div>
+  </div>
+  <div class="prop" id="prop-soda" style="right:16%;top:58%">
+    <div class="prop-icon">🍾</div>
+    <div class="prop-hint">PATLAT</div>
   </div>
 
-  <div id="fly" aria-label="sinek">
-    <div class="wing l"></div><div class="wing r"></div>
-    <div class="fly-body"></div>
-    <div class="eye l"></div><div class="eye r"></div>
-    <div class="leg a"></div><div class="leg b"></div>
+  <!-- ⚡ Panik Yetenek Butonları -->
+  <div class="skills-bar">
+    <button class="skill-btn" id="skill-freeze" title="Buz Dondurma">
+      ❄️
+      <div class="skill-cooldown" id="cd-freeze">12</div>
+    </button>
+    <button class="skill-btn" id="skill-spray" title="Raid Sprey">
+      💨
+      <div class="skill-cooldown" id="cd-spray">18</div>
+    </button>
   </div>
 
-  <div id="tapFx">👋</div>
-  <div id="scoreText">+1</div>
-  <div id="hint">Sineği yakala! 👆</div>
-
-  <div id="start">
-    <div class="card">
-      <h1>🪰 SİNEK</h1>
-      <p class="sub">İlk prototip — 30 saniyelik av</p>
-      <button id="startBtn">OYNA</button>
-      <div class="small">Sineğe dokun. Hızlı öldürürsen combo kazanırsın.</div>
+  <!-- HUD -->
+  <div class="hud-top">
+    <div class="hud-row">
+      <div class="pill">🪙 <span id="coins-display">0</span></div>
+      <div class="pill" id="level-display">Bölüm 1: Mutfak</div>
+      <div class="pill" id="combo">🔥 ×0</div>
+    </div>
+    <div class="level-progress-wrap">
+      <div class="level-info"><span id="kills-display">0</span> / <span id="target-kills-display">12</span> Avlandı</div>
+      <div class="level-bar-bg"><div class="level-bar-fill" id="level-bar-fill"></div></div>
     </div>
   </div>
 
-  <div id="gameover">
+  <!-- Boss Bar -->
+  <div id="boss-bar-wrap">
+    <div class="boss-label">👑 ÖFKELİ DEV KRALİÇE!</div>
+    <div class="boss-bar-bg"><div class="boss-bar-fill" id="boss-hp-fill"></div></div>
+  </div>
+
+  <!-- Silahlar -->
+  <div class="weapon-bar" id="weapon-bar">
+    <button class="weapon-btn active" data-w="hand">✋ El</button>
+    <button class="weapon-btn" data-w="swatter" id="btn-swatter" disabled>🏸 Sineklik</button>
+    <button class="weapon-btn" data-w="elec" id="btn-elec" disabled>⚡ Elektrik</button>
+    <button class="weapon-btn" data-w="laser" id="btn-laser" disabled>🔫 Lazer</button>
+  </div>
+
+  <!-- Başlangıç Modalı -->
+  <div id="start-modal" class="modal">
     <div class="card">
-      <h2>🪰 Av Bitti!</h2>
-      <p>Coin: <b id="finalCoins">0</b></p>
-      <p>En yüksek combo: <b id="finalCombo">0</b></p>
-      <button id="againBtn">TEKRAR OYNA</button>
+      <h1>🪰 SİNEK</h1>
+      <p style="font-size:13px;color:#555;margin:0 0 14px">
+        Kaotik sinek sürüleri, masadaki tuzluk & soda ve süper yetenekler seni bekliyor!<br>
+        ⚠️ <b>Sakın Uğur Böceğine (🐞) Vurma!</b>
+      </p>
+      <button class="btn" style="width:100%" id="start-btn">AV BAŞLASIN</button>
+      <button class="btn btn-secondary" style="width:100%" id="shop-btn-main">🏪 CEPHANELİK</button>
+    </div>
+  </div>
+
+  <!-- Bölüm Sonu Modalı -->
+  <div id="level-clear-modal" class="modal" style="display:none">
+    <div class="card">
+      <div style="font-size:46px;margin-bottom:6px">🏆</div>
+      <h2 style="color:#2e7d32;margin:0 0 8px">BÖLÜM GEÇİLDİ!</h2>
+      <p style="font-size:14px;color:#555;margin:0 0 12px" id="clear-level-msg"></p>
+      <p style="font-size:16px;color:#333;margin:4px 0">Ödül: <b style="color:#f57f17">+100 🪙</b></p>
+      <button class="btn" style="width:100%;margin-top:14px" id="next-level-btn">SONRAKİ BÖLÜM</button>
+    </div>
+  </div>
+
+  <!-- Game Over Modalı -->
+  <div id="gameover-modal" class="modal" style="display:none">
+    <div class="card">
+      <div style="font-size:48px;margin-bottom:6px">💀</div>
+      <h2 style="color:#d32f2f;margin:0 0 8px">YEMEĞİ KAPTIRDIN!</h2>
+      <p style="font-size:14px;color:#555;margin:0 0 12px" id="gameover-reason"></p>
+      <p style="font-size:14px;color:#333;margin:4px 0">Toplam Bakiye: 🪙 <span id="final-total-coins">0</span></p>
+      <button class="btn" style="width:100%;margin-top:14px" id="again-btn">BÖLÜMÜ TEKRAR DENE</button>
+      <button class="btn btn-secondary" style="width:100%" id="shop-btn-end">🏪 MARKET</button>
+    </div>
+  </div>
+
+  <!-- Market Modalı -->
+  <div id="shop-modal" class="modal" style="display:none">
+    <div class="card">
+      <h2>🏪 Cephanelik / Market</h2>
+      <div class="shop-list" id="shop-items"></div>
+      <button class="btn" style="width:100%" id="close-shop-btn">TAMAM</button>
     </div>
   </div>
 </div>
 
 <script>
 (() => {
-  const game = document.getElementById('game');
-  const fly = document.getElementById('fly');
-  const coinsEl = document.getElementById('coins');
-  const comboEl = document.getElementById('combo');
-  const start = document.getElementById('start');
-  const gameover = document.getElementById('gameover');
-  const startBtn = document.getElementById('startBtn');
-  const againBtn = document.getElementById('againBtn');
-  const tapFx = document.getElementById('tapFx');
-  const scoreText = document.getElementById('scoreText');
-  const hint = document.getElementById('hint');
+  // --- BÖLÜMLER ---
+  const LEVELS = [
+    {
+      id:1, name:'Mutfak (Başlangıç)', theme:'theme-kitchen', targetKills:12, spawnRate:1.4, maxConcurrent:4,
+      chaosFactor:1.0, targets: [{ id:'t1', emoji:'🍯', type:'instant', xPct:0.5, yPct:0.54, move:false }]
+    },
+    {
+      id:2, name:'Salon (Pasta & Kaos)', theme:'theme-salon', targetKills:18, spawnRate:1.1, maxConcurrent:5,
+      chaosFactor:1.4, targets: [{ id:'t1', emoji:'🍰', type:'hp', maxHp:6, hp:6, xPct:0.5, yPct:0.54, move:false }]
+    },
+    {
+      id:3, name:'Balkon (Rüzgar & Sürü)', theme:'theme-balcony', targetKills:24, spawnRate:0.9, maxConcurrent:6,
+      chaosFactor:1.8, targets: [{ id:'t1', emoji:'🍉', type:'instant', xPct:0.5, yPct:0.54, move:'wind' }]
+    },
+    {
+      id:4, name:'Gece Odası (Karanlık Sürü)', theme:'theme-night', targetKills:28, spawnRate:0.75, maxConcurrent:7,
+      nightMode:true, chaosFactor:2.2, targets: [{ id:'t1', emoji:'🍇', type:'instant', xPct:0.5, yPct:0.54, move:false }]
+    },
+    {
+      id:5, name:'Piknik (Çifte Bela & Cehennem)', theme:'theme-picnic', targetKills:35, spawnRate:0.65, maxConcurrent:8,
+      chaosFactor:2.8, targets: [
+        { id:'t1', emoji:'🥩', type:'hp', maxHp:5, hp:5, xPct:0.32, yPct:0.54, move:false },
+        { id:'t2', emoji:'🧃', type:'instant', xPct:0.68, yPct:0.54, move:false }
+      ]
+    }
+  ];
 
-  let running=false, coins=0, combo=0, bestCombo=0;
-  let flyX=0, flyY=0, vx=0, vy=0, last=0, spawnTimer=0, comboTimer=0, timeLeft=30;
-  let audioCtx=null;
+  // Kalıcı Oyuncu Bilgileri
+  let player = { coins:0, unlockedWeapons:['hand'], currentWeapon:'hand', currentLevel:1 };
+  const saved = localStorage.getItem('sinek_save_mega');
+  if(saved){ try{ Object.assign(player, JSON.parse(saved)); }catch(e){} }
+  function savePlayer(){ localStorage.setItem('sinek_save_mega', JSON.stringify(player)); }
 
-  function sound(type){
+  // Silahlar
+  const WEAPONS = {
+    hand: { id:'hand', name:'El', icon:'✋', damage:1, radius:48, critRate:0.15, cost:0, desc:'Klasik tek vuruş.' },
+    swatter: { id:'swatter', name:'Sineklik', icon:'🏸', damage:2, radius:80, critRate:0.25, cost:60, desc:'Geniş alan taraması.' },
+    elec: { id:'elec', name:'Elektrikli', icon:'⚡', damage:3, radius:65, critRate:0.35, cost:180, desc:'Yüksek elektrik şoku.' },
+    laser: { id:'laser', name:'Lazer', icon:'🔫', damage:5, radius:45, critRate:0.65, cost:400, desc:'Kritik ışın darbesi.' }
+  };
+
+  // Oyun Durumu
+  let running = false;
+  let currentLevelIdx = (player.currentLevel - 1) % LEVELS.length;
+  let levelKills = 0;
+  let combo = 0;
+  let bestCombo = 0;
+  let comboTimer = 0;
+  let lastTime = 0;
+  let creatures = [];
+  let targets = [];
+  let bossActive = false;
+  let bossSpawned = false;
+  let spawnTimer = 0;
+  let windAngle = 0;
+  let swarmTimer = 8; // her 8-10 saniyede bir sürü kontrolü
+
+  // Yetenek Cooldown'ları
+  let cdFreeze = 0, cdSpray = 0;
+
+  // DOM
+  const container = document.getElementById('game-container');
+  const nightOverlay = document.getElementById('night-overlay');
+  const targetsLayer = document.getElementById('targets-layer');
+  const swarmBanner = document.getElementById('swarm-banner');
+  const coinsDisplay = document.getElementById('coins-display');
+  const levelDisplay = document.getElementById('level-display');
+  const comboDisplay = document.getElementById('combo');
+  const killsDisplay = document.getElementById('kills-display');
+  const targetKillsDisplay = document.getElementById('target-kills-display');
+  const levelBarFill = document.getElementById('level-bar-fill');
+  const bossBarWrap = document.getElementById('boss-bar-wrap');
+  const bossHpFill = document.getElementById('boss-hp-fill');
+  const weaponBar = document.getElementById('weapon-bar');
+
+  // Yetenek DOM
+  const btnFreeze = document.getElementById('skill-freeze');
+  const btnSpray = document.getElementById('skill-spray');
+  const cdFreezeEl = document.getElementById('cd-freeze');
+  const cdSprayEl = document.getElementById('cd-spray');
+
+  // Modallar
+  const startModal = document.getElementById('start-modal');
+  const levelClearModal = document.getElementById('level-clear-modal');
+  const gameoverModal = document.getElementById('gameover-modal');
+  const shopModal = document.getElementById('shop-modal');
+
+  // --- SES SİSTEMİ ---
+  let audioCtx = null;
+  function playSound(type){
     try{
-      audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
-      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-      o.connect(g); g.connect(audioCtx.destination);
-      const now=audioCtx.currentTime;
-      if(type==='hit'){o.frequency.setValueAtTime(180,now);o.frequency.exponentialRampToValueAtTime(70,now+.09)}
-      else {o.frequency.setValueAtTime(500,now);o.frequency.exponentialRampToValueAtTime(180,now+.07)}
-      g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.12,now+.01);g.gain.exponentialRampToValueAtTime(.0001,now+.11);
-      o.start(now);o.stop(now+.12);
+      audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+
+      if(type === 'hand' || type === 'swatter'){
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(160, now);
+        osc.frequency.exponentialRampToValueAtTime(35, now + 0.09);
+        gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+        osc.start(now); osc.stop(now + 0.1);
+      } else if(type === 'elec'){
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(320, now);
+        osc.frequency.linearRampToValueAtTime(60, now + 0.12);
+        gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.start(now); osc.stop(now + 0.13);
+      } else if(type === 'laser'){
+        osc.type = 'sine'; osc.frequency.setValueAtTime(950, now);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.13);
+        gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+        osc.start(now); osc.stop(now + 0.14);
+      } else if(type === 'freeze'){
+        osc.type = 'sine'; osc.frequency.setValueAtTime(700, now);
+        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.25);
+        gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now); osc.stop(now + 0.32);
+      } else if(type === 'pop'){
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(450, now);
+        osc.frequency.exponentialRampToValueAtTime(90, now + 0.15);
+        gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.start(now); osc.stop(now + 0.19);
+      } else if(type === 'bomb'){
+        osc.type = 'square'; osc.frequency.setValueAtTime(130, now);
+        osc.frequency.exponentialRampToValueAtTime(25, now + 0.35);
+        gain.gain.setValueAtTime(0.5, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+        osc.start(now); osc.stop(now + 0.36);
+      } else if(type === 'punish'){
+        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(90, now);
+        gain.gain.setValueAtTime(0.35, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.start(now); osc.stop(now + 0.32);
+      } else if(type === 'crit'){
+        osc.type = 'square'; osc.frequency.setValueAtTime(540, now);
+        osc.frequency.exponentialRampToValueAtTime(900, now + 0.1);
+        gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+        osc.start(now); osc.stop(now + 0.12);
+      }
     }catch(e){}
   }
 
-  function reset(){
-    running=true; coins=0; combo=0; bestCombo=0; timeLeft=30; spawnTimer=0; comboTimer=0;
-    coinsEl.textContent='0'; updateCombo();
-    start.style.display='none'; gameover.style.display='none'; hint.textContent='Sineği yakala! 👆';
-    spawnFly(true);
+  // --- HEDEFLERİ OLUŞTUR ---
+  function setupTargets(lvl){
+    targetsLayer.innerHTML = '';
+    targets = [];
+    const bound = container.getBoundingClientRect();
+
+    lvl.targets.forEach(tDef => {
+      const el = document.createElement('div');
+      el.className = 'food-target';
+      el.innerHTML = `
+        <div class="food-ring"></div>
+        <div class="food-emoji">${tDef.emoji}</div>
+        <div class="food-hp-bg"><div class="food-hp-fill"></div></div>
+      `;
+      targetsLayer.appendChild(el);
+
+      const obj = {
+        ...tDef,
+        el,
+        x: bound.width * tDef.xPct,
+        baseX: bound.width * tDef.xPct,
+        y: bound.height * tDef.yPct,
+        radius: 36,
+        curHp: tDef.hp || 1
+      };
+      if(tDef.type === 'hp'){
+        el.querySelector('.food-hp-bg').style.display = 'block';
+      }
+      targets.push(obj);
+      updateTargetPosition(obj);
+    });
   }
 
-  function updateCombo(){
-    comboEl.textContent=`🔥 COMBO ×${combo}`;
-    comboEl.classList.toggle('hot', combo>0);
+  function updateTargetPosition(t){
+    t.el.style.left = t.x + 'px';
+    t.el.style.top = t.y + 'px';
+    if(t.type === 'hp'){
+      const pct = (t.curHp / t.maxHp) * 100;
+      t.el.querySelector('.food-hp-fill').style.width = Math.max(0, pct) + '%';
+    }
   }
 
-  function spawnFly(first=false){
-    const r=game.getBoundingClientRect();
-    flyX=50+Math.random()*(r.width-100);
-    flyY=90+Math.random()*(r.height*0.58);
-    const speed=first?120:90+Math.random()*80+combo*3;
-    const angle=Math.random()*Math.PI*2;
-    vx=Math.cos(angle)*speed; vy=Math.sin(angle)*speed;
-    fly.style.display='block';
-    fly.style.transform=`translate(${flyX-26}px,${flyY-26}px)`;
+  // --- CANLI VE SİNEK TÜRLERİ ---
+  const CREATURE_TYPES = {
+    normal: { hp:1, speed:130, diveSpeed:190, coins:1, cls:'', isBug:false, weight:35 },
+    fast: { hp:2, speed:220, diveSpeed:300, coins:3, cls:'fast', isBug:false, weight:20 },
+    boomerang: { hp:2, speed:180, diveSpeed:250, coins:4, cls:'boomerang', isBug:false, weight:18 },
+    ninja: { hp:2, speed:240, diveSpeed:330, coins:5, cls:'ninja', isBug:false, weight:14 },
+    bomb: { hp:1, speed:120, diveSpeed:170, coins:2, cls:'bomb', isBug:false, weight:7 },
+    ladybug: { hp:999, speed:50, diveSpeed:0, coins:0, cls:'ladybug', isBug:true, weight:6 }
+  };
+
+  function spawnCreature(typeKey, isBoss = false, customX = null, customY = null){
+    const cDef = CREATURE_TYPES[typeKey] || CREATURE_TYPES.normal;
+    const el = document.createElement('div');
+    el.className = 'creature ' + (isBoss ? 'boss' : cDef.cls);
+
+    if(cDef.isBug){
+      el.innerHTML = `
+        <div class="fly-inner">
+          <div class="fly-body">
+            <div class="dot" style="top:5px;left:4px"></div>
+            <div class="dot" style="top:12px;left:9px"></div>
+            <div class="dot" style="top:17px;left:3px"></div>
+          </div>
+          <div class="eye l"></div><div class="eye r"></div>
+        </div>
+      `;
+    } else {
+      el.innerHTML = `
+        <div class="dive-alert">⚠️</div>
+        <div class="stun-stars">💫</div>
+        <div class="fly-inner">
+          <div class="wing l"></div><div class="wing r"></div>
+          <div class="fly-body"></div>
+          <div class="eye l"></div><div class="eye r"></div>
+          <div class="fly-hp-wrap"><div class="fly-hp-fill"></div></div>
+        </div>
+      `;
+    }
+
+    const bound = container.getBoundingClientRect();
+    const size = isBoss ? 110 : 56;
+    const side = Math.random() < 0.5;
+    const x = customX !== null ? customX : (side ? (Math.random() < 0.5 ? 20 : bound.width - size - 20) : (40 + Math.random() * (bound.width - 80)));
+    const y = customY !== null ? customY : (60 + Math.random() * (bound.height * 0.32));
+
+    const curLvl = LEVELS[currentLevelIdx];
+    const hp = isBoss ? (30 + curLvl.id * 12) : cDef.hp;
+    const assignedTarget = targets[Math.floor(Math.random() * targets.length)];
+
+    // TAHMİN EDİLEMEZ (UNPREDICTABLE) UÇUŞ PARAMETRELERİ
+    const angle = Math.random() * Math.PI * 2;
+    const baseSpd = isBoss ? 90 : cDef.speed;
+
+    const obj = {
+      el,
+      type: typeKey,
+      isBoss,
+      isBug: cDef.isBug,
+      maxHp: hp,
+      hp: hp,
+      x: x,
+      y: y,
+      vx: Math.cos(angle) * baseSpd,
+      vy: Math.sin(angle) * baseSpd,
+      size: size,
+      state: 'roam',
+      stateTimer: 1.2 + Math.random() * 2,
+      fakeUsed: false,
+      frozenTimer: 0,
+      stunTimer: 0,
+      targetObj: assignedTarget,
+      coins: isBoss ? (150 + curLvl.id * 35) : cDef.coins,
+      // Kaos ve Spiral Değişkenleri
+      chaosSeed: Math.random() * 100,
+      chaosSpeed: 2 + Math.random() * 4 * curLvl.chaosFactor,
+      curveTurnRate: (Math.random() - 0.5) * 6,
+      hoverTimer: 0
+    };
+
+    container.appendChild(el);
+    creatures.push(obj);
+    updateCreatureElement(obj);
   }
 
-  function hit(e){
+  // --- SÜRÜ BASKINI (SWARM RAID) ÇAĞIRICI ---
+  function triggerSwarm(){
+    if(!running || bossActive) return;
+    swarmBanner.style.display = 'block';
+    playSound('punish');
+
+    setTimeout(() => { swarmBanner.style.display = 'none'; }, 2000);
+
+    const count = 7 + Math.floor(Math.random() * 5); // 7-11 sinek birden!
+    const bound = container.getBoundingClientRect();
+    const spawnSide = Math.random() < 0.5;
+
+    for(let i=0; i<count; i++){
+      setTimeout(() => {
+        if(!running) return;
+        const sx = spawnSide ? -30 : bound.width + 10;
+        const sy = 80 + Math.random() * (bound.height * 0.4);
+        spawnCreature(Math.random() < 0.4 ? 'fast' : (Math.random() < 0.25 ? 'bomb' : 'normal'), false, sx, sy);
+      }, i * 160);
+    }
+  }
+
+  function updateCreatureElement(c){
+    c.el.style.transform = `translate(${c.x}px, ${c.y}px) rotate(${c.vx < 0 ? -12 : 12}deg)`;
+    if(c.maxHp > 1 && !c.isBoss && !c.isBug){
+      const wrap = c.el.querySelector('.fly-hp-wrap');
+      const fill = c.el.querySelector('.fly-hp-fill');
+      wrap.style.display = 'block';
+      fill.style.width = ((c.hp / c.maxHp) * 100) + '%';
+    }
+    if(c.isBoss){
+      bossHpFill.style.width = Math.max(0, (c.hp / c.maxHp) * 100) + '%';
+    }
+  }
+
+  // --- VURUŞ KONTROLÜ (JUICE SPLAT VE CAMA ÇARPMA DAHİL) ---
+  function handleHit(clientX, clientY){
     if(!running) return;
-    const rect=game.getBoundingClientRect();
-    const x=e.clientX-rect.left, y=e.clientY-rect.top;
-    const dist=Math.hypot(x-flyX,y-flyY);
-    if(dist>48) return;
+    const rect = container.getBoundingClientRect();
+    const hitX = clientX - rect.left;
+    const hitY = clientY - rect.top;
 
-    e.preventDefault();
-    coins += 1 + Math.floor(combo/5);
-    combo++; bestCombo=Math.max(bestCombo,combo); comboTimer=2.5;
-    coinsEl.textContent=coins; updateCombo();
-    sound('hit');
+    if(LEVELS[currentLevelIdx].nightMode){
+      container.style.setProperty('--fx', `${hitX}px`);
+      container.style.setProperty('--fy', `${hitY}px`);
+    }
 
-    tapFx.style.left=x+'px'; tapFx.style.top=y+'px'; tapFx.style.display='block';
-    scoreText.textContent='+'+(1+Math.floor(combo/5));
-    scoreText.style.left=x+'px'; scoreText.style.top=(y-28)+'px'; scoreText.style.display='block';
-    setTimeout(()=>{tapFx.style.display='none';scoreText.style.display='none'},140);
+    const curW = WEAPONS[player.currentWeapon];
+    let anyHit = false;
 
-    fly.style.display='none';
-    spawnTimer=.15;
-  }
+    for(let i = creatures.length - 1; i >= 0; i--){
+      const c = creatures[i];
+      const centerX = c.x + c.size / 2;
+      const centerY = c.y + c.size / 2;
+      const dist = Math.hypot(hitX - centerX, hitY - centerY);
 
-  game.addEventListener('pointerdown', hit, {passive:false});
+      if(dist <= curW.radius + (c.size / 3)){
+        anyHit = true;
+        // 🐞 Uğur Böceği Cezası
+        if(c.isBug){
+          playSound('punish');
+          combo = 0;
+          createFloatText(hitX, hitY - 20, 'SAKIN VURMA! 🐞', 'warn');
+          screenFlash('#d32f2f');
+          updateHUD();
+          return;
+        }
 
-  function end(){
-    running=false; fly.style.display='none';
-    document.getElementById('finalCoins').textContent=coins;
-    document.getElementById('finalCombo').textContent=bestCombo;
-    gameover.style.display='flex';
-  }
+        const isCrit = dist < 14 || Math.random() < curW.critRate;
+        let dmg = curW.damage * (isCrit ? 2 : 1);
 
-  function frame(t){
-    const dt=Math.min(.035,(t-last)/1000||0); last=t;
-    if(running){
-      timeLeft-=dt;
-      if(timeLeft<=0){end(); requestAnimationFrame(frame); return;}
+        c.hp -= dmg;
+        playSound(isCrit ? 'crit' : curW.id);
+        spawnParticles(hitX, hitY, isCrit ? '#ff1744' : '#ffe082');
+        createFloatText(hitX, hitY - 20, isCrit ? `CRITICAL! -${dmg}` : `-${dmg}`, isCrit ? 'crit' : '');
 
-      comboTimer-=dt;
-      if(comboTimer<=0 && combo!==0){combo=0;updateCombo()}
+        // Ani kaçış veya Boss öfkesi
+        c.state = 'roam';
+        c.el.classList.remove('diving');
+        c.stateTimer = 1.2 + Math.random() * 1.5;
+        c.vy = -190;
 
-      if(fly.style.display!=='none'){
-        flyX += vx*dt; flyY += vy*dt;
-        const r=game.getBoundingClientRect(), pad=35;
-        if(flyX<pad || flyX>r.width-pad){vx*=-1;flyX=Math.max(pad,Math.min(r.width-pad,flyX))}
-        if(flyY<75 || flyY>r.height*.68){vy*=-1;flyY=Math.max(75,Math.min(r.height*.68,flyY))}
-        // subtle wobble
-        const wobble=Math.sin(t/120)*9;
-        fly.style.transform=`translate(${flyX-26+wobble}px,${flyY-26}px) rotate(${vx<0?-12:12}deg)`;
-      } else {
-        spawnTimer-=dt;
-        if(spawnTimer<=0) spawnFly();
+        if(c.hp <= 0){
+          // Masaya/Ekrana Ezilme Lekesi (Splat Juice) Bırak
+          spawnSplat(centerX, centerY);
+
+          if(c.type === 'bomb'){
+            triggerBombExplosion(centerX, centerY);
+          } else {
+            killCreature(c, i, isCrit);
+          }
+        } else {
+          updateCreatureElement(c);
+        }
+        break;
       }
     }
-    requestAnimationFrame(frame);
+
+    // Iskalama Durumunda: Bazen sinek cama kafa atsın (Komedi Unsuru)
+    if(!anyHit && Math.random() < 0.12 && creatures.length > 0){
+      const luckyFly = creatures[Math.floor(Math.random() * creatures.length)];
+      if(!luckyFly.isBug && luckyFly.state === 'roam'){
+        luckyFly.stunTimer = 1.8;
+        luckyFly.el.classList.add('stunned');
+        createFloatText(luckyFly.x + 25, luckyFly.y, 'KÜT! 🪟', 'crit');
+      }
+    }
   }
 
-  startBtn.addEventListener('click', reset);
-  againBtn.addEventListener('click', reset);
-  requestAnimationFrame(frame);
+  function spawnSplat(x, y){
+    const splat = document.createElement('div');
+    splat.className = 'splat';
+    splat.textContent = Math.random() < 0.5 ? '💥' : '🟢';
+    splat.style.left = x + 'px';
+    splat.style.top = y + 'px';
+    container.appendChild(splat);
+    setTimeout(() => splat.remove(), 3000);
+  }
+
+  function killCreature(c, index, isCrit = false){
+    const gainedCoins = (c.coins + Math.floor(combo / 3)) * (isCrit ? 2 : 1);
+    player.coins += gainedCoins;
+    combo++;
+    bestCombo = Math.max(bestCombo, combo);
+    comboTimer = 2.4;
+    levelKills++;
+
+    createFloatText(c.x + c.size/2, c.y + c.size/2, `+${gainedCoins}🪙`, 'coin');
+    c.el.remove();
+    creatures.splice(index, 1);
+
+    if(c.isBoss){
+      bossActive = false;
+      bossBarWrap.style.display = 'none';
+      createFloatText(c.x + c.size/2, c.y, '👑 BOSS YENİLDİ!', 'crit');
+    }
+
+    spawnTimer = 999;
+    checkLevelProgression();
+    updateHUD();
+    savePlayer();
+  }
+
+  function triggerBombExplosion(bx, by){
+    playSound('bomb');
+    screenFlash('#ff5722');
+    createFloatText(bx, by - 30, '💥 BOOOOM!', 'warn');
+
+    for(let i = creatures.length - 1; i >= 0; i--){
+      const other = creatures[i];
+      if(!other.isBug && !other.isBoss){
+        spawnParticles(other.x + 25, other.y + 25, '#ff9800');
+        spawnSplat(other.x + 25, other.y + 25);
+        killCreature(other, i, true);
+      }
+    }
+  }
+
+  // --- ÇEVRESEL NESNE ETKİLEŞİMLERİ (TUZLUK & SODA) ---
+  document.getElementById('prop-salt').onclick = (e) => {
+    e.stopPropagation();
+    playSound('pop');
+    const rect = e.currentTarget.getBoundingClientRect();
+    const cRect = container.getBoundingClientRect();
+    const sx = rect.left + rect.width/2 - cRect.left;
+    const sy = rect.top + rect.height/2 - cRect.top;
+
+    // Tuz Bulutu
+    const cloud = document.createElement('div');
+    cloud.className = 'salt-cloud';
+    cloud.style.left = sx + 'px';
+    cloud.style.top = sy + 'px';
+    container.appendChild(cloud);
+    setTimeout(() => cloud.remove(), 600);
+
+    createFloatText(sx, sy - 20, 'HAPŞUU! 🧂', 'warn');
+
+    // Yakındaki tüm sinekleri 2.5 sn sersemlet
+    creatures.forEach(c => {
+      const dist = Math.hypot(c.x - sx, c.y - sy);
+      if(dist < 180 && !c.isBug){
+        c.stunTimer = 2.5;
+        c.el.classList.add('stunned');
+      }
+    });
+  };
+
+  document.getElementById('prop-soda').onclick = (e) => {
+    e.stopPropagation();
+    playSound('pop');
+    const rect = e.currentTarget.getBoundingClientRect();
+    const cRect = container.getBoundingClientRect();
+    const sx = rect.left + rect.width/2 - cRect.left;
+    const sy = rect.top + rect.height/2 - cRect.top;
+
+    screenFlash('#00e5ff');
+    createFloatText(sx, sy - 30, 'FIIŞŞŞ! 🍾', 'crit');
+
+    // Gazoz sütunu doğrultusundaki sinekleri yok et
+    for(let i = creatures.length - 1; i >= 0; i--){
+      const c = creatures[i];
+      if(Math.abs(c.x - sx) < 90 && !c.isBug && !c.isBoss){
+        spawnParticles(c.x + 25, c.y + 25, '#80d8ff');
+        killCreature(c, i, true);
+      }
+    }
+  };
+
+  // --- AKTİF SÜPER YETENEKLER ---
+  btnFreeze.onclick = () => {
+    if(cdFreeze > 0) return;
+    cdFreeze = 12;
+    playSound('freeze');
+    screenFlash('#80d8ff');
+    createFloatText(window.innerWidth/2, window.innerHeight/2, '❄️ DONDURULDU!', 'warn');
+
+    creatures.forEach(c => {
+      if(!c.isBug){
+        c.frozenTimer = 3.5;
+        c.el.classList.add('frozen');
+      }
+    });
+  };
+
+  btnSpray.onclick = () => {
+    if(cdSpray > 0) return;
+    cdSpray = 18;
+    playSound('punish');
+
+    const smoke = document.createElement('div');
+    smoke.className = 'smoke-cloud';
+    container.appendChild(smoke);
+    setTimeout(() => smoke.remove(), 4000);
+
+    createFloatText(window.innerWidth/2, window.innerHeight/2, '💨 RAID SİSİ!', 'warn');
+
+    // Sinekleri sarhoş gibi kaçır ve bala hücumlarını kır
+    creatures.forEach(c => {
+      if(!c.isBug){
+        c.state = 'roam';
+        c.el.classList.remove('diving');
+        c.stateTimer = 4.0;
+        c.vx = (Math.random() - 0.5) * 350;
+        c.vy = -250;
+      }
+    });
+  };
+
+  function updateCooldowns(dt){
+    if(cdFreeze > 0){
+      cdFreeze -= dt;
+      cdFreezeEl.style.display = 'flex';
+      cdFreezeEl.textContent = Math.ceil(cdFreeze);
+      btnFreeze.disabled = true;
+    } else {
+      cdFreezeEl.style.display = 'none';
+      btnFreeze.disabled = false;
+    }
+
+    if(cdSpray > 0){
+      cdSpray -= dt;
+      cdSprayEl.style.display = 'flex';
+      cdSprayEl.textContent = Math.ceil(cdSpray);
+      btnSpray.disabled = true;
+    } else {
+      cdSprayEl.style.display = 'none';
+      btnSpray.disabled = false;
+    }
+  }
+
+  function screenFlash(color){
+    const f = document.createElement('div');
+    f.style.cssText = `position:absolute;inset:0;background:${color};opacity:0.35;z-index:40;pointer-events:none;transition:opacity .2s`;
+    container.appendChild(f);
+    setTimeout(() => { f.style.opacity = '0'; setTimeout(()=> f.remove(), 200); }, 50);
+  }
+
+  function checkLevelProgression(){
+    const curLvl = LEVELS[currentLevelIdx];
+    const pct = Math.min(100, (levelKills / curLvl.targetKills) * 100);
+    levelBarFill.style.width = pct + '%';
+    killsDisplay.textContent = levelKills;
+
+    if(levelKills >= curLvl.targetKills - 1 && !bossSpawned && !bossActive){
+      bossSpawned = true;
+      bossActive = true;
+      bossBarWrap.style.display = 'flex';
+      spawnCreature('normal', true);
+    }
+
+    if(levelKills >= curLvl.targetKills && !bossActive){
+      completeLevel();
+    }
+  }
+
+  function completeLevel(){
+    running = false;
+    playSound('crit');
+    player.coins += 100;
+    player.currentLevel = Math.max(player.currentLevel, currentLevelIdx + 2);
+    savePlayer();
+
+    document.getElementById('clear-level-msg').textContent = `${LEVELS[currentLevelIdx].name} zaferle korundu!`;
+    levelClearModal.style.display = 'flex';
+  }
+
+  function nextLevel(){
+    currentLevelIdx = (currentLevelIdx + 1) % LEVELS.length;
+    levelClearModal.style.display = 'none';
+    startLevel();
+  }
+
+  // --- ANA OYUN MOTORU & TAHMİN EDİLEMEZ UÇUŞ FİZİĞİ ---
+  function gameLoop(time){
+    const dt = Math.min(0.04, (time - lastTime) / 1000 || 0);
+    lastTime = time;
+
+    if(running){
+      const curLvl = LEVELS[currentLevelIdx];
+      updateCooldowns(dt);
+
+      // Rüzgar Hareketi
+      windAngle += dt * 1.5;
+      targets.forEach(t => {
+        if(t.move === 'wind'){
+          t.x = t.baseX + Math.sin(windAngle) * 90;
+          updateTargetPosition(t);
+        }
+      });
+
+      // Combo Sayacı
+      if(combo > 0){
+        comboTimer -= dt;
+        if(comboTimer <= 0){
+          combo = 0;
+          updateHUD();
+        }
+      }
+
+      // Sürü Akını Zamanlayıcısı
+      swarmTimer -= dt;
+      if(swarmTimer <= 0 && curLvl.id >= 2){
+        swarmTimer = 11 + Math.random() * 5;
+        triggerSwarm();
+      }
+
+      const bound = container.getBoundingClientRect();
+
+      // Normal Doğurucu
+      spawnTimer += dt;
+      if(spawnTimer >= curLvl.spawnRate && creatures.length < curLvl.maxConcurrent && (!bossSpawned || bossActive)){
+        spawnTimer = 0;
+        const rand = Math.random() * 100;
+        let chosen = 'normal', acc = 0;
+        for(const k in CREATURE_TYPES){
+          acc += CREATURE_TYPES[k].weight;
+          if(rand <= acc){ chosen = k; break; }
+        }
+        spawnCreature(chosen);
+      }
+
+      // --- CANLI HAREKETLERİ & KAOTİK UÇUŞ SİMÜLASYONU ---
+      for(let i = creatures.length - 1; i >= 0; i--){
+        const c = creatures[i];
+
+        // 1. Dondurma ve Sersemleme Durumu
+        if(c.frozenTimer > 0){
+          c.frozenTimer -= dt;
+          if(c.frozenTimer <= 0) c.el.classList.remove('frozen');
+          continue; // Hareket etmez
+        }
+        if(c.stunTimer > 0){
+          c.stunTimer -= dt;
+          c.y += 40 * dt; // Yere doğru sersemce süzülür
+          updateCreatureElement(c);
+          if(c.stunTimer <= 0) c.el.classList.remove('stunned');
+          continue;
+        }
+
+        c.stateTimer -= dt;
+        const centerX = c.x + c.size / 2;
+        const centerY = c.y + c.size / 2;
+
+        if(c.isBug){
+          if(c.stateTimer <= 0){
+            c.stateTimer = 2.0;
+            c.vx = (Math.random() - 0.5) * 60;
+            c.vy = (Math.random() - 0.5) * 60;
+          }
+        } 
+        else {
+          // Saldırı durumuna geçme
+          if(c.state === 'roam' && c.stateTimer <= 0){
+            c.state = 'dive';
+            c.el.classList.add('diving');
+          }
+
+          if(c.state === 'dive'){
+            const target = c.targetObj || targets[0];
+            const dx = target.x - centerX;
+            const dy = target.y - centerY;
+            const dist = Math.hypot(dx, dy);
+
+            // Bumerang Fake
+            if(c.type === 'boomerang' && !c.fakeUsed && dist < target.radius + 60){
+              c.fakeUsed = true;
+              c.state = 'roam';
+              c.el.classList.remove('diving');
+              c.stateTimer = 1.2;
+              c.vx = -c.vx * 1.6;
+              c.vy = -220;
+              createFloatText(centerX, centerY - 20, 'FAKE! 🪃', 'crit');
+            } 
+            // KAOTİK VE TAHMİN EDİLEMEZ SALDIRI PİKESİ
+            else {
+              const dSpeed = c.isBoss ? 85 : CREATURE_TYPES[c.type].diveSpeed;
+              
+              // Temel yön
+              let targetVx = (dx / dist) * dSpeed;
+              let targetVy = (dy / dist) * dSpeed;
+
+              // Level bazlı kaotik dalgalanma (sinüs/türbülans)
+              const wave = Math.sin((time / 100) + c.chaosSeed) * (40 * curLvl.chaosFactor);
+              c.vx = targetVx + wave;
+              c.vy = targetVy + (Math.cos((time / 120) + c.chaosSeed) * 20);
+            }
+
+            // Hedefe Ulaşma
+            if(dist < target.radius + 10){
+              if(target.type === 'hp'){
+                target.curHp -= 1;
+                updateTargetPosition(target);
+                createFloatText(target.x, target.y - 30, 'ISIRIK! 🍰', 'warn');
+                playSound('punish');
+                c.el.remove();
+                creatures.splice(i, 1);
+
+                if(target.curHp <= 0){
+                  triggerGameOver('Yemek tamamen yağmalandı!');
+                  return;
+                }
+                continue;
+              } else {
+                triggerGameOver(`${target.emoji} yağmalandı!`);
+                return;
+              }
+            }
+          } 
+          // ROAM: TAHMİN EDİLEMEZ SERBEST UÇUŞ (Hovering, Ani dönüşler)
+          else {
+            c.chaosSeed += dt * c.chaosSpeed;
+            
+            // Ani yön kırılmaları ve kavisli uçuş
+            const turnAngle = Math.sin(c.chaosSeed) * dt * (6 * curLvl.chaosFactor);
+            const currentSpeed = Math.hypot(c.vx, c.vy);
+            let currentAngle = Math.atan2(c.vy, c.vx) + turnAngle;
+
+            c.vx = Math.cos(currentAngle) * currentSpeed;
+            c.vy = Math.sin(currentAngle) * currentSpeed;
+
+            // Arada sırada havada asılı kalma (Hovering) ve aniden fırlama
+            if(Math.random() < 0.02 * curLvl.chaosFactor && c.hoverTimer <= 0){
+              c.hoverTimer = 0.4;
+              c.vx *= 0.2;
+              c.vy *= 0.2;
+            }
+          }
+        }
+
+        // Ekran sınırları
+        if(c.x < 10){ c.x = 10; c.vx = Math.abs(c.vx); }
+        if(c.x > bound.width - c.size - 10){ c.x = bound.width - c.size - 10; c.vx = -Math.abs(c.vx); }
+        if(c.y < 65){ c.y = 65; c.vy = Math.abs(c.vy); }
+        if(c.y > bound.height * 0.75){ c.y = bound.height * 0.75; c.vy = -Math.abs(c.vy); }
+
+        c.x += c.vx * dt;
+        c.y += c.vy * dt;
+        updateCreatureElement(c);
+      }
+    }
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  // --- BAŞLATMA & OYUN BİTİŞİ ---
+  function startLevel(){
+    running = true;
+    levelKills = 0;
+    bossActive = false;
+    bossSpawned = false;
+    spawnTimer = 0;
+    swarmTimer = 9;
+    cdFreeze = 0;
+    cdSpray = 0;
+
+    const curLvl = LEVELS[currentLevelIdx];
+    container.className = curLvl.theme;
+
+    nightOverlay.style.display = curLvl.nightMode ? 'block' : 'none';
+    container.style.setProperty('--fx', '50%');
+    container.style.setProperty('--fy', '54%');
+
+    creatures.forEach(c => c.el.remove());
+    creatures = [];
+    bossBarWrap.style.display = 'none';
+
+    startModal.style.display = 'none';
+    gameoverModal.style.display = 'none';
+    shopModal.style.display = 'none';
+    levelClearModal.style.display = 'none';
+
+    levelDisplay.textContent = `Bölüm ${curLvl.id}: ${curLvl.name}`;
+    targetKillsDisplay.textContent = curLvl.targetKills;
+    killsDisplay.textContent = '0';
+    levelBarFill.style.width = '0%';
+
+    setupTargets(curLvl);
+    updateHUD();
+    updateWeaponUI();
+
+    spawnCreature('normal');
+    spawnCreature('fast');
+  }
+
+  function triggerGameOver(reason){
+    running = false;
+    playSound('punish');
+    document.getElementById('gameover-reason').textContent = reason || 'Sinekler yemeği kaptı!';
+    document.getElementById('final-total-coins').textContent = player.coins;
+    gameoverModal.style.display = 'flex';
+    savePlayer();
+  }
+
+  function updateHUD(){
+    coinsDisplay.textContent = player.coins;
+    comboDisplay.textContent = `🔥 ×${combo}`;
+    comboDisplay.classList.toggle('hot', combo > 2);
+  }
+
+  function updateWeaponUI(){
+    document.querySelectorAll('.weapon-btn').forEach(btn => {
+      const wId = btn.dataset.w;
+      btn.disabled = !player.unlockedWeapons.includes(wId);
+      btn.classList.toggle('active', player.currentWeapon === wId);
+    });
+  }
+
+  function spawnParticles(x, y, color){
+    for(let i=0; i<6; i++){
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      p.style.width = (4 + Math.random()*5) + 'px';
+      p.style.height = p.style.width;
+      p.style.background = color;
+      const angle = Math.random() * Math.PI * 2;
+      const len = 25 + Math.random() * 35;
+      p.style.setProperty('--tx', `${Math.cos(angle)*len}px`);
+      p.style.setProperty('--ty', `${Math.sin(angle)*len}px`);
+      container.appendChild(p);
+      setTimeout(()=> p.remove(), 400);
+    }
+  }
+
+  function createFloatText(x, y, text, typeClass){
+    const el = document.createElement('div');
+    el.className = 'float-text ' + (typeClass || '');
+    el.textContent = text;
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    container.appendChild(el);
+    setTimeout(()=> el.remove(), 550);
+  }
+
+  // Market
+  function openShop(){
+    const list = document.getElementById('shop-items');
+    list.innerHTML = '';
+    for(const key in WEAPONS){
+      const w = WEAPONS[key];
+      const isUnlocked = player.unlockedWeapons.includes(w.id);
+      const row = document.createElement('div');
+      row.className = 'shop-item';
+      row.innerHTML = `
+        <div class="shop-item-info">
+          <b>${w.icon} ${w.name} ${isUnlocked ? '✓' : ''}</b>
+          <span>${w.desc} (Hasar: ${w.damage})</span>
+        </div>
+        <div>
+          ${isUnlocked 
+            ? `<span style="font-size:12px;font-weight:800;color:#2e7d32">SAHİPSİN</span>`
+            : `<button class="buy-btn" data-id="${w.id}" ${player.coins < w.cost ? 'disabled' : ''}>🪙 ${w.cost}</button>`
+          }
+        </div>
+      `;
+      list.appendChild(row);
+    }
+
+    list.querySelectorAll('.buy-btn').forEach(b => {
+      b.onclick = () => {
+        const target = WEAPONS[b.dataset.id];
+        if(player.coins >= target.cost){
+          player.coins -= target.cost;
+          player.unlockedWeapons.push(target.id);
+          player.currentWeapon = target.id;
+          savePlayer();
+          updateHUD();
+          openShop();
+          updateWeaponUI();
+        }
+      };
+    });
+
+    shopModal.style.display = 'flex';
+  }
+
+  // Dinleyiciler
+  container.addEventListener('pointerdown', (e) => {
+    if(e.target.closest('.hud-top') || e.target.closest('.weapon-bar') || e.target.closest('.skills-bar') || e.target.closest('.prop') || e.target.closest('.modal')) return;
+    e.preventDefault();
+    handleHit(e.clientX, e.clientY);
+  }, { passive:false });
+
+  weaponBar.addEventListener('click', (e) => {
+    const btn = e.target.closest('.weapon-btn');
+    if(!btn || btn.disabled) return;
+    player.currentWeapon = btn.dataset.w;
+    savePlayer();
+    updateWeaponUI();
+  });
+
+  document.getElementById('start-btn').onclick = startLevel;
+  document.getElementById('again-btn').onclick = startLevel;
+  document.getElementById('next-level-btn').onclick = nextLevel;
+  document.getElementById('shop-btn-main').onclick = openShop;
+  document.getElementById('shop-btn-end').onclick = openShop;
+  document.getElementById('close-shop-btn').onclick = () => shopModal.style.display = 'none';
+
+  updateHUD();
+  updateWeaponUI();
+  requestAnimationFrame(gameLoop);
 })();
 </script>
 </body>
