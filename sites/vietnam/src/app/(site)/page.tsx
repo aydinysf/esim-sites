@@ -11,17 +11,16 @@ const COUNTRY = process.env.PUBLIC_COUNTRY_CODE || "VN";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://esimcard.vn";
 
 export default async function HomePage() {
-  const [packages, homepage, faqs, posts, guides] = await Promise.all([
+  const [packages, homepage, faqs, posts] = await Promise.all([
     getPackages(COUNTRY).catch(() => []),
     prisma.homepage.findUnique({ where: { country: COUNTRY } }).catch(() => null),
     prisma.faq.findMany({ where: { country: COUNTRY }, orderBy: { order: "asc" } }).catch(() => []),
     prisma.post.findMany({ where: { country: COUNTRY, status: "PUBLISHED" }, orderBy: { createdAt: "desc" }, take: 3 }).catch(() => []),
-    prisma.guide.findMany({ where: { country: COUNTRY, status: "PUBLISHED" }, orderBy: { createdAt: "desc" }, take: 3 }).catch(() => []),
   ]);
 
-  const headline = homepage?.heroHeadline || "Ankommen, scannen, online sein.";
-  const subheadline = homepage?.heroSubheadline || "Prepaid-eSIM für Việt Nam ohne Vertrag und ohne Roaming-Gebühren.";
-  const ctaText = homepage?.heroCtaText || "Tarife ansehen";
+  const headline = homepage?.heroHeadline || "Kết nối ngay, trước khi hạ cánh.";
+  const subheadline = homepage?.heroSubheadline || "eSIM trả trước cho Việt Nam không hợp đồng, không phí chuyển vùng. Mã QR gửi ngay qua email — kích hoạt trước khi lấy hành lý.";
+  const ctaText = homepage?.heroCtaText || "Xem gói cước";
   const ctaHref = homepage?.headerCtaHref || "#tarife";
 
   return (
@@ -37,12 +36,15 @@ export default async function HomePage() {
       />
 
       <section id="tarife">
+        <div className="eyebrow" style={{ color: "var(--c4)" }}>TARIFE & PREISE</div>
         <h2>Wähle deine Laufzeit</h2>
-        <p className="sub">Alle Preise inkl. Hotspot und sofortiger Aktivierung.</p>
+        <p className="lead" style={{ fontSize: "16px", marginBottom: "20px" }}>
+          Alle Preise inkl. Hotspot und sofortiger Aktivierung per QR-Code.
+        </p>
 
         <div className="plans">
-          {packages.map((pkg) => (
-            <PackageCard key={pkg.id} pkg={pkg} />
+          {packages.map((pkg, idx) => (
+            <PackageCard key={pkg.id} pkg={pkg} colorIndex={idx} />
           ))}
         </div>
 
@@ -51,31 +53,36 @@ export default async function HomePage() {
         </p>
 
         <div className="pay">
-          Bezahlen mit <span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span>
+          Bezahlen mit <span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>EPS</span>
         </div>
       </section>
 
       <section id="ablauf">
-        <h2>In drei Schritten online</h2>
-        <p className="sub">Die Einrichtung dauert unter fünf Minuten.</p>
+        <div className="eyebrow" style={{ color: "var(--c6)" }}>IN DREI SCHRITTEN ONLINE</div>
+        <h2>undefined</h2>
+        <p className="lead" style={{ fontSize: "16px" }}>undefined</p>
         <div className="steps">
-          <div>
-            <h3>Tarif wählen</h3>
-            <p>Datenmenge und Laufzeit passen zu deiner Reise.</p>
+          <div className="step-card">
+            <div className="step-num">01</div>
+            <h3>undefined</h3>
+            <p>undefined</p>
           </div>
-          <div>
-            <h3>Bezahlen</h3>
-            <p>Den QR-Code bekommst du direkt per E-Mail.</p>
+          <div className="step-card">
+            <div className="step-num">02</div>
+            <h3>undefined</h3>
+            <p>undefined</p>
           </div>
-          <div>
-            <h3>Scannen</h3>
-            <p>QR-Code scannen, eSIM aktivieren, lossurfen.</p>
+          <div className="step-card">
+            <div className="step-num">03</div>
+            <h3>undefined</h3>
+            <p>undefined</p>
           </div>
         </div>
       </section>
 
       {faqs.length > 0 && (
         <section id="faq">
+          <div className="eyebrow" style={{ color: "var(--c5)" }}>FAQ</div>
           <h2>Häufige Fragen</h2>
           {faqs.map((faq) => (
             <details key={faq.id}>
@@ -88,13 +95,14 @@ export default async function HomePage() {
 
       {posts.length > 0 && (
         <section id="blog">
-          <h2>Blog & Ratgeber</h2>
+          <div className="eyebrow" style={{ color: "var(--c2)" }}>BLOG</div>
+          <h2>Ratgeber & News</h2>
           <div className="plans">
             {posts.map((post) => (
               <div key={post.id} className="plan">
-                <div className="gb" style={{ fontSize: '20px' }}>{post.title}</div>
+                <div className="gb" style={{ fontSize: "20px" }}>{post.title}</div>
                 <div className="dur">{post.excerpt || post.title}</div>
-                <Link className="btn" href={`/blog/${post.slug}`} style={{ marginTop: '16px' }}>
+                <Link className="btn-outline" href={`/blog/${post.slug}`} style={{ marginTop: "16px" }}>
                   Weiterlesen
                 </Link>
               </div>
@@ -104,11 +112,22 @@ export default async function HomePage() {
       )}
 
       <section>
-        <div className="cta">
-          <h2>Bereit für Việt Nam?</h2>
-          <a className="btn" href="#tarife">Tarif wählen</a>
+        <div className="cta-card">
+          <h2 style={{ fontSize: "36px", marginBottom: "20px" }}>Bạn còn chờ gì nữa?</h2>
+          <a className="btn-gradient" href="#tarife">Kết nối ngay</a>
         </div>
       </section>
+
+      {/* Mobile Fixed Bottom Purchase Bar */}
+      <div className="bar">
+        <div>
+          <b>{packages[0]?.name || "eSIM Plan"}</b>
+          <small>{packages[0]?.validity || 30} Tage · Instant QR</small>
+        </div>
+        <a className="btn-gradient" href={packages[0]?.buyUrl || "#tarife"}>
+          Kaufen
+        </a>
+      </div>
     </>
   );
 }

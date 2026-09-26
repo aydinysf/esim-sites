@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 
 interface Props {
-  headline: string;
-  subheadline: string;
-  ctaText: string;
-  ctaHref: string;
+  headline?: string;
+  subheadline?: string;
+  ctaText?: string;
+  ctaHref?: string;
 }
 
 export default function HeroBanner({ headline, subheadline, ctaText, ctaHref }: Props) {
@@ -26,10 +26,20 @@ export default function HeroBanner({ headline, subheadline, ctaText, ctaHref }: 
     <>
       <div className="hero">
         <div>
-          <h1>{headline}</h1>
-          <p className="lead">{subheadline}</p>
+          <div className="eyebrow">
+            <span className="pulse-dot" />
+            <span>LIVE · COVERAGE PHILIPPINES</span>
+          </div>
+
+          <h1>
+            Get connected, <br />
+            <span className="gradient-text">before you land.</span>
+          </h1>
+
+          <p className="lead">{subheadline || "Prepaid eSIM for the Philippines with zero contracts and no roaming traps. Instant QR code via email — active before baggage claim."}</p>
+
           <div className="check">
-            <label htmlFor="dev">Unterstützt dein Handy eSIM?</label>
+            <label htmlFor="dev">Is your phone eSIM compatible?</label>
             <div className="row">
               <select id="dev" onChange={handleDeviceChange}>
                 <option value="">Gerät wählen</option>
@@ -38,46 +48,47 @@ export default function HeroBanner({ headline, subheadline, ctaText, ctaHref }: 
                 <option value="1">Google Pixel 3 oder neuer</option>
                 <option value="0">Anderes Gerät</option>
               </select>
-              <a className="btn" href={ctaHref || "#tarife"}>{ctaText || "Tarife ansehen"}</a>
+              <a className="btn-gradient" href={ctaHref || "#tarife"}>
+                {ctaText || "Show Me Plans"}
+              </a>
             </div>
             <p id="res">{deviceResult}</p>
           </div>
         </div>
 
-        <div className="phone" aria-hidden="true">
+        {/* Right Phone Stage Mockup */}
+        <div className="phone-stage">
+          <div className="floating-chip chip-top">📶 0 € Roaming</div>
+          <div className="floating-chip chip-bottom">⚡ Live in 5 Min.</div>
+
           <div className="screen">
-            <small>eSIM aktiv</small>
-            <div className="bars">
-              <i style={{ height: "8px" }}></i>
-              <i style={{ height: "14px" }}></i>
-              <i style={{ height: "20px" }}></i>
-              <i style={{ height: "26px" }}></i>
+            <div className="flex items-center justify-between mb-2">
+              <span className="font-mono text-xs text-[var(--soft)]">eSIM · Signal</span>
+              <span className="font-mono text-xs text-[var(--c5)]">● Active in Manila</span>
             </div>
-            <b>Boracay · 4G/5G</b>
-            <div className="meter">
-              <span style={{ width: "34%" }}></span>
+
+            <div className="qr-grid">
+              <div className="qr-dot" /><div className="qr-dot" /><div className="qr-dot" /><div className="qr-dot" /><div className="qr-dot" />
+              <div className="qr-dot" /><div /><div /><div /><div className="qr-dot" />
+              <div className="qr-dot" /><div /><div className="qr-dot" /><div /><div className="qr-dot" />
+              <div className="qr-dot" /><div /><div /><div /><div className="qr-dot" />
+              <div className="qr-dot" /><div className="qr-dot" /><div className="qr-dot" /><div className="qr-dot" /><div className="qr-dot" />
             </div>
-            <small>3,4 GB verbraucht</small>
+
+            <div className="text-center font-mono text-xs text-[var(--soft)] tracking-wider">
+              SCAN & CONNECT
+            </div>
           </div>
         </div>
       </div>
 
-      <svg className="ridge" viewBox="0 0 1080 200" role="img" aria-label="Panorama">
-        <path d="M0 200V110l90-50 70 40 90-70 100 80 80-40 120 70 90-60 110 60 130-70 120 80 80-40V200z" fill="var(--r1)" />
-        <path d="M0 200V150l120-40 90 30 110-60 100 70 120-50 130 60 110-40 140 50 150-30V200z" fill="var(--r2)" />
-        <g fill="var(--red)">
-          <circle cx="150" cy="128" r="6" />
-          <circle cx="420" cy="120" r="6" />
-          <circle cx="700" cy="128" r="6" />
-          <circle cx="960" cy="142" r="6" />
-        </g>
-        <g>
-          <text x="128" y="172">Manila</text>
-          <text x="398" y="164">Cebu</text>
-          <text x="694" y="172">Boracay</text>
-          <text x="940" y="186">Palawan</text>
-        </g>
-      </svg>
+      {/* Infinite Ticker Bar */}
+      <div className="ticker-wrap">
+        <div className="ticker-move">
+          <span><span style={{ color: "var(--c4)" }}>SIGNAL::</span> MANILA ✦ CEBU ✦ BORACAY ✦ PALAWAN ✦ DAVAO ✦ SIARGAO ✦ BOHOL ✦ MANILA ✦ CEBU ✦ BORACAY ✦ PALAWAN ✦ DAVAO ✦ SIARGAO ✦ BOHOL</span>
+          <span><span style={{ color: "var(--c4)" }}>SIGNAL::</span> MANILA ✦ CEBU ✦ BORACAY ✦ PALAWAN ✦ DAVAO ✦ SIARGAO ✦ BOHOL ✦ MANILA ✦ CEBU ✦ BORACAY ✦ PALAWAN ✦ DAVAO ✦ SIARGAO ✦ BOHOL</span>
+        </div>
+      </div>
     </>
   );
 }
