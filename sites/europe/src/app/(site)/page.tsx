@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="EUROPA"
+        activeCity="Europa"
+        tickerCities="PARIS ✦ ROMA ✦ MADRID ✦ BERLIN ✦ AMSTERDAM ✦ WIEN ✦ PRAG ✦ BRÜSSEL"
       />
 
       <section id="tarife">

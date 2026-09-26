@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="PILIPINAS"
+        activeCity="Manila"
+        tickerCities="MANILA ✦ CEBU ✦ DAVAO ✦ BORACAY ✦ PALAWAN ✦ BOHOL ✦ ANGELES"
       />
 
       <section id="tarife">

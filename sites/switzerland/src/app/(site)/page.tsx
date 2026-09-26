@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="SCHWEIZ"
+        activeCity="Zürich"
+        tickerCities="ZÜRICH ✦ GENF ✦ BASEL ✦ BERN ✦ LAUSANNE ✦ LUZERN ✦ ST. GALLEN"
       />
 
       <section id="tarife">

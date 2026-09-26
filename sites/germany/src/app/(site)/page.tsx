@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="DEUTSCHLAND"
+        activeCity="Berlin"
+        tickerCities="BERLIN ✦ MÜNCHEN ✦ HAMBURG ✦ FRANKFURT ✦ KÖLN ✦ STUTTGART ✦ DÜSSELDORF"
       />
 
       <section id="tarife">

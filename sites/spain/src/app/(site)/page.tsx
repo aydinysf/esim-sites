@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="ESPAÑA"
+        activeCity="Madrid"
+        tickerCities="MADRID ✦ BARCELONA ✦ SEVILLA ✦ VALENCIA ✦ MÁLAGA ✦ BILBAO ✦ ALICANTE"
       />
 
       <section id="tarife">

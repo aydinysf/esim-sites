@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="VIỆT NAM"
+        activeCity="Hanoi"
+        tickerCities="HANOI ✦ HO-CHI-MINH-STADT ✦ DA NANG ✦ NHA TRANG ✦ PHU QUOC ✦ HUE"
       />
 
       <section id="tarife">

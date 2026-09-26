@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="ČESKO"
+        activeCity="Prag"
+        tickerCities="PRAG ✦ BRÜNN ✦ OSTRAU ✦ PILSEN ✦ REICHENBERG ✦ BUDWEIS ✦ OLMÜTZ"
       />
 
       <section id="tarife">

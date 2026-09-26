@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="BELGIË"
+        activeCity="Brüssel"
+        tickerCities="BRÜSSEL ✦ ANTWERPEN ✦ GENT ✦ BRÜGGE ✦ LÜTTICH ✦ NAMUR ✦ LEUVEN"
       />
 
       <section id="tarife">

@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="AZƏRBAYCAN"
+        activeCity="Baku"
+        tickerCities="BAKU ✦ GENCE ✦ SUMQAYIT ✦ MINGECEVIR ✦ LEKERAN ✦ SEKI"
       />
 
       <section id="tarife">

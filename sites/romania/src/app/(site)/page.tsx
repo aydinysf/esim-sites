@@ -33,6 +33,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
+        nativeCountryName="ROMÂNIA"
+        activeCity="Bukarest"
+        tickerCities="BUKAREST ✦ KLAUSENBURG ✦ TIMIȘOARA ✦ IAȘI ✦ KRONSTADT ✦ CONSTANȚA"
       />
 
       <section id="tarife">
