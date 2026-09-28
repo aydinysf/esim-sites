@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const hp = await prisma.homepage.findUnique({
     where: { country: COUNTRY },
     select: { packagesPageTitle: true, packagesPageSubtitle: true },
-  });
+  }).catch(() => null);
   return {
     title: hp?.packagesPageTitle || t.home.packagesTitle,
     description: hp?.packagesPageSubtitle || t.footer.tagline,
@@ -22,7 +22,7 @@ export default async function PackagesPage() {
     prisma.homepage.findUnique({
       where: { country: COUNTRY },
       select: { packagesPageTitle: true, packagesPageSubtitle: true },
-    }),
+    }).catch(() => null),
     getPackages(COUNTRY).catch(() => []),
   ]);
 

@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const hp = await prisma.homepage.findUnique({
     where: { country: COUNTRY },
     select: { guidesPageTitle: true, guidesPageSubtitle: true, metaSiteTitle: true },
-  });
+  }).catch(() => null);
   return {
     title: hp?.guidesPageTitle ? `${hp.guidesPageTitle} | ${hp.metaSiteTitle || "eSIM"}` : "Guides | Österreich eSIM",
     description: hp?.guidesPageSubtitle || "Step-by-step guides for Österreich eSIM.",
@@ -22,11 +22,11 @@ export default async function GuidesPage() {
     prisma.guide.findMany({
       where: { country: COUNTRY, status: "PUBLISHED" },
       orderBy: { order: "asc" },
-    }),
+    }).catch(() => []),
     prisma.homepage.findUnique({
       where: { country: COUNTRY },
       select: { guidesPageTitle: true, guidesPageSubtitle: true },
-    }),
+    }).catch(() => null),
   ]);
 
   const title    = hp?.guidesPageTitle    || "eSIM Guides";

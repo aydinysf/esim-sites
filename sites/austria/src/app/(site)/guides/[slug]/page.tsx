@@ -14,7 +14,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const guide = await prisma.guide.findUnique({
     where: { country_slug: { country: COUNTRY, slug: params.slug } },
-  });
+  }).catch(() => null);
 
   if (!guide) return {};
 
@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function GuideDetailPage({ params }: Props) {
   const guide = await prisma.guide.findUnique({
     where: { country_slug: { country: COUNTRY, slug: params.slug } },
-  });
+  }).catch(() => null);
 
   if (!guide || guide.status !== "PUBLISHED") notFound();
 

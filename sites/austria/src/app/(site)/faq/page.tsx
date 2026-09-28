@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const hp = await prisma.homepage.findUnique({
     where: { country: COUNTRY },
     select: { faqPageTitle: true, faqPageSubtitle: true, metaSiteTitle: true },
-  });
+  }).catch(() => null);
   return {
     title: hp?.faqPageTitle ? `${hp.faqPageTitle} | ${hp.metaSiteTitle || "eSIM"}` : "FAQ | Österreich eSIM",
     description: hp?.faqPageSubtitle || "Frequently asked questions about Österreich eSIM.",
@@ -21,11 +21,11 @@ export default async function FaqPage() {
     prisma.faq.findMany({
       where: { country: COUNTRY },
       orderBy: [{ category: "asc" }, { order: "asc" }],
-    }),
+    }).catch(() => []),
     prisma.homepage.findUnique({
       where: { country: COUNTRY },
       select: { faqPageTitle: true, faqPageSubtitle: true },
-    }),
+    }).catch(() => null),
   ]);
 
   const title    = hp?.faqPageTitle    || "FAQ";

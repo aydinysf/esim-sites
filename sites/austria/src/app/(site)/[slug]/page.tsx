@@ -13,7 +13,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = await prisma.page.findUnique({
     where: { country_slug: { country: COUNTRY, slug: params.slug } },
-  });
+  }).catch(() => null);
   if (!page) return {};
   return {
     title: page.metaTitle || page.title,
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function DynamicPage({ params }: Props) {
   const page = await prisma.page.findUnique({
     where: { country_slug: { country: COUNTRY, slug: params.slug } },
-  });
+  }).catch(() => null);
 
   if (!page || page.status !== "PUBLISHED") notFound();
 

@@ -16,8 +16,8 @@ function youtubeId(url: string) {
 
 export default async function GalleryPage() {
   const [photos, videos] = await Promise.all([
-    prisma.media.findMany({ where: { country: COUNTRY, type: "IMAGE" }, orderBy: { order: "asc" } }),
-    prisma.media.findMany({ where: { country: COUNTRY, type: "VIDEO" }, orderBy: { order: "asc" } }),
+    prisma.media.findMany({ where: { country: COUNTRY, type: "IMAGE" }, orderBy: { order: "asc" } }).catch(() => []),
+    prisma.media.findMany({ where: { country: COUNTRY, type: "VIDEO" }, orderBy: { order: "asc" } }).catch(() => []),
   ]);
 
   return (

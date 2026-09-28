@@ -14,7 +14,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const post = await prisma.post.findUnique({
     where: { country_slug: { country: COUNTRY, slug: params.slug } },
-  });
+  }).catch(() => null);
 
   if (!post) return {};
 
@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPostPage({ params }: Props) {
   const post = await prisma.post.findUnique({
     where: { country_slug: { country: COUNTRY, slug: params.slug } },
-  });
+  }).catch(() => null);
 
   if (!post || post.status !== "PUBLISHED") notFound();
 

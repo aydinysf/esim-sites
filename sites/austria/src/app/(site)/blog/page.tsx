@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const hp = await prisma.homepage.findUnique({
     where: { country: COUNTRY },
     select: { blogPageTitle: true, blogPageSubtitle: true, metaSiteTitle: true },
-  });
+  }).catch(() => null);
   return {
     title: hp?.blogPageTitle ? `${hp.blogPageTitle} | ${hp.metaSiteTitle || "eSIM"}` : "Blog | Österreich eSIM",
     description: hp?.blogPageSubtitle || "Latest Österreich eSIM tips, guides and news.",
@@ -22,11 +22,11 @@ export default async function BlogPage() {
     prisma.post.findMany({
       where: { country: COUNTRY, status: "PUBLISHED" },
       orderBy: { publishedAt: "desc" },
-    }),
+    }).catch(() => []),
     prisma.homepage.findUnique({
       where: { country: COUNTRY },
       select: { blogPageTitle: true, blogPageSubtitle: true },
-    }),
+    }).catch(() => null),
   ]);
 
   const title    = hp?.blogPageTitle    || "Blog";
