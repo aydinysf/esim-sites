@@ -1,3 +1,4 @@
+import TariffSection from "@/components/site/TariffSection";
 import { getPackages } from "@/lib/cache";
 import { prisma } from "@/lib/db";
 import HeroBanner from "@/components/site/HeroBanner";
@@ -47,27 +48,7 @@ export default async function HomePage() {
         tickerCities="BERLIN ✦ MÜNCHEN ✦ HAMBURG ✦ FRANKFURT ✦ KÖLN ✦ STUTTGART ✦ DÜSSELDORF"
       />
 
-      <section id="tarife">
-        <div className="eyebrow" style={{ color: "var(--c4)" }}>TARIFE & PREISE</div>
-        <h2>Wähle deine Laufzeit</h2>
-        <p className="lead" style={{ fontSize: "16px", marginBottom: "20px" }}>
-          Alle Preise inkl. Hotspot und sofortiger Aktivierung per QR-Code.
-        </p>
-
-        <div className="plans">
-          {packages.map((pkg, idx) => (
-            <PackageCard key={pkg.id} pkg={pkg} colorIndex={idx} />
-          ))}
-        </div>
-
-        <p className="fair">
-          Unbegrenzte Tarife unterliegen einer Fair-Use-Regel. Die genauen Bedingungen stehen in den AGB.
-        </p>
-
-        <div className="pay">
-          Bezahlen mit <span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Apple Pay</span><span>EPS</span>
-        </div>
-      </section>
+      <TariffSection packages={packages} />
 
       <section id="ablauf" className="py-16 bg-[var(--bg)]">
         <div className="max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)]">
