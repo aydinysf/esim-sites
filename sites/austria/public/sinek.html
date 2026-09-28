@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>SİNEK — Ölüm Vızıltısı v1.1</title>
+<title>SİNEK — Alt Panel v1.3</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0d1117}
@@ -63,20 +63,29 @@
   .boss-bar-bg{width:100%;height:10px;background:rgba(0,0,0,0.4);border-radius:10px;padding:1px;border:2px solid #fff}
   .boss-bar-fill{height:100%;background:linear-gradient(90deg,#ff5252,#b71c1c);border-radius:6px;width:100%;transition:width .1s}
 
-  .skills-bar{position:absolute;right:10px;top:42%;transform:translateY(-50%);display:flex;flex-direction:column;gap:9px;z-index:25}
+  /* 🎮 YENİ ALT KONSOL: SİLAHLAR + APARATLAR TEK BİR PANELDE */
+  .bottom-console{
+    position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:8px;z-index:25;
+    background:rgba(255,255,255,0.94);padding:5px 8px;border-radius:24px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.22);max-width:96vw;
+  }
+  .weapon-section{display:flex;gap:4px}
+  .weapon-btn{border:2px solid transparent;background:#f0f2ef;border-radius:16px;padding:6px 9px;font-weight:800;font-size:11px;color:#222;cursor:pointer;display:flex;align-items:center;gap:3px;transition:all .15s;white-space:nowrap}
+  .weapon-btn.active{background:#1a251a;color:#fff;border-color:#1a251a;transform:scale(1.04)}
+  .weapon-btn:disabled{opacity:0.35;cursor:not-allowed}
+
+  .console-divider{width:2px;height:26px;background:#cfd8dc;border-radius:1px}
+
+  .skills-section{display:flex;gap:6px}
   .skill-btn{
-    width:48px;height:48px;border-radius:50%;border:2px solid #fff;background:#1e293b;
-    color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;
-    cursor:pointer;position:relative;box-shadow:0 4px 12px rgba(0,0,0,0.3);transition:transform .1s;
+    width:38px;height:38px;border-radius:50%;border:2px solid #fff;background:#1e293b;
+    color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;position:relative;box-shadow:0 3px 10px rgba(0,0,0,0.2);transition:transform .1s;
   }
   .skill-btn:active{transform:scale(0.9)}
   .skill-btn:disabled{opacity:0.4;filter:grayscale(1);cursor:not-allowed}
-  .skill-cooldown{position:absolute;inset:0;background:rgba(0,0,0,0.65);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:11px;font-weight:900}
-
-  .weapon-bar{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:25;background:rgba(255,255,255,0.92);padding:5px;border-radius:22px;box-shadow:0 6px 18px rgba(0,0,0,0.18)}
-  .weapon-btn{border:2px solid transparent;background:#f0f2ef;border-radius:16px;padding:6px 10px;font-weight:800;font-size:11px;color:#222;cursor:pointer;display:flex;align-items:center;gap:3px;transition:all .15s}
-  .weapon-btn.active{background:#1a251a;color:#fff;border-color:#1a251a;transform:scale(1.04)}
-  .weapon-btn:disabled{opacity:0.35;cursor:not-allowed}
+  .skill-cooldown{position:absolute;inset:0;background:rgba(0,0,0,0.7);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:900}
 
   /* Sinekler */
   .creature{position:absolute;z-index:15;will-change:transform;cursor:pointer}
@@ -89,6 +98,20 @@
   @keyframes flapR{from{transform:scaleX(-1) rotate(-35deg)}to{transform:scaleX(-1) rotate(10deg)}}
   .eye{position:absolute;top:20px;width:5px;height:5px;border-radius:50%;background:#ff3333}
   .eye.l{left:22px}.eye.r{left:30px}
+
+  /* 🐝 Arı Tasarımı */
+  .creature.bee .fly-body{
+    background:repeating-linear-gradient(180deg, #ffb300 0 5px, #1a1a1a 5px 10px);
+    border-radius:45% 45% 60% 60%;
+    box-shadow:0 0 6px rgba(255,179,0,0.6);
+  }
+  .creature.bee .stinger{
+    position:absolute;bottom:8px;left:27px;width:0;height:0;
+    border-left:3px solid transparent;border-right:3px solid transparent;
+    border-top:7px solid #000;
+  }
+  .creature.bee .eye{background:#000}
+  .creature.bee .wing{background:rgba(255,255,255,0.85);border-color:#b0bec5}
 
   .creature.frozen .fly-inner{filter:drop-shadow(0 0 8px #00e5ff)}
   .creature.frozen .wing{animation-play-state:paused}
@@ -112,11 +135,6 @@
   .creature.boss .wing{width:44px;height:30px;top:18px}
   .creature.boss .eye{width:9px;height:9px;top:36px}
   .creature.boss .eye.l{left:40px}.creature.boss .eye.r{left:58px}
-
-  .creature.ladybug .fly-body{background:#e53935;border:2px solid #000}
-  .creature.ladybug .wing{display:none}
-  .creature.ladybug .eye{background:#000}
-  .creature.ladybug .dot{position:absolute;width:4px;height:4px;background:#000;border-radius:50%}
 
   .fly-hp-wrap{position:absolute;top:-4px;left:50%;transform:translateX(-50%);width:34px;height:4px;background:rgba(0,0,0,0.5);border-radius:3px;overflow:hidden;display:none}
   .fly-hp-fill{width:100%;height:100%;background:#4caf50}
@@ -145,6 +163,25 @@
   .btn{border:0;border-radius:15px;padding:13px 20px;font-size:15px;font-weight:900;background:#1a251a;color:#fff;cursor:pointer;transition:transform .1s}
   .btn:active{transform:scale(0.97)}
   .btn-secondary{background:#e7ebe5;color:#242c23;margin-top:8px}
+
+  .level-grid{
+    display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;max-height:260px;
+    overflow-y:auto;padding:10px 4px;margin:12px 0;
+  }
+  .level-card{
+    padding:10px 6px;border-radius:14px;border:2px solid transparent;
+    display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+    font-size:12px;font-weight:800;transition:transform .1s;
+  }
+  .level-card:active{transform:scale(0.95)}
+  .level-card.completed{background:#e8f5e9;border-color:#4caf50;color:#2e7d32}
+  .level-card.current{
+    background:#fff8e1;border-color:#ffb300;color:#f57f17;
+    animation:pulseBorder 1.5s infinite alternate;
+  }
+  @keyframes pulseBorder{from{box-shadow:0 0 4px #ffb300}to{box-shadow:0 0 14px #ffb300}}
+  .level-card.locked{background:#f0f2f0;border-color:#cfd8dc;color:#90a4ae;cursor:not-allowed;opacity:0.65}
+
   .shop-list{max-height:190px;overflow-y:auto;margin:12px 0;text-align:left;display:flex;flex-direction:column;gap:7px}
   .shop-item{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#f5f7f4;border-radius:14px;border:1px solid #e2e6e1}
   .shop-item-info b{display:block;font-size:13px}
@@ -161,30 +198,19 @@
 
   <div id="targets-layer"></div>
 
-  <div class="prop" id="prop-salt" style="left:16%;top:58%">
+  <div class="prop" id="prop-salt" style="left:16%;top:56%">
     <div class="prop-icon">🧂</div>
     <div class="prop-hint">TUZ SAÇ</div>
   </div>
-  <div class="prop" id="prop-soda" style="right:16%;top:58%">
+  <div class="prop" id="prop-soda" style="right:16%;top:56%">
     <div class="prop-icon">🍾</div>
     <div class="prop-hint">PATLAT</div>
-  </div>
-
-  <div class="skills-bar">
-    <button class="skill-btn" id="skill-freeze" title="Buz Dondurma">
-      ❄️
-      <div class="skill-cooldown" id="cd-freeze">12</div>
-    </button>
-    <button class="skill-btn" id="skill-spray" title="Raid Sprey">
-      💨
-      <div class="skill-cooldown" id="cd-spray">18</div>
-    </button>
   </div>
 
   <div class="hud-top">
     <div class="hud-row">
       <div class="pill">🪙 <span id="coins-display">0</span></div>
-      <div class="pill" id="level-display">Bölüm 1.1: Mutfak (Yavaş)</div>
+      <div class="pill" id="level-display" style="cursor:pointer" title="Bölüm Seç">Bölüm 1.1 🗺️</div>
       <div class="pill" id="combo">🔥 ×0</div>
     </div>
     <div class="level-progress-wrap">
@@ -198,25 +224,61 @@
     <div class="boss-bar-bg"><div class="boss-bar-fill" id="boss-hp-fill"></div></div>
   </div>
 
-  <div class="weapon-bar" id="weapon-bar">
-    <button class="weapon-btn active" data-w="hand">✋ El</button>
-    <button class="weapon-btn" data-w="swatter" id="btn-swatter" disabled>🏸 Sineklik</button>
-    <button class="weapon-btn" data-w="elec" id="btn-elec" disabled>⚡ Elektrik</button>
-    <button class="weapon-btn" data-w="laser" id="btn-laser" disabled>🔫 Lazer</button>
+  <!-- 🎮 ALT KONSOL: SİLAHLAR VE APARATLAR BİR ARADA -->
+  <div class="bottom-console">
+    <!-- Silah Seçici -->
+    <div class="weapon-section" id="weapon-bar">
+      <button class="weapon-btn active" data-w="hand">✋ El</button>
+      <button class="weapon-btn" data-w="swatter" id="btn-swatter" disabled>🏸 Sineklik</button>
+      <button class="weapon-btn" data-w="elec" id="btn-elec" disabled>⚡ Elektrik</button>
+      <button class="weapon-btn" data-w="laser" id="btn-laser" disabled>🔫 Lazer</button>
+    </div>
+
+    <!-- Ayırıcı Çizgi -->
+    <div class="console-divider"></div>
+
+    <!-- Panik Aparatları -->
+    <div class="skills-section">
+      <button class="skill-btn" id="skill-freeze" title="Buzul Dondurma">
+        ❄️
+        <div class="skill-cooldown" id="cd-freeze">12</div>
+      </button>
+      <button class="skill-btn" id="skill-spray" title="Raid Sprey">
+        💨
+        <div class="skill-cooldown" id="cd-spray">18</div>
+      </button>
+    </div>
   </div>
 
+  <!-- Başlangıç Modalı -->
   <div id="start-modal" class="modal">
     <div class="card">
       <h1>🪰 SİNEK</h1>
       <p style="font-size:13px;color:#555;margin:0 0 14px">
-        Öldürdükçe can çekişme vızıltısını duy! 💥🪰<br>
-        Her mekan kendi içinde <b>Yavaş → Normal → Hızlı</b> olarak zorlaşır!
+        ⚠️ <b>Sakın Arıya (🐝) Dokunma!</b> İğnesiyle sokup puanını çalar.<br>
+        Aparatlar artık aşağıda, elinin altında!
       </p>
       <button class="btn" style="width:100%" id="start-btn">AV BAŞLASIN</button>
+      <button class="btn btn-secondary" style="width:100%" id="levels-btn-main">🗺️ BÖLÜM SEÇİMİ</button>
       <button class="btn btn-secondary" style="width:100%" id="shop-btn-main">🏪 CEPHANELİK</button>
     </div>
   </div>
 
+  <!-- Bölüm Haritası Modalı -->
+  <div id="levels-modal" class="modal" style="display:none">
+    <div class="card">
+      <h2>🗺️ Bölüm Haritası</h2>
+      <div style="font-size:11px;color:#666;display:flex;justify-content:center;gap:10px;margin-bottom:6px">
+        <span>🟩 Geçildi</span>
+        <span>🟨 Aktif</span>
+        <span>🔒 Kilitli</span>
+      </div>
+      <div class="level-grid" id="level-grid-container"></div>
+      <button class="btn" style="width:100%" id="close-levels-btn">KAPAT</button>
+    </div>
+  </div>
+
+  <!-- Bölüm Sonu Modalı -->
   <div id="level-clear-modal" class="modal" style="display:none">
     <div class="card">
       <div style="font-size:44px;margin-bottom:4px">🏆</div>
@@ -224,9 +286,11 @@
       <p style="font-size:13px;color:#555;margin:0 0 10px" id="clear-level-msg"></p>
       <p style="font-size:15px;color:#333;margin:4px 0">Ödül: <b style="color:#f57f17">+60 🪙</b></p>
       <button class="btn" style="width:100%;margin-top:12px" id="next-level-btn">SONRAKİ AŞAMA</button>
+      <button class="btn btn-secondary" style="width:100%" id="levels-btn-clear">🗺️ BÖLÜMLER</button>
     </div>
   </div>
 
+  <!-- Game Over Modalı -->
   <div id="gameover-modal" class="modal" style="display:none">
     <div class="card">
       <div style="font-size:46px;margin-bottom:4px">💀</div>
@@ -234,10 +298,12 @@
       <p style="font-size:13px;color:#555;margin:0 0 10px" id="gameover-reason"></p>
       <p style="font-size:14px;color:#333;margin:4px 0">Toplam Bakiye: 🪙 <span id="final-total-coins">0</span></p>
       <button class="btn" style="width:100%;margin-top:12px" id="again-btn">AŞAMAYI TEKRAR DENE</button>
+      <button class="btn btn-secondary" style="width:100%" id="levels-btn-end">🗺️ BÖLÜM SEÇ</button>
       <button class="btn btn-secondary" style="width:100%" id="shop-btn-end">🏪 MARKET</button>
     </div>
   </div>
 
+  <!-- Market Modalı -->
   <div id="shop-modal" class="modal" style="display:none">
     <div class="card">
       <h2>🏪 Cephanelik / Market</h2>
@@ -250,31 +316,38 @@
 <script>
 (() => {
   const LEVEL_TIERS = [
-    { id:'1.1', name:'Mutfak (Yavaş 🐢)', theme:'theme-kitchen', targetKills:8, speedMul:0.65, spawnRate:1.8, maxConcurrent:3, chaosFactor:0.2, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍯', type:'instant', xPct:0.5, yPct:0.54, move:false }] },
-    { id:'1.2', name:'Mutfak (Normal 🚶)', theme:'theme-kitchen', targetKills:11, speedMul:0.95, spawnRate:1.4, maxConcurrent:4, chaosFactor:0.6, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍯', type:'instant', xPct:0.5, yPct:0.54, move:false }] },
-    { id:'1.3', name:'Mutfak (Hızlı ⚡ + Boss)', theme:'theme-kitchen', targetKills:14, speedMul:1.25, spawnRate:1.1, maxConcurrent:4, chaosFactor:1.0, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🍯', type:'instant', xPct:0.5, yPct:0.54, move:false }] },
+    { id:'1.1', name:'Mutfak (Yavaş 🐢)', theme:'theme-kitchen', targetKills:8, speedMul:0.65, spawnRate:1.8, maxConcurrent:3, chaosFactor:0.2, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍯', type:'instant', xPct:0.5, yPct:0.52, move:false }] },
+    { id:'1.2', name:'Mutfak (Normal 🚶)', theme:'theme-kitchen', targetKills:11, speedMul:0.95, spawnRate:1.4, maxConcurrent:4, chaosFactor:0.6, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍯', type:'instant', xPct:0.5, yPct:0.52, move:false }] },
+    { id:'1.3', name:'Mutfak (Hızlı ⚡ + Boss)', theme:'theme-kitchen', targetKills:14, speedMul:1.25, spawnRate:1.1, maxConcurrent:4, chaosFactor:1.0, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🍯', type:'instant', xPct:0.5, yPct:0.52, move:false }] },
 
-    { id:'2.1', name:'Salon (Yavaş 🐢)', theme:'theme-salon', targetKills:12, speedMul:0.8, spawnRate:1.5, maxConcurrent:4, chaosFactor:0.6, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍰', type:'hp', maxHp:6, hp:6, xPct:0.5, yPct:0.54, move:false }] },
-    { id:'2.2', name:'Salon (Normal 🚶)', theme:'theme-salon', targetKills:16, speedMul:1.1, spawnRate:1.2, maxConcurrent:5, chaosFactor:1.1, swarm:true, hasBoss:false, targets:[{ id:'t1', emoji:'🍰', type:'hp', maxHp:6, hp:6, xPct:0.5, yPct:0.54, move:false }] },
-    { id:'2.3', name:'Salon (Hızlı ⚡ + Boss)', theme:'theme-salon', targetKills:20, speedMul:1.4, spawnRate:0.95, maxConcurrent:5, chaosFactor:1.5, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🍰', type:'hp', maxHp:6, hp:6, xPct:0.5, yPct:0.54, move:false }] },
+    { id:'2.1', name:'Salon (Yavaş 🐢)', theme:'theme-salon', targetKills:12, speedMul:0.8, spawnRate:1.5, maxConcurrent:4, chaosFactor:0.6, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍰', type:'hp', maxHp:6, hp:6, xPct:0.5, yPct:0.52, move:false }] },
+    { id:'2.2', name:'Salon (Normal 🚶)', theme:'theme-salon', targetKills:16, speedMul:1.1, spawnRate:1.2, maxConcurrent:5, chaosFactor:1.1, swarm:true, hasBoss:false, targets:[{ id:'t1', emoji:'🍰', type:'hp', maxHp:6, hp:6, xPct:0.5, yPct:0.52, move:false }] },
+    { id:'2.3', name:'Salon (Hızlı ⚡ + Boss)', theme:'theme-salon', targetKills:20, speedMul:1.4, spawnRate:0.95, maxConcurrent:5, chaosFactor:1.5, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🍰', type:'hp', maxHp:6, hp:6, xPct:0.5, yPct:0.52, move:false }] },
 
-    { id:'3.1', name:'Balkon (Yavaş 🐢)', theme:'theme-balcony', targetKills:14, speedMul:0.9, spawnRate:1.3, maxConcurrent:4, chaosFactor:0.9, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍉', type:'instant', xPct:0.5, yPct:0.54, move:'wind' }] },
-    { id:'3.2', name:'Balkon (Normal 🚶)', theme:'theme-balcony', targetKills:18, speedMul:1.2, spawnRate:1.0, maxConcurrent:5, chaosFactor:1.4, swarm:true, hasBoss:false, targets:[{ id:'t1', emoji:'🍉', type:'instant', xPct:0.5, yPct:0.54, move:'wind' }] },
-    { id:'3.3', name:'Balkon (Hızlı ⚡ + Boss)', theme:'theme-balcony', targetKills:24, speedMul:1.5, spawnRate:0.8, maxConcurrent:6, chaosFactor:1.9, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🍉', type:'instant', xPct:0.5, yPct:0.54, move:'wind' }] },
+    { id:'3.1', name:'Balkon (Yavaş 🐢)', theme:'theme-balcony', targetKills:14, speedMul:0.9, spawnRate:1.3, maxConcurrent:4, chaosFactor:0.9, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍉', type:'instant', xPct:0.5, yPct:0.52, move:'wind' }] },
+    { id:'3.2', name:'Balkon (Normal 🚶)', theme:'theme-balcony', targetKills:18, speedMul:1.2, spawnRate:1.0, maxConcurrent:5, chaosFactor:1.4, swarm:true, hasBoss:false, targets:[{ id:'t1', emoji:'🍉', type:'instant', xPct:0.5, yPct:0.52, move:'wind' }] },
+    { id:'3.3', name:'Balkon (Hızlı ⚡ + Boss)', theme:'theme-balcony', targetKills:24, speedMul:1.5, spawnRate:0.8, maxConcurrent:6, chaosFactor:1.9, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🍉', type:'instant', xPct:0.5, yPct:0.52, move:'wind' }] },
 
-    { id:'4.1', name:'Gece (Yavaş 🐢)', theme:'theme-night', targetKills:15, speedMul:0.95, spawnRate:1.2, maxConcurrent:4, chaosFactor:1.0, nightMode:true, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍇', type:'instant', xPct:0.5, yPct:0.54, move:false }] },
-    { id:'4.2', name:'Gece (Normal 🚶)', theme:'theme-night', targetKills:20, speedMul:1.3, spawnRate:0.9, maxConcurrent:5, chaosFactor:1.6, nightMode:true, swarm:true, hasBoss:false, targets:[{ id:'t1', emoji:'🍇', type:'instant', xPct:0.5, yPct:0.54, move:false }] },
-    { id:'4.3', name:'Gece (Hızlı ⚡ + Boss)', theme:'theme-night', targetKills:26, speedMul:1.6, spawnRate:0.75, maxConcurrent:6, chaosFactor:2.2, nightMode:true, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🍇', type:'instant', xPct:0.5, yPct:0.54, move:false }] },
+    { id:'4.1', name:'Gece (Yavaş 🐢)', theme:'theme-night', targetKills:15, speedMul:0.95, spawnRate:1.2, maxConcurrent:4, chaosFactor:1.0, nightMode:true, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🍇', type:'instant', xPct:0.5, yPct:0.52, move:false }] },
+    { id:'4.2', name:'Gece (Normal 🚶)', theme:'theme-night', targetKills:20, speedMul:1.3, spawnRate:0.9, maxConcurrent:5, chaosFactor:1.6, nightMode:true, swarm:true, hasBoss:false, targets:[{ id:'t1', emoji:'🍇', type:'instant', xPct:0.5, yPct:0.52, move:false }] },
+    { id:'4.3', name:'Gece (Hızlı ⚡ + Boss)', theme:'theme-night', targetKills:26, speedMul:1.6, spawnRate:0.75, maxConcurrent:6, chaosFactor:2.2, nightMode:true, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🍇', type:'instant', xPct:0.5, yPct:0.52, move:false }] },
 
-    { id:'5.1', name:'Piknik (Yavaş 🐢)', theme:'theme-picnic', targetKills:18, speedMul:1.0, spawnRate:1.1, maxConcurrent:5, chaosFactor:1.2, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🥩', type:'hp', maxHp:5, hp:5, xPct:0.32, yPct:0.54, move:false }, { id:'t2', emoji:'🧃', type:'instant', xPct:0.68, yPct:0.54, move:false }] },
-    { id:'5.2', name:'Piknik (Normal 🚶)', theme:'theme-picnic', targetKills:25, speedMul:1.4, spawnRate:0.8, maxConcurrent:6, chaosFactor:1.8, swarm:true, hasBoss:false, targets:[{ id:'t1', emoji:'🥩', type:'hp', maxHp:5, hp:5, xPct:0.32, yPct:0.54, move:false }, { id:'t2', emoji:'🧃', type:'instant', xPct:0.68, yPct:0.54, move:false }] },
-    { id:'5.3', name:'Piknik (Hızlı ⚡ + Boss)', theme:'theme-picnic', targetKills:32, speedMul:1.8, spawnRate:0.65, maxConcurrent:7, chaosFactor:2.6, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🥩', type:'hp', maxHp:5, hp:5, xPct:0.32, yPct:0.54, move:false }, { id:'t2', emoji:'🧃', type:'instant', xPct:0.68, yPct:0.54, move:false }] }
+    { id:'5.1', name:'Piknik (Yavaş 🐢)', theme:'theme-picnic', targetKills:18, speedMul:1.0, spawnRate:1.1, maxConcurrent:5, chaosFactor:1.2, swarm:false, hasBoss:false, targets:[{ id:'t1', emoji:'🥩', type:'hp', maxHp:5, hp:5, xPct:0.32, yPct:0.52, move:false }, { id:'t2', emoji:'🧃', type:'instant', xPct:0.68, yPct:0.52, move:false }] },
+    { id:'5.2', name:'Piknik (Normal 🚶)', theme:'theme-picnic', targetKills:25, speedMul:1.4, spawnRate:0.8, maxConcurrent:6, chaosFactor:1.8, swarm:true, hasBoss:false, targets:[{ id:'t1', emoji:'🥩', type:'hp', maxHp:5, hp:5, xPct:0.32, yPct:0.52, move:false }, { id:'t2', emoji:'🧃', type:'instant', xPct:0.68, yPct:0.52, move:false }] },
+    { id:'5.3', name:'Piknik (Hızlı ⚡ + Boss)', theme:'theme-picnic', targetKills:32, speedMul:1.8, spawnRate:0.65, maxConcurrent:7, chaosFactor:2.6, swarm:true, hasBoss:true, targets:[{ id:'t1', emoji:'🥩', type:'hp', maxHp:5, hp:5, xPct:0.32, yPct:0.52, move:false }, { id:'t2', emoji:'🧃', type:'instant', xPct:0.68, yPct:0.52, move:false }] }
   ];
 
-  let player = { coins:0, unlockedWeapons:['hand'], currentWeapon:'hand', currentLevelIdx:0 };
-  const saved = localStorage.getItem('sinek_save_v11');
+  let player = {
+    coins: 0,
+    unlockedWeapons: ['hand'],
+    currentWeapon: 'hand',
+    currentLevelIdx: 0,
+    maxUnlockedIdx: 0
+  };
+
+  const saved = localStorage.getItem('sinek_save_v13');
   if(saved){ try{ Object.assign(player, JSON.parse(saved)); }catch(e){} }
-  function savePlayer(){ localStorage.setItem('sinek_save_v11', JSON.stringify(player)); }
+  function savePlayer(){ localStorage.setItem('sinek_save_v13', JSON.stringify(player)); }
 
   const WEAPONS = {
     hand: { id:'hand', name:'El', icon:'✋', damage:1, radius:48, critRate:0.15, cost:0, desc:'Klasik vuruş.' },
@@ -284,6 +357,7 @@
   };
 
   let running = false;
+  let animId = null;
   let currentTier = LEVEL_TIERS[player.currentLevelIdx % LEVEL_TIERS.length];
   let levelKills = 0;
   let combo = 0;
@@ -319,42 +393,34 @@
   const cdSprayEl = document.getElementById('cd-spray');
 
   const startModal = document.getElementById('start-modal');
+  const levelsModal = document.getElementById('levels-modal');
   const levelClearModal = document.getElementById('level-clear-modal');
   const gameoverModal = document.getElementById('gameover-modal');
   const shopModal = document.getElementById('shop-modal');
 
-  // ==========================================
-  // 🪰 SİNEK ÖLÜM VIZILTISI SES MOTORU
-  // ==========================================
+  // SESLER
   let audioCtx = null;
-
   function ensureAudioCtx(){
     audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
     if(audioCtx.state === 'suspended') audioCtx.resume();
   }
 
-  // Sinek tam ezildiği anda çıkan can çekişme / ezilme vızıltısı (BZZZ-küt!)
   function playFlyDeathBuzz(isBoss = false){
     try{
       ensureAudioCtx();
       const now = audioCtx.currentTime;
-
-      // Çift osilatörle gerçek sinek kanadı çırpıntı hissi
       const osc1 = audioCtx.createOscillator();
       const osc2 = audioCtx.createOscillator();
       const filter = audioCtx.createBiquadFilter();
       const gain = audioCtx.createGain();
 
-      osc1.type = 'sawtooth';
-      osc2.type = 'sawtooth';
-
+      osc1.type = 'sawtooth'; osc2.type = 'sawtooth';
       const dur = isBoss ? 0.45 : 0.22;
       const startFreq = isBoss ? 160 : (240 + Math.random() * 40);
       const endFreq = isBoss ? 60 : (110 + Math.random() * 20);
 
       osc1.frequency.setValueAtTime(startFreq, now);
       osc1.frequency.exponentialRampToValueAtTime(endFreq, now + dur);
-
       osc2.frequency.setValueAtTime(startFreq + 5, now);
       osc2.frequency.exponentialRampToValueAtTime(endFreq - 5, now + dur);
 
@@ -367,15 +433,27 @@
       gain.gain.linearRampToValueAtTime(0.35, now + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
 
-      osc1.connect(filter);
-      osc2.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
+      osc1.connect(filter); osc2.connect(filter);
+      filter.connect(gain); gain.connect(audioCtx.destination);
 
-      osc1.start(now);
-      osc2.start(now);
-      osc1.stop(now + dur + 0.05);
-      osc2.stop(now + dur + 0.05);
+      osc1.start(now); osc2.start(now);
+      osc1.stop(now + dur + 0.05); osc2.stop(now + dur + 0.05);
+    }catch(e){}
+  }
+
+  function playStingSound(){
+    try{
+      ensureAudioCtx();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(650, now);
+      osc.frequency.exponentialRampToValueAtTime(90, now + 0.35);
+      gain.gain.setValueAtTime(0.4, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc.stop(now + 0.36);
     }catch(e){}
   }
 
@@ -472,12 +550,12 @@
   }
 
   const CREATURE_TYPES = {
-    normal: { hp:1, speed:120, diveSpeed:180, coins:1, cls:'', isBug:false, weight:40 },
-    fast: { hp:2, speed:200, diveSpeed:280, coins:3, cls:'fast', isBug:false, weight:20 },
-    boomerang: { hp:2, speed:160, diveSpeed:240, coins:4, cls:'boomerang', isBug:false, weight:16 },
-    ninja: { hp:2, speed:220, diveSpeed:310, coins:5, cls:'ninja', isBug:false, weight:12 },
-    bomb: { hp:1, speed:110, diveSpeed:160, coins:2, cls:'bomb', isBug:false, weight:6 },
-    ladybug: { hp:999, speed:45, diveSpeed:0, coins:0, cls:'ladybug', isBug:true, weight:6 }
+    normal: { hp:1, speed:120, diveSpeed:180, coins:1, cls:'', isBee:false, weight:40 },
+    fast: { hp:2, speed:200, diveSpeed:280, coins:3, cls:'fast', isBee:false, weight:20 },
+    boomerang: { hp:2, speed:160, diveSpeed:240, coins:4, cls:'boomerang', isBee:false, weight:16 },
+    ninja: { hp:2, speed:220, diveSpeed:310, coins:5, cls:'ninja', isBee:false, weight:12 },
+    bomb: { hp:1, speed:110, diveSpeed:160, coins:2, cls:'bomb', isBee:false, weight:6 },
+    bee: { hp:999, speed:50, diveSpeed:0, coins:0, cls:'bee', isBee:true, weight:6 }
   };
 
   function spawnCreature(typeKey, isBoss = false, customX = null, customY = null){
@@ -486,14 +564,12 @@
     const el = document.createElement('div');
     el.className = 'creature ' + (isBoss ? 'boss' : cDef.cls);
 
-    if(cDef.isBug){
+    if(cDef.isBee){
       el.innerHTML = `
         <div class="fly-inner">
-          <div class="fly-body">
-            <div class="dot" style="top:5px;left:4px"></div>
-            <div class="dot" style="top:12px;left:9px"></div>
-            <div class="dot" style="top:17px;left:3px"></div>
-          </div>
+          <div class="wing l"></div><div class="wing r"></div>
+          <div class="fly-body"></div>
+          <div class="stinger"></div>
           <div class="eye l"></div><div class="eye r"></div>
         </div>
       `;
@@ -526,7 +602,7 @@
       el,
       type: typeKey,
       isBoss,
-      isBug: cDef.isBug,
+      isBee: cDef.isBee,
       maxHp: hp,
       hp: hp,
       x: x,
@@ -574,7 +650,7 @@
 
   function updateCreatureElement(c){
     c.el.style.transform = `translate(${c.x}px, ${c.y}px) rotate(${c.vx < 0 ? -12 : 12}deg)`;
-    if(c.maxHp > 1 && !c.isBoss && !c.isBug){
+    if(c.maxHp > 1 && !c.isBoss && !c.isBee){
       const wrap = c.el.querySelector('.fly-hp-wrap');
       const fill = c.el.querySelector('.fly-hp-fill');
       wrap.style.display = 'block';
@@ -608,12 +684,16 @@
 
       if(dist <= curW.radius + (c.size / 3)){
         anyHit = true;
-        if(c.isBug){
-          playSound('punish');
+
+        if(c.isBee){
+          playStingSound();
           combo = 0;
-          createFloatText(hitX, hitY - 20, 'SAKIN VURMA! 🐞', 'warn');
-          screenFlash('#d32f2f');
+          player.coins = Math.max(0, player.coins - 15);
+          createFloatText(hitX, hitY - 20, 'İĞNE SOKTU! 💉💥 -15🪙', 'warn');
+          screenFlash('#ff1744');
+          screenShake();
           updateHUD();
+          savePlayer();
           return;
         }
 
@@ -646,12 +726,18 @@
 
     if(!anyHit && Math.random() < 0.12 && creatures.length > 0){
       const luckyFly = creatures[Math.floor(Math.random() * creatures.length)];
-      if(!luckyFly.isBug && luckyFly.state === 'roam'){
+      if(!luckyFly.isBee && luckyFly.state === 'roam'){
         luckyFly.stunTimer = 1.8;
         luckyFly.el.classList.add('stunned');
         createFloatText(luckyFly.x + 25, luckyFly.y, 'KÜT! 🪟', 'crit');
       }
     }
+  }
+
+  function screenShake(){
+    container.style.transform = 'translate(6px, -6px)';
+    setTimeout(() => { container.style.transform = 'translate(-6px, 6px)'; }, 50);
+    setTimeout(() => { container.style.transform = 'none'; }, 100);
   }
 
   function spawnSplat(x, y){
@@ -665,7 +751,6 @@
   }
 
   function killCreature(c, index, isCrit = false){
-    // 🪰 SİNEK ÖLÜNCE ÇIKAN CAN ÇEKİŞME VIZILTISI!
     playFlyDeathBuzz(c.isBoss);
 
     const gainedCoins = (c.coins + Math.floor(combo / 3)) * (isCrit ? 2 : 1);
@@ -698,7 +783,7 @@
 
     for(let i = creatures.length - 1; i >= 0; i--){
       const other = creatures[i];
-      if(!other.isBug && !other.isBoss){
+      if(!other.isBee && !other.isBoss){
         spawnParticles(other.x + 25, other.y + 25, '#ff9800');
         spawnSplat(other.x + 25, other.y + 25);
         killCreature(other, i, true);
@@ -726,7 +811,7 @@
 
     creatures.forEach(c => {
       const dist = Math.hypot(c.x - sx, c.y - sy);
-      if(dist < 180 && !c.isBug){
+      if(dist < 180 && !c.isBee){
         c.stunTimer = 2.5;
         c.el.classList.add('stunned');
       }
@@ -747,7 +832,7 @@
 
     for(let i = creatures.length - 1; i >= 0; i--){
       const c = creatures[i];
-      if(Math.abs(c.x - sx) < 90 && !c.isBug && !c.isBoss){
+      if(Math.abs(c.x - sx) < 90 && !c.isBee && !c.isBoss){
         spawnParticles(c.x + 25, c.y + 25, '#80d8ff');
         killCreature(c, i, true);
       }
@@ -763,7 +848,7 @@
     createFloatText(window.innerWidth/2, window.innerHeight/2, '❄️ DONDURULDU!', 'warn');
 
     creatures.forEach(c => {
-      if(!c.isBug){
+      if(!c.isBee){
         c.frozenTimer = 3.5;
         c.el.classList.add('frozen');
       }
@@ -784,7 +869,7 @@
     createFloatText(window.innerWidth/2, window.innerHeight/2, '💨 RAID SİSİ!', 'warn');
 
     creatures.forEach(c => {
-      if(!c.isBug){
+      if(!c.isBee){
         c.state = 'roam';
         c.el.classList.remove('diving');
         c.stateTimer = 3.5;
@@ -844,7 +929,11 @@
     running = false;
     playSound('crit');
     player.coins += 60;
-    player.currentLevelIdx = (player.currentLevelIdx + 1) % LEVEL_TIERS.length;
+    
+    if(player.currentLevelIdx >= player.maxUnlockedIdx){
+      player.maxUnlockedIdx = Math.min(LEVEL_TIERS.length - 1, player.currentLevelIdx + 1);
+    }
+    player.currentLevelIdx = Math.min(LEVEL_TIERS.length - 1, player.currentLevelIdx + 1);
     savePlayer();
 
     document.getElementById('clear-level-msg').textContent = `${currentTier.name} başarıyla tamamlandı!`;
@@ -858,170 +947,171 @@
   }
 
   function gameLoop(time){
+    if(!running) return;
+
     if(!lastTime) lastTime = time;
     const rawDt = (time - lastTime) / 1000;
     const dt = Math.min(0.04, Math.max(0.001, rawDt));
     lastTime = time;
 
-    if(running){
-      updateCooldowns(dt);
+    updateCooldowns(dt);
 
-      windAngle += dt * 1.5;
-      targets.forEach(t => {
-        if(t.move === 'wind'){
-          t.x = t.baseX + Math.sin(windAngle) * 90;
-          updateTargetPosition(t);
-        }
-      });
-
-      if(combo > 0){
-        comboTimer -= dt;
-        if(comboTimer <= 0){
-          combo = 0;
-          updateHUD();
-        }
+    windAngle += dt * 1.5;
+    targets.forEach(t => {
+      if(t.move === 'wind'){
+        t.x = t.baseX + Math.sin(windAngle) * 90;
+        updateTargetPosition(t);
       }
+    });
 
-      swarmTimer -= dt;
-      if(swarmTimer <= 0){
-        swarmTimer = 12 + Math.random() * 6;
-        triggerSwarm();
-      }
-
-      const bound = container.getBoundingClientRect();
-
-      spawnTimer += dt;
-      if(spawnTimer >= currentTier.spawnRate && creatures.length < currentTier.maxConcurrent && (!bossSpawned || bossActive)){
-        spawnTimer = 0;
-        const rand = Math.random() * 100;
-        let chosen = 'normal', acc = 0;
-        for(const k in CREATURE_TYPES){
-          acc += CREATURE_TYPES[k].weight;
-          if(rand <= acc){ chosen = k; break; }
-        }
-        spawnCreature(chosen);
-      }
-
-      for(let i = creatures.length - 1; i >= 0; i--){
-        const c = creatures[i];
-
-        if(c.frozenTimer > 0){
-          c.frozenTimer -= dt;
-          if(c.frozenTimer <= 0) c.el.classList.remove('frozen');
-          continue;
-        }
-        if(c.stunTimer > 0){
-          c.stunTimer -= dt;
-          c.y += 35 * dt;
-          updateCreatureElement(c);
-          if(c.stunTimer <= 0) c.el.classList.remove('stunned');
-          continue;
-        }
-
-        c.stateTimer -= dt;
-        const centerX = c.x + c.size / 2;
-        const centerY = c.y + c.size / 2;
-
-        if(c.isBug){
-          if(c.stateTimer <= 0){
-            c.stateTimer = 2.0;
-            c.vx = (Math.random() - 0.5) * 50;
-            c.vy = (Math.random() - 0.5) * 50;
-          }
-        } 
-        else {
-          if(c.state === 'roam' && c.stateTimer <= 0){
-            c.state = 'dive';
-            c.el.classList.add('diving');
-          }
-
-          if(c.state === 'dive'){
-            const target = (c.targetObj && targets.includes(c.targetObj)) ? c.targetObj : targets[0];
-            if(target){
-              const dx = target.x - centerX;
-              const dy = target.y - centerY;
-              const dist = Math.hypot(dx, dy) || 1;
-
-              if(c.type === 'boomerang' && !c.fakeUsed && dist < target.radius + 60){
-                c.fakeUsed = true;
-                c.state = 'roam';
-                c.el.classList.remove('diving');
-                c.stateTimer = 1.2;
-                c.vx = -c.vx * 1.5;
-                c.vy = -200;
-                createFloatText(centerX, centerY - 20, 'FAKE! 🪃', 'crit');
-              } 
-              else {
-                const dSpeed = (c.isBoss ? 80 : CREATURE_TYPES[c.type].diveSpeed) * currentTier.speedMul;
-                let targetVx = (dx / dist) * dSpeed;
-                let targetVy = (dy / dist) * dSpeed;
-
-                const wave = Math.sin((time / 100) + c.chaosSeed) * (35 * currentTier.chaosFactor);
-                c.vx = targetVx + wave;
-                c.vy = targetVy;
-              }
-
-              if(dist < target.radius + 10){
-                if(target.type === 'hp'){
-                  target.curHp -= 1;
-                  updateTargetPosition(target);
-                  createFloatText(target.x, target.y - 30, 'ISIRIK! 🍰', 'warn');
-                  playSound('punish');
-                  c.el.remove();
-                  creatures.splice(i, 1);
-
-                  if(target.curHp <= 0){
-                    triggerGameOver('Yemek bitti!');
-                    return;
-                  }
-                  continue;
-                } else {
-                  triggerGameOver(`${target.emoji} yağmalandı!`);
-                  return;
-                }
-              }
-            }
-          } 
-          else {
-            c.chaosSeed += dt * c.chaosSpeed;
-            const turnAngle = Math.sin(c.chaosSeed) * dt * (4 * currentTier.chaosFactor);
-            const currentSpeed = Math.hypot(c.vx, c.vy) || 50;
-            let currentAngle = Math.atan2(c.vy, c.vx) + turnAngle;
-
-            c.vx = Math.cos(currentAngle) * currentSpeed;
-            c.vy = Math.sin(currentAngle) * currentSpeed;
-
-            if(Math.random() < 0.015 * currentTier.chaosFactor && c.hoverTimer <= 0){
-              c.hoverTimer = 0.35;
-              c.vx *= 0.3;
-              c.vy *= 0.3;
-            }
-          }
-        }
-
-        if(c.x < 10){ c.x = 10; c.vx = Math.abs(c.vx); }
-        if(c.x > bound.width - c.size - 10){ c.x = bound.width - c.size - 10; c.vx = -Math.abs(c.vx); }
-        if(c.y < 65){ c.y = 65; c.vy = Math.abs(c.vy); }
-        if(c.y > bound.height * 0.75){ c.y = bound.height * 0.75; c.vy = -Math.abs(c.vy); }
-
-        c.x += c.vx * dt;
-        c.y += c.vy * dt;
-        updateCreatureElement(c);
+    if(combo > 0){
+      comboTimer -= dt;
+      if(comboTimer <= 0){
+        combo = 0;
+        updateHUD();
       }
     }
 
-    requestAnimationFrame(gameLoop);
+    swarmTimer -= dt;
+    if(swarmTimer <= 0){
+      swarmTimer = 12 + Math.random() * 6;
+      triggerSwarm();
+    }
+
+    const bound = container.getBoundingClientRect();
+
+    spawnTimer += dt;
+    if(spawnTimer >= currentTier.spawnRate && creatures.length < currentTier.maxConcurrent && (!bossSpawned || bossActive)){
+      spawnTimer = 0;
+      const rand = Math.random() * 100;
+      let chosen = 'normal', acc = 0;
+      for(const k in CREATURE_TYPES){
+        acc += CREATURE_TYPES[k].weight;
+        if(rand <= acc){ chosen = k; break; }
+      }
+      spawnCreature(chosen);
+    }
+
+    for(let i = creatures.length - 1; i >= 0; i--){
+      const c = creatures[i];
+
+      if(c.frozenTimer > 0){
+        c.frozenTimer -= dt;
+        if(c.frozenTimer <= 0) c.el.classList.remove('frozen');
+        continue;
+      }
+      if(c.stunTimer > 0){
+        c.stunTimer -= dt;
+        c.y += 35 * dt;
+        updateCreatureElement(c);
+        if(c.stunTimer <= 0) c.el.classList.remove('stunned');
+        continue;
+      }
+
+      c.stateTimer -= dt;
+      const centerX = c.x + c.size / 2;
+      const centerY = c.y + c.size / 2;
+
+      if(c.isBee){
+        if(c.stateTimer <= 0){
+          c.stateTimer = 1.8;
+          c.vx = (Math.random() - 0.5) * 60;
+          c.vy = (Math.random() - 0.5) * 60;
+        }
+      } 
+      else {
+        if(c.state === 'roam' && c.stateTimer <= 0){
+          c.state = 'dive';
+          c.el.classList.add('diving');
+        }
+
+        if(c.state === 'dive'){
+          const target = (c.targetObj && targets.includes(c.targetObj)) ? c.targetObj : targets[0];
+          if(target){
+            const dx = target.x - centerX;
+            const dy = target.y - centerY;
+            const dist = Math.hypot(dx, dy) || 1;
+
+            if(c.type === 'boomerang' && !c.fakeUsed && dist < target.radius + 60){
+              c.fakeUsed = true;
+              c.state = 'roam';
+              c.el.classList.remove('diving');
+              c.stateTimer = 1.2;
+              c.vx = -c.vx * 1.5;
+              c.vy = -200;
+              createFloatText(centerX, centerY - 20, 'FAKE! 🪃', 'crit');
+            } 
+            else {
+              const dSpeed = (c.isBoss ? 80 : CREATURE_TYPES[c.type].diveSpeed) * currentTier.speedMul;
+              let targetVx = (dx / dist) * dSpeed;
+              let targetVy = (dy / dist) * dSpeed;
+
+              const wave = Math.sin((time / 100) + c.chaosSeed) * (35 * currentTier.chaosFactor);
+              c.vx = targetVx + wave;
+              c.vy = targetVy;
+            }
+
+            if(dist < target.radius + 10){
+              if(target.type === 'hp'){
+                target.curHp -= 1;
+                updateTargetPosition(target);
+                createFloatText(target.x, target.y - 30, 'ISIRIK! 🍰', 'warn');
+                playSound('punish');
+                c.el.remove();
+                creatures.splice(i, 1);
+
+                if(target.curHp <= 0){
+                  triggerGameOver('Yemek bitti!');
+                  return;
+                }
+                continue;
+              } else {
+                triggerGameOver(`${target.emoji} yağmalandı!`);
+                return;
+              }
+            }
+          }
+        } 
+        else {
+          c.chaosSeed += dt * c.chaosSpeed;
+          const turnAngle = Math.sin(c.chaosSeed) * dt * (4 * currentTier.chaosFactor);
+          const currentSpeed = Math.hypot(c.vx, c.vy) || 50;
+          let currentAngle = Math.atan2(c.vy, c.vx) + turnAngle;
+
+          c.vx = Math.cos(currentAngle) * currentSpeed;
+          c.vy = Math.sin(currentAngle) * currentSpeed;
+
+          if(Math.random() < 0.015 * currentTier.chaosFactor && c.hoverTimer <= 0){
+            c.hoverTimer = 0.35;
+            c.vx *= 0.3;
+            c.vy *= 0.3;
+          }
+        }
+      }
+
+      if(c.x < 10){ c.x = 10; c.vx = Math.abs(c.vx); }
+      if(c.x > bound.width - c.size - 10){ c.x = bound.width - c.size - 10; c.vx = -Math.abs(c.vx); }
+      if(c.y < 65){ c.y = 65; c.vy = Math.abs(c.vy); }
+      if(c.y > bound.height * 0.72){ c.y = bound.height * 0.72; c.vy = -Math.abs(c.vy); }
+
+      c.x += c.vx * dt;
+      c.y += c.vy * dt;
+      updateCreatureElement(c);
+    }
+
+    animId = requestAnimationFrame(gameLoop);
   }
 
   function startLevel(){
     ensureAudioCtx();
+    
+    if(animId) cancelAnimationFrame(animId);
+
     currentTier = LEVEL_TIERS[player.currentLevelIdx % LEVEL_TIERS.length];
 
     document.querySelectorAll('.creature').forEach(el => el.remove());
     creatures = [];
 
-    running = true;
-    lastTime = performance.now();
     levelKills = 0;
     bossActive = false;
     bossSpawned = false;
@@ -1029,19 +1119,21 @@
     swarmTimer = 11;
     cdFreeze = 0;
     cdSpray = 0;
+    lastTime = 0;
 
     container.className = currentTier.theme;
     nightOverlay.style.display = currentTier.nightMode ? 'block' : 'none';
     container.style.setProperty('--fx', '50%');
-    container.style.setProperty('--fy', '54%');
+    container.style.setProperty('--fy', '52%');
 
     bossBarWrap.style.display = 'none';
     startModal.style.display = 'none';
+    levelsModal.style.display = 'none';
     gameoverModal.style.display = 'none';
     shopModal.style.display = 'none';
     levelClearModal.style.display = 'none';
 
-    levelDisplay.textContent = `Bölüm ${currentTier.id}: ${currentTier.name}`;
+    levelDisplay.textContent = `Bölüm ${currentTier.id} 🗺️`;
     targetKillsDisplay.textContent = currentTier.targetKills;
     killsDisplay.textContent = '0';
     levelBarFill.style.width = '0%';
@@ -1050,14 +1142,20 @@
     updateHUD();
     updateWeaponUI();
 
+    running = true;
+
     spawnCreature('normal');
     if(currentTier.speedMul >= 1.0){
       spawnCreature('normal');
     }
+
+    animId = requestAnimationFrame(gameLoop);
   }
 
   function triggerGameOver(reason){
     running = false;
+    if(animId) cancelAnimationFrame(animId);
+
     playSound('punish');
     document.getElementById('gameover-reason').textContent = reason || 'Sinekler yemeği kaptı!';
     document.getElementById('final-total-coins').textContent = player.coins;
@@ -1107,6 +1205,50 @@
     setTimeout(()=> el.remove(), 550);
   }
 
+  function openLevelsModal(){
+    const grid = document.getElementById('level-grid-container');
+    grid.innerHTML = '';
+
+    LEVEL_TIERS.forEach((tier, idx) => {
+      const card = document.createElement('div');
+      card.className = 'level-card';
+
+      let status = 'locked';
+      let icon = '🔒';
+
+      if(idx < player.currentLevelIdx){
+        status = 'completed';
+        icon = '✓';
+      } else if(idx === player.currentLevelIdx){
+        status = 'current';
+        icon = '▶';
+      } else if(idx <= player.maxUnlockedIdx){
+        status = 'completed';
+        icon = '🔓';
+      }
+
+      card.classList.add(status);
+      card.innerHTML = `
+        <span style="font-size:16px">${icon}</span>
+        <b>${tier.id}</b>
+        <span style="font-size:10px;text-align:center">${tier.name.split(' ')[0]}</span>
+      `;
+
+      if(idx <= player.maxUnlockedIdx){
+        card.onclick = () => {
+          player.currentLevelIdx = idx;
+          savePlayer();
+          levelsModal.style.display = 'none';
+          startLevel();
+        };
+      }
+
+      grid.appendChild(card);
+    });
+
+    levelsModal.style.display = 'flex';
+  }
+
   function openShop(){
     const list = document.getElementById('shop-items');
     list.innerHTML = '';
@@ -1148,9 +1290,10 @@
     shopModal.style.display = 'flex';
   }
 
+  // Dinleyiciler
   container.addEventListener('pointerdown', (e) => {
     ensureAudioCtx();
-    if(e.target.closest('.hud-top') || e.target.closest('.weapon-bar') || e.target.closest('.skills-bar') || e.target.closest('.prop') || e.target.closest('.modal')) return;
+    if(e.target.closest('.hud-top') || e.target.closest('.bottom-console') || e.target.closest('.prop') || e.target.closest('.modal')) return;
     e.preventDefault();
     handleHit(e.clientX, e.clientY);
   }, { passive:false });
@@ -1167,13 +1310,19 @@
   document.getElementById('start-btn').onclick = startLevel;
   document.getElementById('again-btn').onclick = startLevel;
   document.getElementById('next-level-btn').onclick = nextLevel;
+  
+  levelDisplay.onclick = openLevelsModal;
+  document.getElementById('levels-btn-main').onclick = openLevelsModal;
+  document.getElementById('levels-btn-clear').onclick = openLevelsModal;
+  document.getElementById('levels-btn-end').onclick = openLevelsModal;
+  document.getElementById('close-levels-btn').onclick = () => levelsModal.style.display = 'none';
+
   document.getElementById('shop-btn-main').onclick = openShop;
   document.getElementById('shop-btn-end').onclick = openShop;
   document.getElementById('close-shop-btn').onclick = () => shopModal.style.display = 'none';
 
   updateHUD();
   updateWeaponUI();
-  requestAnimationFrame(gameLoop);
 })();
 </script>
 </body>
