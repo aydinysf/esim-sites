@@ -44,12 +44,14 @@ export default function Header() {
       <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)] py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Left: Clean Logo */}
-        <Link href="/" className="flex items-center gap-2 text-decoration-none group">
-          <span className="font-extrabold text-2xl text-[var(--ink)] tracking-tight">
-            PoloSim<span className="text-[#3B6CF0]">.</span>
-          </span>
-          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--soft)] text-[var(--mut)] border border-[var(--line)] uppercase tracking-wider">
-            ČESKO
+        <Link href="/" className="flex flex-col items-start justify-center text-decoration-none group py-0.5">
+          <img
+            src="/images/polosim-logo.png"
+            alt="PoloSim"
+            className="h-8 w-auto object-contain transition-transform group-hover:scale-105"
+          />
+          <span className="text-[11px] font-extrabold text-[var(--ink)] tracking-[0.2em] uppercase mt-0.5 opacity-90 group-hover:opacity-100 transition-opacity">
+            TSCHECHIEN
           </span>
         </Link>
 
