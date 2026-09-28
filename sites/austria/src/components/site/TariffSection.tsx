@@ -20,8 +20,8 @@ export default function TariffSection({ packages }: Props) {
   const displayPackages = filteredPackages.length > 0 ? filteredPackages : packages;
 
   return (
-    <section id="tarife" className="py-16 bg-[var(--soft)] border-y border-[var(--line)]">
-      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)]">
+    <section id="tarife" className="py-16 bg-[var(--soft)] border-y border-[var(--line)] w-full">
+      <div className="w-full px-4 sm:px-8 lg:px-12">
         
         {/* Section Header */}
         <div className="text-center mb-8">
@@ -73,8 +73,8 @@ export default function TariffSection({ packages }: Props) {
           </button>
         </div>
 
-        {/* 3-Column Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-[1240px] mx-auto">
+        {/* Full-width Responsive Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 w-full">
           {displayPackages.map((pkg, idx) => (
             <PackageCard key={pkg.id || idx} pkg={pkg} colorIndex={idx} />
           ))}

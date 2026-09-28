@@ -50,8 +50,8 @@ export default async function HomePage() {
 
       <TariffSection packages={packages} />
 
-      <section id="ablauf" className="py-16 bg-[var(--bg)]">
-        <div className="max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)]">
+      <section id="ablauf" className="py-16 bg-[var(--bg)] w-full">
+        <div className="w-full px-4 sm:px-8 lg:px-12">
           <div className="text-center mb-12">
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--acc)] mb-2 inline-block">
               IN DREI SCHRITTEN ONLINE

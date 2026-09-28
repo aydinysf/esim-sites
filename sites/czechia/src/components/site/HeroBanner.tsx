@@ -102,7 +102,7 @@ export default function HeroBanner({ nativeCountryName = "ČESKO" }: Props) {
         onFocus={() => (isPausedRef.current = true)}
         onBlur={() => (isPausedRef.current = false)}
       >
-        <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)] py-[clamp(56px,8vw,120px)] relative z-10 flex flex-col items-start min-h-[420px] justify-center">
+        <div className="w-full px-4 sm:px-8 lg:px-12 py-[clamp(56px,8vw,120px)] relative z-10 flex flex-col items-start min-h-[420px] justify-center">
           
           {/* Watermark Background Text */}
           <div
@@ -129,7 +129,7 @@ export default function HeroBanner({ nativeCountryName = "ČESKO" }: Props) {
           </div>
 
           {/* Slider Controls Bar */}
-          <div className="absolute bottom-6 left-[clamp(20px,4vw,56px)] right-[clamp(20px,4vw,56px)] flex items-center justify-between z-30">
+          <div className="absolute bottom-6 left-4 sm:left-8 lg:left-12 right-4 sm:right-8 lg:right-12 flex items-center justify-between z-30">
             {/* Dots */}
             <div className="flex items-center gap-2">
               {slidesData.map((s, idx) => (
@@ -171,8 +171,8 @@ export default function HeroBanner({ nativeCountryName = "ČESKO" }: Props) {
       </section>
 
       {/* Device Compatibility Strip (Sade / Clean) */}
-      <section className="w-full bg-[var(--soft)] border-b border-[var(--line)] py-5 px-[clamp(20px,4vw,56px)]">
-        <div className="max-w-[1440px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <section className="w-full bg-[var(--soft)] border-b border-[var(--line)] py-5 px-4 sm:px-8 lg:px-12">
+        <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-4">
           <label htmlFor="dev" className="font-semibold text-sm sm:text-base text-[var(--ink)] whitespace-nowrap">
             {getTranslation("device_check_title", lang)}
           </label>
@@ -191,7 +191,7 @@ export default function HeroBanner({ nativeCountryName = "ČESKO" }: Props) {
           </div>
         </div>
         {deviceResult && (
-          <p className="max-w-[1440px] mx-auto mt-2 text-sm font-semibold text-[var(--acc)]" aria-live="polite">
+          <p className="w-full mt-2 text-sm font-semibold text-[var(--acc)]" aria-live="polite">
             {deviceResult}
           </p>
         )}

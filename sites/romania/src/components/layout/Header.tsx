@@ -41,16 +41,16 @@ export default function Header() {
 
   return (
     <header className="w-full bg-[var(--bg)] border-b border-[var(--line)] sticky top-0 z-50 transition-colors">
-      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)] py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="w-full px-4 sm:px-8 lg:px-12 py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Left: Clean Logo */}
-        <Link href="/" className="flex flex-col items-start justify-center text-decoration-none group py-0.5">
+        <Link href="/" className="flex flex-col items-start justify-center text-decoration-none group py-1">
           <img
             src="/images/polosim-logo.png"
             alt="PoloSim"
-            className="h-8 w-auto object-contain transition-transform group-hover:scale-105"
+            className="h-16 sm:h-20 md:h-24 w-auto object-contain transition-transform group-hover:scale-105"
           />
-          <span className="text-[11px] font-extrabold text-[var(--ink)] tracking-[0.2em] uppercase mt-0.5 opacity-90 group-hover:opacity-100 transition-opacity">
+          <span className="text-xs sm:text-sm font-black text-[var(--ink)] tracking-[0.25em] uppercase mt-1 opacity-90 group-hover:opacity-100 transition-opacity">
             RUMÄNIEN
           </span>
         </Link>
