@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>SİNEK — Alt Panel v1.3</title>
+<title>SİNEK — Görünür Silahlar v1.4</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0d1117}
   body{touch-action:none;user-select:none}
   
-  #game-container{position:relative;width:100vw;height:100dvh;overflow:hidden;transition:background 0.5s ease}
+  #game-container{position:relative;width:100vw;height:100dvh;overflow:hidden;transition:background 0.5s ease;cursor:none}
   
   .theme-kitchen{background:linear-gradient(#dce7d4 0 65%,#baa07b 65% 100%)}
   .theme-salon{background:linear-gradient(#f4ebd9 0 65%,#8d6e63 65% 100%)}
@@ -63,7 +63,7 @@
   .boss-bar-bg{width:100%;height:10px;background:rgba(0,0,0,0.4);border-radius:10px;padding:1px;border:2px solid #fff}
   .boss-bar-fill{height:100%;background:linear-gradient(90deg,#ff5252,#b71c1c);border-radius:6px;width:100%;transition:width .1s}
 
-  /* 🎮 YENİ ALT KONSOL: SİLAHLAR + APARATLAR TEK BİR PANELDE */
+  /* 🎮 ALT KONSOL */
   .bottom-console{
     position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
     display:flex;align-items:center;gap:8px;z-index:25;
@@ -87,6 +87,26 @@
   .skill-btn:disabled{opacity:0.4;filter:grayscale(1);cursor:not-allowed}
   .skill-cooldown{position:absolute;inset:0;background:rgba(0,0,0,0.7);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:900}
 
+  /* 🔫 EKRANDA GÖRÜNEN AKTİF SİLAH (WEAPON AVATAR) */
+  #active-weapon-sprite{
+    position:absolute;z-index:35;pointer-events:none;transform-origin:bottom center;
+    transition:transform .06s ease-out;display:none;
+  }
+  /* Vuruş Şaplak Animasyonu */
+  #active-weapon-sprite.smash{
+    transform:translate(-50%, -50%) rotate(-35deg) scale(0.85) !important;
+  }
+  /* Elektrik Çarpma Işıltısı */
+  #active-weapon-sprite.elec-shock{
+    filter:drop-shadow(0 0 16px #00e5ff) brightness(1.4);
+  }
+  /* Lazer Işını */
+  #laser-beam{
+    position:absolute;z-index:34;pointer-events:none;height:4px;
+    background:linear-gradient(90deg, #ff1744, #ff8a80, #fff);
+    box-shadow:0 0 10px #ff1744;display:none;transform-origin:left center;
+  }
+
   /* Sinekler */
   .creature{position:absolute;z-index:15;will-change:transform;cursor:pointer}
   .fly-inner{position:relative;width:56px;height:56px}
@@ -99,7 +119,6 @@
   .eye{position:absolute;top:20px;width:5px;height:5px;border-radius:50%;background:#ff3333}
   .eye.l{left:22px}.eye.r{left:30px}
 
-  /* 🐝 Arı Tasarımı */
   .creature.bee .fly-body{
     background:repeating-linear-gradient(180deg, #ffb300 0 5px, #1a1a1a 5px 10px);
     border-radius:45% 45% 60% 60%;
@@ -198,6 +217,10 @@
 
   <div id="targets-layer"></div>
 
+  <!-- 🔫 EKRANDA GÖRÜNEN AKTİF SİLAH & LAZER IŞINI -->
+  <div id="active-weapon-sprite">✋</div>
+  <div id="laser-beam"></div>
+
   <div class="prop" id="prop-salt" style="left:16%;top:56%">
     <div class="prop-icon">🧂</div>
     <div class="prop-hint">TUZ SAÇ</div>
@@ -226,7 +249,6 @@
 
   <!-- 🎮 ALT KONSOL: SİLAHLAR VE APARATLAR BİR ARADA -->
   <div class="bottom-console">
-    <!-- Silah Seçici -->
     <div class="weapon-section" id="weapon-bar">
       <button class="weapon-btn active" data-w="hand">✋ El</button>
       <button class="weapon-btn" data-w="swatter" id="btn-swatter" disabled>🏸 Sineklik</button>
@@ -234,10 +256,8 @@
       <button class="weapon-btn" data-w="laser" id="btn-laser" disabled>🔫 Lazer</button>
     </div>
 
-    <!-- Ayırıcı Çizgi -->
     <div class="console-divider"></div>
 
-    <!-- Panik Aparatları -->
     <div class="skills-section">
       <button class="skill-btn" id="skill-freeze" title="Buzul Dondurma">
         ❄️
@@ -255,8 +275,8 @@
     <div class="card">
       <h1>🪰 SİNEK</h1>
       <p style="font-size:13px;color:#555;margin:0 0 14px">
-        ⚠️ <b>Sakın Arıya (🐝) Dokunma!</b> İğnesiyle sokup puanını çalar.<br>
-        Aparatlar artık aşağıda, elinin altında!
+        Seçtiğin tüm silahlar artık ekranda beliriyor! 🏸⚡🔫<br>
+        ⚠️ <b>Sakın Arıya (🐝) Dokunma!</b> İğnesiyle sokar.
       </p>
       <button class="btn" style="width:100%" id="start-btn">AV BAŞLASIN</button>
       <button class="btn btn-secondary" style="width:100%" id="levels-btn-main">🗺️ BÖLÜM SEÇİMİ</button>
@@ -345,15 +365,16 @@
     maxUnlockedIdx: 0
   };
 
-  const saved = localStorage.getItem('sinek_save_v13');
+  const saved = localStorage.getItem('sinek_save_v14');
   if(saved){ try{ Object.assign(player, JSON.parse(saved)); }catch(e){} }
-  function savePlayer(){ localStorage.setItem('sinek_save_v13', JSON.stringify(player)); }
+  function savePlayer(){ localStorage.setItem('sinek_save_v14', JSON.stringify(player)); }
 
+  // 🔫 SİLAH TANIMLARI & GÖRSEL SPRİTE'LARI
   const WEAPONS = {
-    hand: { id:'hand', name:'El', icon:'✋', damage:1, radius:48, critRate:0.15, cost:0, desc:'Klasik vuruş.' },
-    swatter: { id:'swatter', name:'Sineklik', icon:'🏸', damage:2, radius:80, critRate:0.25, cost:60, desc:'Geniş alan.' },
-    elec: { id:'elec', name:'Elektrikli', icon:'⚡', damage:3, radius:65, critRate:0.35, cost:180, desc:'Şok darbesi.' },
-    laser: { id:'laser', name:'Lazer', icon:'🔫', damage:5, radius:45, critRate:0.65, cost:400, desc:'Devasa kritik.' }
+    hand: { id:'hand', name:'El', icon:'✋', sprite:'✋', size:52, damage:1, radius:48, critRate:0.15, cost:0, desc:'Klasik el darbesi.' },
+    swatter: { id:'swatter', name:'Sineklik', icon:'🏸', sprite:'🏸', size:68, damage:2, radius:80, critRate:0.25, cost:60, desc:'Geniş alan ezicisi.' },
+    elec: { id:'elec', name:'Elektrikli', icon:'⚡', sprite:'⚡🏸', size:68, damage:3, radius:65, critRate:0.35, cost:180, desc:'Elektrik şoklu sineklik.' },
+    laser: { id:'laser', name:'Lazer', icon:'🔫', sprite:'🔫', size:60, damage:5, radius:45, critRate:0.65, cost:400, desc:'Kızıl lazer darbesi.' }
   };
 
   let running = false;
@@ -373,6 +394,10 @@
   let windAngle = 0;
   let cdFreeze = 0, cdSpray = 0;
 
+  // Görünür Silah Konumları
+  let weaponX = window.innerWidth / 2;
+  let weaponY = window.innerHeight * 0.7;
+
   const container = document.getElementById('game-container');
   const nightOverlay = document.getElementById('night-overlay');
   const targetsLayer = document.getElementById('targets-layer');
@@ -386,6 +411,10 @@
   const bossBarWrap = document.getElementById('boss-bar-wrap');
   const bossHpFill = document.getElementById('boss-hp-fill');
   const weaponBar = document.getElementById('weapon-bar');
+
+  // Ekranda Görünen Silah DOM
+  const weaponSprite = document.getElementById('active-weapon-sprite');
+  const laserBeam = document.getElementById('laser-beam');
 
   const btnFreeze = document.getElementById('skill-freeze');
   const btnSpray = document.getElementById('skill-spray');
@@ -661,12 +690,57 @@
     }
   }
 
+  // --- SİLAH GÖRSELİNİ VE VURUŞ ANİMASYONUNU GÜNCELLE ---
+  function updateWeaponVisual(x, y, isSmash = false){
+    if(!running) return;
+    const curW = WEAPONS[player.currentWeapon];
+    weaponSprite.style.display = 'block';
+    weaponSprite.textContent = curW.sprite;
+    weaponSprite.style.fontSize = curW.size + 'px';
+
+    weaponX = x;
+    weaponY = y;
+    weaponSprite.style.left = weaponX + 'px';
+    weaponSprite.style.top = weaponY + 'px';
+
+    if(isSmash){
+      weaponSprite.classList.add('smash');
+      if(curW.id === 'elec'){
+        weaponSprite.classList.add('elec-shock');
+      }
+      setTimeout(() => {
+        weaponSprite.classList.remove('smash');
+        weaponSprite.classList.remove('elec-shock');
+      }, 130);
+
+      // Lazer Işını Çizimi
+      if(curW.id === 'laser'){
+        laserBeam.style.display = 'block';
+        laserBeam.style.left = (window.innerWidth / 2) + 'px';
+        laserBeam.style.top = (window.innerHeight - 80) + 'px';
+        const dx = x - (window.innerWidth / 2);
+        const dy = y - (window.innerHeight - 80);
+        const dist = Math.hypot(dx, dy);
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+        laserBeam.style.width = dist + 'px';
+        laserBeam.style.transform = `rotate(${angle}deg)`;
+        setTimeout(() => { laserBeam.style.display = 'none'; }, 90);
+      }
+    } else {
+      weaponSprite.style.transform = 'translate(-50%, -50%) rotate(0deg)';
+    }
+  }
+
   function handleHit(clientX, clientY){
     ensureAudioCtx();
     if(!running) return;
     const rect = container.getBoundingClientRect();
     const hitX = clientX - rect.left;
     const hitY = clientY - rect.top;
+
+    // SİLAH GÖRSELİNİ DOKUNULAN YERE ÇAĞIR VE VURUŞ ANİMASYONUNU OYNAT!
+    updateWeaponVisual(hitX, hitY, true);
 
     if(currentTier.nightMode){
       container.style.setProperty('--fx', `${hitX}px`);
@@ -929,6 +1003,7 @@
     running = false;
     playSound('crit');
     player.coins += 60;
+    weaponSprite.style.display = 'none';
     
     if(player.currentLevelIdx >= player.maxUnlockedIdx){
       player.maxUnlockedIdx = Math.min(LEVEL_TIERS.length - 1, player.currentLevelIdx + 1);
@@ -1104,7 +1179,6 @@
 
   function startLevel(){
     ensureAudioCtx();
-    
     if(animId) cancelAnimationFrame(animId);
 
     currentTier = LEVEL_TIERS[player.currentLevelIdx % LEVEL_TIERS.length];
@@ -1144,6 +1218,9 @@
 
     running = true;
 
+    // Aktif silahı ortada görünür başlat
+    updateWeaponVisual(window.innerWidth / 2, window.innerHeight * 0.65, false);
+
     spawnCreature('normal');
     if(currentTier.speedMul >= 1.0){
       spawnCreature('normal');
@@ -1155,6 +1232,7 @@
   function triggerGameOver(reason){
     running = false;
     if(animId) cancelAnimationFrame(animId);
+    weaponSprite.style.display = 'none';
 
     playSound('punish');
     document.getElementById('gameover-reason').textContent = reason || 'Sinekler yemeği kaptı!';
@@ -1175,6 +1253,10 @@
       btn.disabled = !player.unlockedWeapons.includes(wId);
       btn.classList.toggle('active', player.currentWeapon === wId);
     });
+    // Silah görünümünü güncelle
+    if(running){
+      updateWeaponVisual(weaponX, weaponY, false);
+    }
   }
 
   function spawnParticles(x, y, color){
@@ -1290,7 +1372,15 @@
     shopModal.style.display = 'flex';
   }
 
-  // Dinleyiciler
+  // Fare / Dokunmatik Takip (Silahı Ekranda Gezdirme)
+  container.addEventListener('pointermove', (e) => {
+    if(running && !e.target.closest('.bottom-console') && !e.target.closest('.hud-top')){
+      const rect = container.getBoundingClientRect();
+      updateWeaponVisual(e.clientX - rect.left, e.clientY - rect.top, false);
+    }
+  });
+
+  // Vuruş Dinleyicisi
   container.addEventListener('pointerdown', (e) => {
     ensureAudioCtx();
     if(e.target.closest('.hud-top') || e.target.closest('.bottom-console') || e.target.closest('.prop') || e.target.closest('.modal')) return;
@@ -1298,6 +1388,7 @@
     handleHit(e.clientX, e.clientY);
   }, { passive:false });
 
+  // Silah Değiştirme
   weaponBar.addEventListener('click', (e) => {
     ensureAudioCtx();
     const btn = e.target.closest('.weapon-btn');
