@@ -69,20 +69,28 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="ablauf">
-        <div className="eyebrow" style={{ color: "var(--c6)" }}>IN DREI SCHRITTEN ONLINE</div>
-        <h2>{howItWorksTitle}</h2>
-        <p className="lead" style={{ fontSize: "16px" }}>
-          Listo para navegar en menos de 2 minutos, sin tarjeta SIM física.
-        </p>
-        <div className="steps">
-          {stepsList.map((step, idx) => (
-            <div key={idx} className="step-card">
-              <div className="step-num">{step.step || `0${idx + 1}`}</div>
-              <h3>{step.title}</h3>
-              <p>{step.description}</p>
-            </div>
-          ))}
+      <section id="ablauf" className="py-16 bg-[var(--bg)]">
+        <div className="max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)]">
+          <div className="text-center mb-12">
+            <span className="text-xs font-bold uppercase tracking-widest text-[var(--acc)] mb-2 inline-block">
+              IN DREI SCHRITTEN ONLINE
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--ink)]">
+              {howItWorksTitle}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {stepsList.map((step, idx) => (
+              <div key={idx} className="bg-[var(--soft)] border border-[var(--line)] rounded-2xl p-8 flex flex-col items-start">
+                <span className="w-10 h-10 rounded-full bg-[var(--acc)] text-[var(--accink)] font-bold text-base flex items-center justify-center mb-6">
+                  0{idx + 1}
+                </span>
+                <h3 className="text-xl font-bold text-[var(--ink)] mb-3">{step.title}</h3>
+                <p className="text-[var(--mut)] text-sm leading-relaxed">{step.description}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

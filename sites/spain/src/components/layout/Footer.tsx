@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { getTranslation, LangMode } from "@/lib/i18n";
 
 export default function Footer() {
@@ -20,39 +19,17 @@ export default function Footer() {
   }, []);
 
   return (
-    <footer className="w-full bg-[#182645] border-t border-white/20 mt-16 py-10">
-      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)] flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col items-center md:items-start gap-2">
-          <Image
-            src="/images/polosim-logo.png"
-            alt="PoloSim"
-            width={300}
-            height={90}
-            className="h-10 sm:h-12 w-auto object-contain"
-          />
-          <span className="font-mono text-xs text-[var(--soft)] uppercase tracking-wider">
-            ESPAÑA
-          </span>
-        </div>
-
-        <nav className="flex items-center gap-6 font-medium text-sm text-[var(--soft)]">
-          <a href="#tarife" className="hover:text-white transition-colors">{getTranslation("nav_tarife", lang)}</a>
-          <a href="#ablauf" className="hover:text-white transition-colors">{getTranslation("nav_ablauf", lang)}</a>
-          <a href="#faq" className="hover:text-white transition-colors">{getTranslation("nav_faq", lang)}</a>
-          <Link href="/blog" className="hover:text-white transition-colors">{getTranslation("nav_blog", lang)}</Link>
-        </nav>
-
-        <div className="text-xs text-[var(--soft)] font-mono text-center md:text-right">
+    <footer className="w-full bg-[var(--bg)] border-t border-[var(--line)] mt-16 py-10">
+      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)] flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-[var(--mut)]">
+        <div className="font-semibold text-[var(--ink)]">
           © {new Date().getFullYear()} PoloSim. {getTranslation("footer_rights", lang)}
-        <div className="flex items-center justify-center gap-4 text-xs text-[var(--soft)] mt-4">
-          <Link href="/impressum" className="hover:text-white transition-colors">Impressum</Link>
-          <span>·</span>
-          <Link href="/datenschutz" className="hover:text-white transition-colors">Datenschutz</Link>
-          <span>·</span>
-          <Link href="/agb" className="hover:text-white transition-colors">AGB</Link>
-          <span>·</span>
-          <Link href="/widerruf" className="hover:text-white transition-colors">Widerruf</Link>
         </div>
+
+        <div className="flex flex-wrap items-center gap-6">
+          <Link href="/impressum" className="hover:text-[var(--ink)] transition-colors">Impressum</Link>
+          <Link href="/datenschutz" className="hover:text-[var(--ink)] transition-colors">Datenschutz</Link>
+          <Link href="/agb" className="hover:text-[var(--ink)] transition-colors">AGB</Link>
+          <Link href="/widerruf" className="hover:text-[var(--ink)] transition-colors">Widerruf</Link>
         </div>
       </div>
     </footer>

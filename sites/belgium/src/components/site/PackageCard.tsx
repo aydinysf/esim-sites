@@ -8,9 +8,7 @@ interface Props {
   colorIndex?: number;
 }
 
-const colors = ["var(--c4)", "var(--c6)", "var(--c1)", "var(--c5)", "var(--c2)", "var(--c3)"];
-
-export default function PackageCard({ pkg, colorIndex = 0 }: Props) {
+export default function PackageCard({ pkg }: Props) {
   const [lang, setLang] = useState<LangMode>("NATIVE");
 
   useEffect(() => {
@@ -26,7 +24,6 @@ export default function PackageCard({ pkg, colorIndex = 0 }: Props) {
   }, []);
 
   const isPopular = pkg.popular || !!pkg.badge;
-  const neonColor = colors[colorIndex % colors.length];
 
   const formattedPrice = pkg.price.toLocaleString("de-AT", {
     style: "currency",
@@ -43,27 +40,43 @@ export default function PackageCard({ pkg, colorIndex = 0 }: Props) {
 
   return (
     <div
-      className={`plan ${isPopular ? "sel" : ""}`}
-      style={{ "--pc": neonColor } as React.CSSProperties}
+      className={`relative rounded-2xl p-6 bg-[var(--bg)] border transition-all duration-200 flex flex-col justify-between ${
+        isPopular ? "border-2 border-[var(--acc)] shadow-md" : "border-[var(--line)] shadow-sm hover:border-[var(--acc)]"
+      }`}
     >
-      {isPopular && <span className="tag">{pkg.badge || getTranslation("pkg_popular", lang)}</span>}
-      <div className="gb">
-        {pkg.unlimited ? unlimitedLabel : `${pkg.dataAmount} ${pkg.dataUnit}`}
+      {isPopular && (
+        <span className="absolute -top-3 right-6 bg-[var(--acc)] text-white font-bold text-xs px-3 py-1 rounded-full uppercase tracking-wider">
+          {pkg.badge || getTranslation("pkg_popular", lang)}
+        </span>
+      )}
+
+      <div>
+        <div className="text-3xl font-extrabold text-[var(--ink)] mb-1">
+          {pkg.unlimited ? unlimitedLabel : `${pkg.dataAmount} ${pkg.dataUnit}`}
+        </div>
+
+        <div className="text-sm font-medium text-[var(--mut)] mb-4">
+          {pkg.validity} {dayLabel} · 4G/5G · Hotspot
+        </div>
       </div>
-      <div className="dur">{pkg.validity} {dayLabel} · {pkg.operator || "PoloSim"}</div>
 
-      <div className="chips-row">
-        <span className="chip-mini">4G/5G</span>
-        <span className="chip-mini">{getTranslation("pkg_chip_hotspot", lang)}</span>
-        <span className="chip-mini">{getTranslation("pkg_chip_instant", lang)}</span>
+      <div className="mt-6 pt-4 border-t border-[var(--line)]">
+        <div className="text-2xl font-extrabold text-[var(--ink)] mb-1">
+          {formattedPrice}
+        </div>
+        <div className="text-xs font-semibold text-[var(--mut)] mb-5">
+          ≈ {pricePerDayVal} / {getTranslation("pkg_per_day", lang)}
+        </div>
+
+        <a
+          href={pkg.buyUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full block text-center bg-[var(--acc)] text-[var(--accink)] font-bold text-sm py-3 rounded-xl transition-transform hover:scale-[1.02]"
+        >
+          {getTranslation("pkg_buy_btn", lang)}
+        </a>
       </div>
-
-      <div className="pr">{formattedPrice}</div>
-      <div className="pd">≈ {pricePerDayVal} / {getTranslation("pkg_per_day", lang)}</div>
-
-      <a className="btn-outline" href={pkg.buyUrl} target="_blank" rel="noopener noreferrer">
-        {getTranslation("pkg_buy_btn", lang)}
-      </a>
     </div>
   );
 }

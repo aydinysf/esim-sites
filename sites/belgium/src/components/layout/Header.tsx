@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import LanguageSwitcher from "@/components/layout/LanguageSwitcher";
 import { getTranslation, LangMode } from "@/lib/i18n";
 
 export default function Header() {
   const [lang, setLang] = useState<LangMode>("NATIVE");
+  const [activeSection, setActiveSection] = useState<string>("");
 
   useEffect(() => {
     const saved = localStorage.getItem("polosim_lang") as LangMode;
@@ -17,42 +17,87 @@ export default function Header() {
     };
 
     window.addEventListener("polosim_lang_change", handleLangChange);
-    return () => window.removeEventListener("polosim_lang_change", handleLangChange);
+
+    // IntersectionObserver for active section tracking
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+
+    const sections = document.querySelectorAll("section[id]");
+    sections.forEach((sec) => observer.observe(sec));
+
+    return () => {
+      window.removeEventListener("polosim_lang_change", handleLangChange);
+      observer.disconnect();
+    };
   }, []);
 
   return (
-    <header className="w-full bg-[#1E2E52]/80 backdrop-blur-xl border-b border-white/20 sticky top-0 z-50">
-      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)] py-4 flex items-center justify-between">
-        <Link href="/" className="flex flex-col items-start gap-1 text-decoration-none group">
-          <Image
-            src="/images/polosim-logo.png"
-            alt="PoloSim"
-            width={400}
-            height={120}
-            priority
-            className="h-14 sm:h-18 lg:h-20 w-auto object-contain transition-transform group-hover:scale-105"
-          />
-          <span className="font-mono text-xs sm:text-sm font-bold tracking-widest text-[var(--c4)] uppercase pl-1">
+    <header className="w-full bg-[var(--bg)] border-b border-[var(--line)] sticky top-0 z-50 transition-colors">
+      <div className="w-full max-w-[1440px] mx-auto px-[clamp(20px,4vw,56px)] py-3.5 flex flex-col md:flex-row items-center justify-between gap-4">
+        
+        {/* Left: Clean Logo */}
+        <Link href="/" className="flex items-center gap-2 text-decoration-none group">
+          <span className="font-extrabold text-2xl text-[var(--ink)] tracking-tight">
+            PoloSim<span className="text-[#3B6CF0]">.</span>
+          </span>
+          <span className="text-xs font-semibold px-2 py-0.5 rounded bg-[var(--soft)] text-[var(--mut)] border border-[var(--line)] uppercase tracking-wider">
             BELGIË
           </span>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 font-medium text-base">
-          <a href="#tarife" className="text-[var(--soft)] hover:text-[var(--c4)] transition-colors">
+        {/* Center: Vibrant Menu Capsule */}
+        <nav className="w-full md:w-auto overflow-x-auto bg-gradient-to-r from-[#1E3A8A] via-[#3B6CF0] via-[#12B5A0] to-[#F26A2E] p-1.5 rounded-2xl md:rounded-full shadow-md flex items-center justify-center gap-1">
+          <a
+            href="#tarife"
+            className={`px-4 py-1.5 rounded-full text-white font-bold text-sm whitespace-nowrap transition-all duration-200 hover:bg-white/30 ${
+              activeSection === "tarife" ? "bg-white/30 shadow-sm" : ""
+            }`}
+          >
             {getTranslation("nav_tarife", lang)}
           </a>
-          <a href="#ablauf" className="text-[var(--soft)] hover:text-[var(--c4)] transition-colors">
+          <a
+            href="#ablauf"
+            className={`px-4 py-1.5 rounded-full text-white font-bold text-sm whitespace-nowrap transition-all duration-200 hover:bg-white/30 ${
+              activeSection === "ablauf" ? "bg-white/30 shadow-sm" : ""
+            }`}
+          >
             {getTranslation("nav_ablauf", lang)}
           </a>
-          <a href="#faq" className="text-[var(--soft)] hover:text-[var(--c4)] transition-colors">
+          <a
+            href="#faq"
+            className={`px-4 py-1.5 rounded-full text-white font-bold text-sm whitespace-nowrap transition-all duration-200 hover:bg-white/30 ${
+              activeSection === "faq" ? "bg-white/30 shadow-sm" : ""
+            }`}
+          >
             {getTranslation("nav_faq", lang)}
           </a>
-          <Link href="/blog" className="text-[var(--soft)] hover:text-[var(--c4)] transition-colors">
+          <Link
+            href="/blog"
+            className="px-4 py-1.5 rounded-full text-white font-bold text-sm whitespace-nowrap transition-all duration-200 hover:bg-white/30"
+          >
             {getTranslation("nav_blog", lang)}
           </Link>
         </nav>
 
-        <LanguageSwitcher />
+        {/* Right: Language Switcher & Tarife CTA */}
+        <div className="hidden sm:flex items-center gap-4">
+          <LanguageSwitcher />
+          <a
+            href="#tarife"
+            className="bg-[var(--acc)] text-[var(--accink)] font-bold text-sm px-5 py-2 rounded-xl transition-transform hover:scale-105 shadow-sm"
+          >
+            {getTranslation("nav_tarife", lang)}
+          </a>
+        </div>
+
       </div>
     </header>
   );
