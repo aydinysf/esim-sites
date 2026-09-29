@@ -138,15 +138,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Mobile Fixed Bottom Purchase Bar */}
-      <div className="bar">
-        <div>
-          <b>{packages[0]?.name || "eSIM Plan"}</b>
-          <small>{packages[0]?.validity || 30} Tage · Instant QR</small>
+      {/* Fixed Bottom Purchase Bar */}
+      <div className="fixed bottom-0 inset-x-0 z-50 bg-[var(--bg)]/95 backdrop-blur-md border-t border-[var(--line)] shadow-lg py-3">
+        <div className="max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-12 flex items-center justify-between gap-4">
+          <div className="min-w-0 flex-1 pr-4">
+            <div className="font-bold text-xs sm:text-sm text-[var(--ink)] truncate">
+              {packages[0]?.name || "eSIM Plan"}
+            </div>
+            <div className="text-xs text-[var(--mut)] font-medium mt-0.5">
+              {packages[0]?.validity || 30} Tage · Instant QR
+            </div>
+          </div>
+          <a
+            className="inline-flex items-center justify-center bg-gradient-to-r from-[#1E3A8A] via-[#3B6CF0] to-[#12B5A0] text-white font-bold text-sm px-6 py-2.5 rounded-xl shadow hover:opacity-90 transition-all shrink-0 whitespace-nowrap"
+            href={packages[0]?.buyUrl || "#tarife"}
+          >
+            Kaufen
+          </a>
         </div>
-        <a className="btn-gradient" href={packages[0]?.buyUrl || "#tarife"}>
-          Kaufen
-        </a>
       </div>
     </>
   );
