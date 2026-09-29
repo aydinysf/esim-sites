@@ -43,9 +43,9 @@ export default async function HomePage() {
         subheadline={subheadline}
         ctaText={ctaText}
         ctaHref={ctaHref}
-        nativeCountryName="AZƏRBAYCAN"
-        activeCity="Baku"
-        tickerCities="BAKU ✦ GENCE ✦ SUMQAYIT ✦ MINGECEVIR ✦ LEKERAN ✦ SEKI"
+        nativeCountryName="ÖSTERREICH"
+        activeCity="Wien"
+        tickerCities="WIEN ✦ SALZBURG ✦ INNSBRUCK ✦ GRAZ ✦ LINZ ✦ KLAGENFURT ✦ BREGENZ"
       />
 
       <TariffSection packages={packages} />
@@ -137,32 +137,6 @@ export default async function HomePage() {
           </a>
         </div>
       </section>
-
-            {/* Floating Bottom Purchase Bar */}
-      <div className="fixed bottom-4 inset-x-0 z-50 px-4 sm:px-8 pointer-events-none">
-        <div className="max-w-4xl mx-auto bg-white/95 backdrop-blur-md border border-slate-200 shadow-2xl rounded-2xl p-4 flex flex-row items-center justify-between gap-4 pointer-events-auto">
-          <div className="min-w-0 flex-1 pr-2">
-            <div className="font-extrabold text-sm sm:text-base text-slate-900 truncate">
-              {(() => {
-                const pkg = packages[0];
-                if (!pkg) return "eSIM Tarif — Aserbaidschan";
-                const dataStr = pkg.unlimited ? "Unbegrenzt" : (pkg.dataAmount ? `${pkg.dataAmount} ${pkg.dataUnit || "GB"}` : "");
-                return dataStr ? `${dataStr} eSIM Tarif — Aserbaidschan` : "eSIM Tarif — Aserbaidschan";
-              })()}
-            </div>
-            <div className="text-xs text-slate-500 font-medium mt-0.5 flex flex-wrap items-center gap-2">
-              <span className="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2 py-0.5 rounded-md">Instant QR</span>
-              <span>{packages[0]?.validity || 30} {packages[0]?.validity === 1 ? "Tag" : "Tage"} Gültigkeit</span>
-            </div>
-          </div>
-          <a
-            className="inline-flex items-center justify-center bg-[#1E3A8A] hover:bg-[#3B6CF0] text-white font-extrabold text-sm sm:text-base px-6 py-3 rounded-xl shadow-md transition-all shrink-0 whitespace-nowrap"
-            href={packages[0]?.buyUrl || "#tarife"}
-          >
-            Kaufen
-          </a>
-        </div>
-      </div>
     </>
   );
 }
