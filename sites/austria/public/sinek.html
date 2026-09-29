@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>SİNEK — Görünür Silahlar v1.4</title>
+<title>SİNEK — Lazer Kafes & Elektrik v1.5</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:#0d1117}
   body{touch-action:none;user-select:none}
   
-  #game-container{position:relative;width:100vw;height:100dvh;overflow:hidden;transition:background 0.5s ease;cursor:none}
+  #game-container{position:relative;width:100vw;height:100dvh;overflow:hidden;transition:background 0.5s ease}
   
   .theme-kitchen{background:linear-gradient(#dce7d4 0 65%,#baa07b 65% 100%)}
   .theme-salon{background:linear-gradient(#f4ebd9 0 65%,#8d6e63 65% 100%)}
@@ -22,6 +22,22 @@
   #night-overlay{
     position:absolute;inset:0;z-index:18;pointer-events:none;display:none;
     background:radial-gradient(circle 125px at var(--fx, 50%) var(--fy, 50%), transparent 0%, rgba(0,0,0,0.94) 80%);
+  }
+
+  /* 🛡️ LAZER KAFES BARIYERİ (10 SANİYE AKTİF) */
+  .laser-cage-barrier{
+    position:absolute;z-index:16;pointer-events:none;display:none;
+    border-radius:50%;transform:translate(-50%,-50%);
+    box-shadow:0 0 25px #00e5ff, inset 0 0 20px #00e5ff;
+    border:3px dashed #00e5ff;
+    animation:rotateCage 3s linear infinite;
+  }
+  @keyframes rotateCage{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+  .laser-cage-timer{
+    position:absolute;top:-28px;left:50%;transform:translateX(-50%);
+    background:rgba(0,229,255,0.9);color:#000;font-weight:900;font-size:11px;
+    padding:2px 8px;border-radius:10px;white-space:nowrap;box-shadow:0 0 8px #00e5ff;
   }
 
   .food-target{
@@ -66,9 +82,9 @@
   /* 🎮 ALT KONSOL */
   .bottom-console{
     position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
-    display:flex;align-items:center;gap:8px;z-index:25;
-    background:rgba(255,255,255,0.94);padding:5px 8px;border-radius:24px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.22);max-width:96vw;
+    display:flex;align-items:center;gap:6px;z-index:25;
+    background:rgba(255,255,255,0.95);padding:5px 8px;border-radius:24px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.22);max-width:98vw;overflow-x:auto;
   }
   .weapon-section{display:flex;gap:4px}
   .weapon-btn{border:2px solid transparent;background:#f0f2ef;border-radius:16px;padding:6px 9px;font-weight:800;font-size:11px;color:#222;cursor:pointer;display:flex;align-items:center;gap:3px;transition:all .15s;white-space:nowrap}
@@ -87,25 +103,27 @@
   .skill-btn:disabled{opacity:0.4;filter:grayscale(1);cursor:not-allowed}
   .skill-cooldown{position:absolute;inset:0;background:rgba(0,0,0,0.7);border-radius:50%;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:900}
 
-  /* 🔫 EKRANDA GÖRÜNEN AKTİF SİLAH (WEAPON AVATAR) */
+  /* 🏸 BÜYÜK SİNEKLİK AVATARI & ELEKTRİK / ŞİMŞEK EFEKTİ */
   #active-weapon-sprite{
     position:absolute;z-index:35;pointer-events:none;transform-origin:bottom center;
-    transition:transform .06s ease-out;display:none;
+    transition:transform .06s ease-out;display:none;user-select:none;
   }
-  /* Vuruş Şaplak Animasyonu */
   #active-weapon-sprite.smash{
-    transform:translate(-50%, -50%) rotate(-35deg) scale(0.85) !important;
+    transform:translate(-50%, -50%) rotate(-45deg) scale(0.9) !important;
   }
-  /* Elektrik Çarpma Işıltısı */
-  #active-weapon-sprite.elec-shock{
-    filter:drop-shadow(0 0 16px #00e5ff) brightness(1.4);
+
+  /* Elektrik Şimşek Katmanı */
+  .electric-flash{
+    position:absolute;inset:0;background:radial-gradient(circle, rgba(0,229,255,0.45) 0%, transparent 80%);
+    pointer-events:none;z-index:32;animation:elecZap .18s forwards;
   }
-  /* Lazer Işını */
-  #laser-beam{
-    position:absolute;z-index:34;pointer-events:none;height:4px;
-    background:linear-gradient(90deg, #ff1744, #ff8a80, #fff);
-    box-shadow:0 0 10px #ff1744;display:none;transform-origin:left center;
+  @keyframes elecZap{0%{opacity:1}50%{opacity:0.2}100%{opacity:0}}
+
+  .lightning-bolt{
+    position:absolute;width:4px;background:#fff;box-shadow:0 0 12px #00e5ff;
+    z-index:33;pointer-events:none;transform-origin:top center;animation:boltFade .2s forwards;
   }
+  @keyframes boltFade{0%{opacity:1}100%{opacity:0}}
 
   /* Sinekler */
   .creature{position:absolute;z-index:15;will-change:transform;cursor:pointer}
@@ -119,15 +137,14 @@
   .eye{position:absolute;top:20px;width:5px;height:5px;border-radius:50%;background:#ff3333}
   .eye.l{left:22px}.eye.r{left:30px}
 
+  /* 🐝 Arı */
   .creature.bee .fly-body{
     background:repeating-linear-gradient(180deg, #ffb300 0 5px, #1a1a1a 5px 10px);
-    border-radius:45% 45% 60% 60%;
-    box-shadow:0 0 6px rgba(255,179,0,0.6);
+    border-radius:45% 45% 60% 60%;box-shadow:0 0 6px rgba(255,179,0,0.6);
   }
   .creature.bee .stinger{
     position:absolute;bottom:8px;left:27px;width:0;height:0;
-    border-left:3px solid transparent;border-right:3px solid transparent;
-    border-top:7px solid #000;
+    border-left:3px solid transparent;border-right:3px solid transparent;border-top:7px solid #000;
   }
   .creature.bee .eye{background:#000}
   .creature.bee .wing{background:rgba(255,255,255,0.85);border-color:#b0bec5}
@@ -201,7 +218,7 @@
   @keyframes pulseBorder{from{box-shadow:0 0 4px #ffb300}to{box-shadow:0 0 14px #ffb300}}
   .level-card.locked{background:#f0f2f0;border-color:#cfd8dc;color:#90a4ae;cursor:not-allowed;opacity:0.65}
 
-  .shop-list{max-height:190px;overflow-y:auto;margin:12px 0;text-align:left;display:flex;flex-direction:column;gap:7px}
+  .shop-list{max-height:200px;overflow-y:auto;margin:12px 0;text-align:left;display:flex;flex-direction:column;gap:7px}
   .shop-item{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#f5f7f4;border-radius:14px;border:1px solid #e2e6e1}
   .shop-item-info b{display:block;font-size:13px}
   .shop-item-info span{font-size:11px;color:#6d756b}
@@ -217,9 +234,13 @@
 
   <div id="targets-layer"></div>
 
-  <!-- 🔫 EKRANDA GÖRÜNEN AKTİF SİLAH & LAZER IŞINI -->
-  <div id="active-weapon-sprite">✋</div>
-  <div id="laser-beam"></div>
+  <!-- 🛡️ LAZER KAFES BARIYERİ -->
+  <div class="laser-cage-barrier" id="laser-cage-barrier">
+    <div class="laser-cage-timer" id="laser-cage-timer">KAFES: 10s</div>
+  </div>
+
+  <!-- 🏸 SİLAH AVATARI (Yalnızca Sineklik & Elektrik için Görünür) -->
+  <div id="active-weapon-sprite"></div>
 
   <div class="prop" id="prop-salt" style="left:16%;top:56%">
     <div class="prop-icon">🧂</div>
@@ -247,13 +268,13 @@
     <div class="boss-bar-bg"><div class="boss-bar-fill" id="boss-hp-fill"></div></div>
   </div>
 
-  <!-- 🎮 ALT KONSOL: SİLAHLAR VE APARATLAR BİR ARADA -->
+  <!-- 🎮 ALT KONSOL -->
   <div class="bottom-console">
     <div class="weapon-section" id="weapon-bar">
-      <button class="weapon-btn active" data-w="hand">✋ El</button>
-      <button class="weapon-btn" data-w="swatter" id="btn-swatter" disabled>🏸 Sineklik</button>
-      <button class="weapon-btn" data-w="elec" id="btn-elec" disabled>⚡ Elektrik</button>
-      <button class="weapon-btn" data-w="laser" id="btn-laser" disabled>🔫 Lazer</button>
+      <button class="weapon-btn active" data-w="hand">✋ Kendi Elin</button>
+      <button class="weapon-btn" data-w="swatter" id="btn-swatter" disabled>🏸 Dev Sineklik</button>
+      <button class="weapon-btn" data-w="elec" id="btn-elec" disabled>⚡ Yıldırım</button>
+      <button class="weapon-btn" data-w="lasercage" id="btn-lasercage" disabled>🛡️ Lazer Kafes</button>
     </div>
 
     <div class="console-divider"></div>
@@ -275,8 +296,8 @@
     <div class="card">
       <h1>🪰 SİNEK</h1>
       <p style="font-size:13px;color:#555;margin:0 0 14px">
-        Seçtiğin tüm silahlar artık ekranda beliriyor! 🏸⚡🔫<br>
-        ⚠️ <b>Sakın Arıya (🐝) Dokunma!</b> İğnesiyle sokar.
+        Dev sineklik ile yakın sinekleri toptan ez!<br>
+        ⚡ Elektrik ile alan taraması yap veya 🛡️ 10 sn Lazer Kafes kur!
       </p>
       <button class="btn" style="width:100%" id="start-btn">AV BAŞLASIN</button>
       <button class="btn btn-secondary" style="width:100%" id="levels-btn-main">🗺️ BÖLÜM SEÇİMİ</button>
@@ -365,16 +386,16 @@
     maxUnlockedIdx: 0
   };
 
-  const saved = localStorage.getItem('sinek_save_v14');
+  const saved = localStorage.getItem('sinek_save_v15');
   if(saved){ try{ Object.assign(player, JSON.parse(saved)); }catch(e){} }
-  function savePlayer(){ localStorage.setItem('sinek_save_v14', JSON.stringify(player)); }
+  function savePlayer(){ localStorage.setItem('sinek_save_v15', JSON.stringify(player)); }
 
-  // 🔫 SİLAH TANIMLARI & GÖRSEL SPRİTE'LARI
+  // 🔫 SİLAH LİSTESİ: EL (görünmez), SİNEKLİK (büyük kafa, komşu öldürme), ELEKTRİK (alan şimşeği), LAZER KAFES
   const WEAPONS = {
-    hand: { id:'hand', name:'El', icon:'✋', sprite:'✋', size:52, damage:1, radius:48, critRate:0.15, cost:0, desc:'Klasik el darbesi.' },
-    swatter: { id:'swatter', name:'Sineklik', icon:'🏸', sprite:'🏸', size:68, damage:2, radius:80, critRate:0.25, cost:60, desc:'Geniş alan ezicisi.' },
-    elec: { id:'elec', name:'Elektrikli', icon:'⚡', sprite:'⚡🏸', size:68, damage:3, radius:65, critRate:0.35, cost:180, desc:'Elektrik şoklu sineklik.' },
-    laser: { id:'laser', name:'Lazer', icon:'🔫', sprite:'🔫', size:60, damage:5, radius:45, critRate:0.65, cost:400, desc:'Kızıl lazer darbesi.' }
+    hand: { id:'hand', name:'Kendi Elin', icon:'✋', sprite:null, size:0, damage:1, radius:48, critRate:0.15, cost:0, desc:'Doğrudan parmağınla dokun.' },
+    swatter: { id:'swatter', name:'Dev Sineklik', icon:'🏸', sprite:'🏸', size:96, damage:2, radius:110, aoeKillNear:true, critRate:0.25, cost:60, desc:'Geniş kafa! Yanındaki sinekleri de ezer.' },
+    elec: { id:'elec', name:'Yıldırım Çarpması', icon:'⚡', sprite:'⚡', size:64, damage:4, radius:140, aoeZapAll:true, critRate:0.40, cost:200, desc:'Elektrik çakar, alandaki her şeyi yok eder!' },
+    lasercage: { id:'lasercage', name:'Lazer Kafes', icon:'🛡️', sprite:'🛡️', size:54, damage:999, radius:0, isCage:true, cost:450, desc:'Yemeğe 10 sn lazer kafes kurar. Değen yanar!' }
   };
 
   let running = false;
@@ -394,7 +415,10 @@
   let windAngle = 0;
   let cdFreeze = 0, cdSpray = 0;
 
-  // Görünür Silah Konumları
+  // Lazer Kafes Durumu
+  let cageActive = false;
+  let cageTimeRemaining = 0;
+
   let weaponX = window.innerWidth / 2;
   let weaponY = window.innerHeight * 0.7;
 
@@ -412,9 +436,9 @@
   const bossHpFill = document.getElementById('boss-hp-fill');
   const weaponBar = document.getElementById('weapon-bar');
 
-  // Ekranda Görünen Silah DOM
   const weaponSprite = document.getElementById('active-weapon-sprite');
-  const laserBeam = document.getElementById('laser-beam');
+  const cageBarrier = document.getElementById('laser-cage-barrier');
+  const cageTimerEl = document.getElementById('laser-cage-timer');
 
   const btnFreeze = document.getElementById('skill-freeze');
   const btnSpray = document.getElementById('skill-spray');
@@ -427,7 +451,9 @@
   const gameoverModal = document.getElementById('gameover-modal');
   const shopModal = document.getElementById('shop-modal');
 
-  // SESLER
+  // ==========================================
+  // SES SİSTEMİ
+  // ==========================================
   let audioCtx = null;
   function ensureAudioCtx(){
     audioCtx ||= new (window.AudioContext || window.webkitAudioContext)();
@@ -470,6 +496,65 @@
     }catch(e){}
   }
 
+  // GERÇEK ELEKTRİK / ŞİMŞEK ÇAKMA SESİ (ARK VE PATLAMA)
+  function playElectricZapSound(){
+    try{
+      ensureAudioCtx();
+      const now = audioCtx.currentTime;
+
+      // Cızırtılı Testere Arkı
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(80, now);
+      osc.frequency.setValueAtTime(140, now + 0.05);
+      osc.frequency.setValueAtTime(45, now + 0.12);
+
+      // Beyaz Gürültü (Kıvılcım Çatırtısı)
+      const bufferSize = audioCtx.sampleRate * 0.25;
+      const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const output = noiseBuffer.getChannelData(0);
+      for(let i=0; i<bufferSize; i++) output[i] = Math.random() * 2 - 1;
+
+      const whiteNoise = audioCtx.createBufferSource();
+      whiteNoise.buffer = noiseBuffer;
+      const noiseFilter = audioCtx.createBiquadFilter();
+      noiseFilter.type = 'bandpass';
+      noiseFilter.frequency.setValueAtTime(1800, now);
+      noiseFilter.Q.setValueAtTime(2.0, now);
+
+      const noiseGain = audioCtx.createGain();
+      noiseGain.gain.setValueAtTime(0.4, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      whiteNoise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+
+      osc.start(now); osc.stop(now + 0.24);
+      whiteNoise.start(now); whiteNoise.stop(now + 0.25);
+    }catch(e){}
+  }
+
+  // Lazer Kafese Değme Sesi (BIZZZT!)
+  function playLaserBurnSound(){
+    try{
+      ensureAudioCtx();
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(820, now);
+      osc.frequency.exponentialRampToValueAtTime(140, now + 0.15);
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(now); osc.stop(now + 0.17);
+    }catch(e){}
+  }
+
   function playStingSound(){
     try{
       ensureAudioCtx();
@@ -499,16 +584,6 @@
         osc.frequency.exponentialRampToValueAtTime(35, now + 0.09);
         gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
         osc.start(now); osc.stop(now + 0.1);
-      } else if(type === 'elec'){
-        osc.type = 'sawtooth'; osc.frequency.setValueAtTime(320, now);
-        osc.frequency.linearRampToValueAtTime(60, now + 0.12);
-        gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-        osc.start(now); osc.stop(now + 0.13);
-      } else if(type === 'laser'){
-        osc.type = 'sine'; osc.frequency.setValueAtTime(950, now);
-        osc.frequency.exponentialRampToValueAtTime(120, now + 0.13);
-        gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-        osc.start(now); osc.stop(now + 0.14);
       } else if(type === 'freeze'){
         osc.type = 'sine'; osc.frequency.setValueAtTime(700, now);
         osc.frequency.exponentialRampToValueAtTime(1200, now + 0.25);
@@ -567,6 +642,11 @@
       targets.push(obj);
       updateTargetPosition(obj);
     });
+
+    // Lazer Kafesi Başlangıçta Hedefe Konumla
+    if(targets[0]){
+      updateCagePosition(targets[0]);
+    }
   }
 
   function updateTargetPosition(t){
@@ -576,6 +656,16 @@
       const pct = (t.curHp / t.maxHp) * 100;
       t.el.querySelector('.food-hp-fill').style.width = Math.max(0, pct) + '%';
     }
+    if(cageActive){
+      updateCagePosition(t);
+    }
+  }
+
+  function updateCagePosition(t){
+    cageBarrier.style.left = t.x + 'px';
+    cageBarrier.style.top = t.y + 'px';
+    cageBarrier.style.width = (t.radius * 2.8) + 'px';
+    cageBarrier.style.height = (t.radius * 2.8) + 'px';
   }
 
   const CREATURE_TYPES = {
@@ -690,10 +780,17 @@
     }
   }
 
-  // --- SİLAH GÖRSELİNİ VE VURUŞ ANİMASYONUNU GÜNCELLE ---
+  // --- SİLAH GÖRSELİ GÜNCELLEMESİ (ELDE HİÇBİR ŞEY GÖRÜNMEZ, KENDİ ELİMİZ KULLANILIR) ---
   function updateWeaponVisual(x, y, isSmash = false){
     if(!running) return;
     const curW = WEAPONS[player.currentWeapon];
+
+    // ELDE GÖRSEL YOK!
+    if(!curW.sprite){
+      weaponSprite.style.display = 'none';
+      return;
+    }
+
     weaponSprite.style.display = 'block';
     weaponSprite.textContent = curW.sprite;
     weaponSprite.style.fontSize = curW.size + 'px';
@@ -705,33 +802,36 @@
 
     if(isSmash){
       weaponSprite.classList.add('smash');
-      if(curW.id === 'elec'){
-        weaponSprite.classList.add('elec-shock');
-      }
       setTimeout(() => {
         weaponSprite.classList.remove('smash');
-        weaponSprite.classList.remove('elec-shock');
-      }, 130);
-
-      // Lazer Işını Çizimi
-      if(curW.id === 'laser'){
-        laserBeam.style.display = 'block';
-        laserBeam.style.left = (window.innerWidth / 2) + 'px';
-        laserBeam.style.top = (window.innerHeight - 80) + 'px';
-        const dx = x - (window.innerWidth / 2);
-        const dy = y - (window.innerHeight - 80);
-        const dist = Math.hypot(dx, dy);
-        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
-        laserBeam.style.width = dist + 'px';
-        laserBeam.style.transform = `rotate(${angle}deg)`;
-        setTimeout(() => { laserBeam.style.display = 'none'; }, 90);
-      }
+      }, 120);
     } else {
       weaponSprite.style.transform = 'translate(-50%, -50%) rotate(0deg)';
     }
   }
 
+  // Şimşek / Yıldırım Kıvılcım Çizimi
+  function spawnLightningFlash(hitX, hitY){
+    const flash = document.createElement('div');
+    flash.className = 'electric-flash';
+    container.appendChild(flash);
+    setTimeout(() => flash.remove(), 180);
+
+    for(let i=0; i<5; i++){
+      const bolt = document.createElement('div');
+      bolt.className = 'lightning-bolt';
+      bolt.style.left = hitX + 'px';
+      bolt.style.top = hitY + 'px';
+      const angle = Math.random() * 360;
+      const length = 40 + Math.random() * 90;
+      bolt.style.height = length + 'px';
+      bolt.style.transform = `rotate(${angle}deg)`;
+      container.appendChild(bolt);
+      setTimeout(() => bolt.remove(), 160);
+    }
+  }
+
+  // --- VURUŞ KONTROLÜ (DEV SİNEKLİK KOMŞU ÖLDÜRME & ELEKTRİK ALAN ŞİMŞEĞİ DAHİL) ---
   function handleHit(clientX, clientY){
     ensureAudioCtx();
     if(!running) return;
@@ -739,7 +839,14 @@
     const hitX = clientX - rect.left;
     const hitY = clientY - rect.top;
 
-    // SİLAH GÖRSELİNİ DOKUNULAN YERE ÇAĞIR VE VURUŞ ANİMASYONUNU OYNAT!
+    const curW = WEAPONS[player.currentWeapon];
+
+    // 🛡️ Lazer Kafes Kurma Mekaniği (Yemeğin Etrafına 10 sn)
+    if(curW.isCage){
+      activateLaserCage();
+      return;
+    }
+
     updateWeaponVisual(hitX, hitY, true);
 
     if(currentTier.nightMode){
@@ -747,8 +854,43 @@
       container.style.setProperty('--fy', `${hitY}px`);
     }
 
-    const curW = WEAPONS[player.currentWeapon];
+    // ⚡ ELEKTRİK SİLAHI: ŞİMŞEK ÇAKAR VE ALANDAKİ TÜM SİNEKLERİ BİRDEN YOK EDER!
+    if(curW.aoeZapAll){
+      playElectricZapSound();
+      spawnLightningFlash(hitX, hitY);
+      createFloatText(hitX, hitY - 30, '⚡ ŞİİMMMŞEK!', 'warn');
+
+      let zappedCount = 0;
+      for(let i = creatures.length - 1; i >= 0; i--){
+        const c = creatures[i];
+        const dist = Math.hypot(hitX - (c.x + c.size/2), hitY - (c.y + c.size/2));
+
+        if(dist <= curW.radius){
+          if(c.isBee){
+            // Arıya değerse arı da sokar
+            playStingSound();
+            player.coins = Math.max(0, player.coins - 15);
+            createFloatText(c.x, c.y - 20, 'İĞNE SOKTU! 💉💥', 'warn');
+          } else {
+            c.hp -= curW.damage;
+            spawnParticles(c.x + 25, c.y + 25, '#00e5ff');
+            if(c.hp <= 0){
+              killCreature(c, i, true);
+              zappedCount++;
+            }
+          }
+        }
+      }
+      if(zappedCount > 0){
+        updateHUD();
+        savePlayer();
+      }
+      return;
+    }
+
+    // 🏸 DEV SİNEKLİK (KOMŞU ÖLDÜREN ALAN VURUŞU) VEYA ✋ KENDİ ELİN
     let anyHit = false;
+    let hitKilledIndices = [];
 
     for(let i = creatures.length - 1; i >= 0; i--){
       const c = creatures[i];
@@ -771,7 +913,7 @@
           return;
         }
 
-        const isCrit = dist < 14 || Math.random() < curW.critRate;
+        const isCrit = dist < 16 || Math.random() < curW.critRate;
         let dmg = curW.damage * (isCrit ? 2 : 1);
 
         c.hp -= dmg;
@@ -794,6 +936,25 @@
         } else {
           updateCreatureElement(c);
         }
+
+        // 🏸 EĞER SİNEKLİKSE: HEDEFİN YAKININDAKİ SİNEKLERİ DE ÖLDÜR (KOMŞU EZME)
+        if(curW.aoeKillNear){
+          for(let j = creatures.length - 1; j >= 0; j--){
+            if(j === i) continue;
+            const nearFly = creatures[j];
+            if(!nearFly.isBee){
+              const nearDist = Math.hypot(centerX - (nearFly.x + nearFly.size/2), centerY - (nearFly.y + nearFly.size/2));
+              if(nearDist < 95){ // 95px yakınlıktaki komşuyu da ez
+                nearFly.hp -= 2;
+                spawnSplat(nearFly.x + nearFly.size/2, nearFly.y + nearFly.size/2);
+                createFloatText(nearFly.x + 20, nearFly.y, 'EZİLDİ! 💥', 'crit');
+                if(nearFly.hp <= 0){
+                  killCreature(nearFly, j, false);
+                }
+              }
+            }
+          }
+        }
         break;
       }
     }
@@ -804,6 +965,46 @@
         luckyFly.stunTimer = 1.8;
         luckyFly.el.classList.add('stunned');
         createFloatText(luckyFly.x + 25, luckyFly.y, 'KÜT! 🪟', 'crit');
+      }
+    }
+  }
+
+  // --- 🛡️ LAZER KAFESİNİ AKTİFLEŞTİR (10 SANİYE) ---
+  function activateLaserCage(){
+    cageActive = true;
+    cageTimeRemaining = 10.0;
+    cageBarrier.style.display = 'block';
+    playSound('freeze');
+    createFloatText(window.innerWidth/2, window.innerHeight/2, '🛡️ LAZER KAFES AKTİF!', 'warn');
+  }
+
+  function updateLaserCage(dt){
+    if(!cageActive) return;
+
+    cageTimeRemaining -= dt;
+    cageTimerEl.textContent = `KAFES: ${Math.ceil(cageTimeRemaining)}s`;
+
+    if(cageTimeRemaining <= 0){
+      cageActive = false;
+      cageBarrier.style.display = 'none';
+      return;
+    }
+
+    const t = targets[0];
+    if(!t) return;
+    const cageRadius = t.radius * 1.4;
+
+    // Yemeğe/Kafese yaklaşan sinekleri anında yak!
+    for(let i = creatures.length - 1; i >= 0; i--){
+      const c = creatures[i];
+      if(!c.isBee){
+        const dist = Math.hypot(t.x - (c.x + c.size/2), t.y - (c.y + c.size/2));
+        if(dist < cageRadius + 15){
+          playLaserBurnSound();
+          spawnParticles(c.x + 20, c.y + 20, '#00e5ff');
+          createFloatText(c.x + 20, c.y, 'BIZZZT! 🔥', 'crit');
+          killCreature(c, i, true);
+        }
       }
     }
   }
@@ -919,7 +1120,7 @@
     cdFreeze = 12;
     playSound('freeze');
     screenFlash('#80d8ff');
-    createFloatText(window.innerWidth/2, window.innerHeight/2, '❄️ DONDURULDU!', 'warn');
+    createFloatText(window.innerWidth/2, window.innerHeight/2, '❄️️ DONDURULDU!', 'warn');
 
     creatures.forEach(c => {
       if(!c.isBee){
@@ -1004,6 +1205,8 @@
     playSound('crit');
     player.coins += 60;
     weaponSprite.style.display = 'none';
+    cageBarrier.style.display = 'none';
+    cageActive = false;
     
     if(player.currentLevelIdx >= player.maxUnlockedIdx){
       player.maxUnlockedIdx = Math.min(LEVEL_TIERS.length - 1, player.currentLevelIdx + 1);
@@ -1030,6 +1233,7 @@
     lastTime = time;
 
     updateCooldowns(dt);
+    updateLaserCage(dt);
 
     windAngle += dt * 1.5;
     targets.forEach(t => {
@@ -1126,7 +1330,8 @@
               c.vy = targetVy;
             }
 
-            if(dist < target.radius + 10){
+            // 🚨 EĞER LAZER KAFES YOKSA HEDEFE DOKUNUNCA GAME OVER
+            if(dist < target.radius + 10 && !cageActive){
               if(target.type === 'hp'){
                 target.curHp -= 1;
                 updateTargetPosition(target);
@@ -1194,6 +1399,8 @@
     cdFreeze = 0;
     cdSpray = 0;
     lastTime = 0;
+    cageActive = false;
+    cageBarrier.style.display = 'none';
 
     container.className = currentTier.theme;
     nightOverlay.style.display = currentTier.nightMode ? 'block' : 'none';
@@ -1218,7 +1425,6 @@
 
     running = true;
 
-    // Aktif silahı ortada görünür başlat
     updateWeaponVisual(window.innerWidth / 2, window.innerHeight * 0.65, false);
 
     spawnCreature('normal');
@@ -1233,6 +1439,7 @@
     running = false;
     if(animId) cancelAnimationFrame(animId);
     weaponSprite.style.display = 'none';
+    cageBarrier.style.display = 'none';
 
     playSound('punish');
     document.getElementById('gameover-reason').textContent = reason || 'Sinekler yemeği kaptı!';
@@ -1253,7 +1460,6 @@
       btn.disabled = !player.unlockedWeapons.includes(wId);
       btn.classList.toggle('active', player.currentWeapon === wId);
     });
-    // Silah görünümünü güncelle
     if(running){
       updateWeaponVisual(weaponX, weaponY, false);
     }
@@ -1342,7 +1548,7 @@
       row.innerHTML = `
         <div class="shop-item-info">
           <b>${w.icon} ${w.name} ${isUnlocked ? '✓' : ''}</b>
-          <span>${w.desc} (Hasar: ${w.damage})</span>
+          <span>${w.desc}</span>
         </div>
         <div>
           ${isUnlocked 
@@ -1372,7 +1578,6 @@
     shopModal.style.display = 'flex';
   }
 
-  // Fare / Dokunmatik Takip (Silahı Ekranda Gezdirme)
   container.addEventListener('pointermove', (e) => {
     if(running && !e.target.closest('.bottom-console') && !e.target.closest('.hud-top')){
       const rect = container.getBoundingClientRect();
@@ -1380,7 +1585,6 @@
     }
   });
 
-  // Vuruş Dinleyicisi
   container.addEventListener('pointerdown', (e) => {
     ensureAudioCtx();
     if(e.target.closest('.hud-top') || e.target.closest('.bottom-console') || e.target.closest('.prop') || e.target.closest('.modal')) return;
@@ -1388,7 +1592,6 @@
     handleHit(e.clientX, e.clientY);
   }, { passive:false });
 
-  // Silah Değiştirme
   weaponBar.addEventListener('click', (e) => {
     ensureAudioCtx();
     const btn = e.target.closest('.weapon-btn');
