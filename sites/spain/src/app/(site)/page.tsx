@@ -50,8 +50,8 @@ export default async function HomePage() {
 
       <TariffSection packages={packages} />
 
-      <section id="ablauf" className="py-16 bg-[var(--bg)]">
-        <div className="w-full px-4 sm:px-8 lg:px-12">
+      <section id="ablauf" className="py-16 bg-[var(--bg)] w-full">
+        <div className="max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-12">
           <div className="text-center mb-12">
             <span className="text-xs font-bold uppercase tracking-widest text-[var(--acc)] mb-2 inline-block">
               IN DREI SCHRITTEN ONLINE
@@ -76,40 +76,65 @@ export default async function HomePage() {
       </section>
 
       {faqs.length > 0 && (
-        <section id="faq">
-          <div className="eyebrow" style={{ color: "var(--c5)" }}>FAQ</div>
-          <h2>Häufige Fragen</h2>
-          {faqs.map((faq) => (
-            <details key={faq.id}>
-              <summary>{faq.question}</summary>
-              <p>{faq.answer}</p>
-            </details>
-          ))}
-        </section>
-      )}
-
-      {posts.length > 0 && (
-        <section id="blog">
-          <div className="eyebrow" style={{ color: "var(--c2)" }}>BLOG</div>
-          <h2>Ratgeber & News</h2>
-          <div className="plans">
-            {posts.map((post) => (
-              <div key={post.id} className="plan">
-                <div className="gb" style={{ fontSize: "20px" }}>{post.title}</div>
-                <div className="dur">{post.excerpt || post.title}</div>
-                <Link className="btn-outline" href={`/blog/${post.slug}`} style={{ marginTop: "16px" }}>
-                  Weiterlesen
-                </Link>
-              </div>
-            ))}
+        <section id="faq" className="py-16 bg-[var(--soft)] border-y border-[var(--line)] w-full">
+          <div className="max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-12">
+            <div className="text-center mb-10">
+              <span className="text-xs font-bold uppercase tracking-widest text-[var(--acc)] mb-2 inline-block">
+                HILFE & FRAGEN
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--ink)]">
+                Häufige Fragen
+              </h2>
+            </div>
+            <div className="max-w-3xl mx-auto space-y-4">
+              {faqs.map((faq) => (
+                <details key={faq.id} className="bg-[var(--bg)] border border-[var(--line)] rounded-2xl p-6 transition-all group">
+                  <summary className="font-bold text-base sm:text-lg text-[var(--ink)] cursor-pointer select-none list-none flex justify-between items-center">
+                    <span>{faq.question}</span>
+                    <span className="text-[var(--acc)] font-bold text-xl group-open:rotate-180 transition-transform">↓</span>
+                  </summary>
+                  <p className="mt-4 text-[var(--mut)] text-sm sm:text-base leading-relaxed border-t border-[var(--line)] pt-4">{faq.answer}</p>
+                </details>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      <section>
-        <div className="cta-card">
-          <h2 style={{ fontSize: "36px", marginBottom: "20px" }}>¿A qué esperas?</h2>
-          <a className="btn-gradient" href="#tarife">Conectar ahora</a>
+      {posts.length > 0 && (
+        <section id="blog" className="py-16 bg-[var(--bg)] w-full">
+          <div className="max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-12">
+            <div className="text-center mb-10">
+              <span className="text-xs font-bold uppercase tracking-widest text-[var(--acc)] mb-2 inline-block">
+                RATGEBER
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[var(--ink)]">
+                Ratgeber & News
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {posts.map((post) => (
+                <div key={post.id} className="bg-[var(--soft)] border border-[var(--line)] rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+                  <div>
+                    <h3 className="font-bold text-xl text-[var(--ink)] mb-2">{post.title}</h3>
+                    <p className="text-[var(--mut)] text-sm leading-relaxed line-clamp-3">{post.excerpt || post.title}</p>
+                  </div>
+                  <Link className="mt-6 inline-flex items-center text-sm font-bold text-[var(--acc)] hover:underline" href={`/blog/${post.slug}`}>
+                    Weiterlesen →
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="py-20 bg-gradient-to-r from-[#1E3A8A] via-[#3B6CF0] to-[#12B5A0] text-white text-center w-full">
+        <div className="max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-12 flex flex-col items-center">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-white mb-6">Worauf wartest du noch?</h2>
+          <a className="inline-flex items-center justify-center bg-white text-[#111827] font-bold text-lg px-8 py-4 rounded-xl shadow-lg hover:bg-[#111827] hover:text-white transition-all" href="#tarife">
+            Jetzt verbinden
+          </a>
         </div>
       </section>
 

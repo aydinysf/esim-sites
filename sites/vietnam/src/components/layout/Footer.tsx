@@ -20,7 +20,7 @@ export default function Footer() {
 
   return (
     <footer className="w-full bg-[var(--bg)] border-t border-[var(--line)] mt-16 py-10">
-      <div className="w-full px-4 sm:px-8 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-[var(--mut)]">
+      <div className="max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-12 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-[var(--mut)]">
         <div className="font-semibold text-[var(--ink)]">
           © {new Date().getFullYear()} PoloSim. {getTranslation("footer_rights", lang)}
         </div>

@@ -102,7 +102,7 @@ export default function HeroBanner({ nativeCountryName = "ESPAÑA" }: Props) {
         onFocus={() => (isPausedRef.current = true)}
         onBlur={() => (isPausedRef.current = false)}
       >
-        <div className="w-full px-4 sm:px-8 lg:px-12 py-[clamp(56px,8vw,120px)] relative z-10 flex flex-col items-start min-h-[420px] justify-center">
+        <div className="max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-12 py-[clamp(56px,8vw,120px)] relative z-10 flex flex-col items-start min-h-[420px] justify-center">
           
           {/* Watermark Background Text */}
           <div
@@ -129,7 +129,7 @@ export default function HeroBanner({ nativeCountryName = "ESPAÑA" }: Props) {
           </div>
 
           {/* Slider Controls Bar */}
-          <div className="absolute bottom-6 left-4 sm:left-8 lg:left-12 right-4 sm:right-8 lg:right-12 flex items-center justify-between z-30">
+          <div className="absolute bottom-6 left-6 sm:left-10 lg:left-12 right-6 sm:right-10 lg:right-12 flex items-center justify-between z-30">
             {/* Dots */}
             <div className="flex items-center gap-2">
               {slidesData.map((s, idx) => (

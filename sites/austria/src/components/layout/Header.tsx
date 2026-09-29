@@ -41,7 +41,7 @@ export default function Header() {
 
   return (
     <header className="w-full bg-[var(--bg)] border-b border-[var(--line)] sticky top-0 z-50 transition-colors">
-      <div className="w-full px-4 sm:px-8 lg:px-12 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="max-w-[1360px] mx-auto px-6 sm:px-10 lg:px-12 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
         
         {/* Left: PoloSim Logo (Enlarged) with Country Name underneath */}
         <Link href="/" className="flex flex-col items-start justify-center text-decoration-none group py-1">
